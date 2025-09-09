@@ -1,0 +1,568 @@
+/* RevisionStatsModal Styles - Fixed z-index and display issues */
+
+/* Modal Overlay - Z-index fixe et élevé */
+.revision-stats-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Z-index fixe et très élevé */
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+  /* Assurer que l'overlay prend tout l'espace */
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+/* Modal Container - Dimensions et positionnement fixes */
+.revision-stats-modal {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  max-width: 56rem;
+  width: 100%;
+  max-height: 90vh;
+  /* Assurer une hauteur minimale */
+  min-height: 50vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10000; /* Z-index encore plus élevé pour le modal */
+  /* Centrage forcé */
+  margin: auto;
+}
+
+.revision-stats-modal.dark {
+  background-color: #111827;
+}
+
+/* Header - Hauteur fixe */
+.revision-stats-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #fff7ed;
+  position: relative;
+  flex-shrink: 0;
+  /* Hauteur minimale pour éviter la compression */
+  min-height: 80px;
+}
+
+.revision-stats-modal-header.dark {
+  border-bottom-color: #374151;
+  background-color: #1f2937;
+}
+
+.revision-stats-modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  /* Éviter la coupure du texte */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.revision-stats-modal-title.dark {
+  color: #f9fafb;
+}
+
+.revision-stats-modal-close-btn {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s ease-in-out;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  flex-shrink: 0; /* Empêcher la compression */
+}
+
+.revision-stats-modal-close-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  transform: scale(1.05);
+}
+
+.revision-stats-modal-close-btn.dark {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.revision-stats-modal-close-btn.dark:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+.revision-stats-modal-close-btn svg {
+  color: #374151;
+  transition: color 0.15s ease-in-out;
+}
+
+.revision-stats-modal-close-btn:hover svg {
+  color: #ef4444;
+}
+
+.revision-stats-modal-close-btn.dark svg {
+  color: #d1d5db;
+}
+
+.revision-stats-modal-close-btn.dark:hover svg {
+  color: #ef4444;
+}
+
+/* Category Selector - Hauteur fixe */
+.revision-stats-modal-category-selector {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  flex-shrink: 0; /* Empêcher la compression */
+  min-height: 80px; /* Hauteur minimale */
+}
+
+.revision-stats-modal-category-selector.dark {
+  border-bottom-color: #374151;
+  background-color: #1f2937;
+}
+
+.revision-stats-modal-select-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.revision-stats-modal-select {
+  width: 100%;
+  min-width: 250px;
+  max-width: 400px; /* Largeur maximale */
+  padding: 0.5rem 1rem;
+  padding-right: 2.5rem;
+  border: 2px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #111827;
+  font-weight: 500;
+  outline: none;
+  /* Éviter la coupure du texte */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.revision-stats-modal-select:focus {
+  border-color: #f97316;
+}
+
+.revision-stats-modal-select.dark {
+  border-color: #4b5563;
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+.revision-stats-modal-select-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .revision-stats-modal-select {
+    width: auto;
+    min-width: 300px;
+  }
+}
+
+/* Content Area - Scroll propre */
+.revision-stats-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden; /* Éviter le scroll horizontal */
+  padding: 1.5rem;
+  background-color: #f9fafb;
+  /* Hauteur minimale pour le contenu */
+  min-height: 200px;
+  /* Scroll smooth */
+  scroll-behavior: smooth;
+}
+
+.revision-stats-modal-content.dark {
+  background-color: #111827;
+}
+
+/* Custom scrollbar pour un meilleur rendu */
+.revision-stats-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.revision-stats-modal-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.revision-stats-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.revision-stats-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Empty State */
+.revision-stats-modal-empty-state {
+  text-align: center;
+  padding: 3rem 1rem; /* Padding responsive */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px; /* Hauteur minimale */
+}
+
+.revision-stats-modal-empty-state-icon {
+  font-size: 3.75rem;
+  margin-bottom: 1rem;
+}
+
+.revision-stats-modal-empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.revision-stats-modal-empty-state-title.dark {
+  color: #f9fafb;
+}
+
+.revision-stats-modal-empty-state-text {
+  color: #4b5563;
+  text-align: center;
+  max-width: 400px; /* Largeur maximale pour la lisibilité */
+}
+
+.revision-stats-modal-empty-state-text.dark {
+  color: #9ca3af;
+}
+
+/* Categories Container */
+.revision-stats-modal-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* Assurer que le contenu ne déborde pas */
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Category Section */
+.revision-stats-modal-category-section {
+  width: 100%;
+  overflow: hidden; /* Éviter le débordement */
+}
+
+.revision-stats-modal-category-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* Éviter la coupure sur mobile */
+  flex-wrap: wrap;
+}
+
+.revision-stats-modal-category-title.dark {
+  color: #f9fafb;
+}
+
+.revision-stats-modal-category-indicator {
+  width: 0.25rem;
+  height: 1.5rem;
+  background-color: #f97316;
+  border-radius: 0.125rem;
+  flex-shrink: 0; /* Empêcher la compression */
+}
+
+.revision-stats-modal-category-count {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.revision-stats-modal-category-count.dark {
+  color: #9ca3af;
+}
+
+/* Words Grid - Responsive et adaptatif */
+.revision-stats-modal-words-grid {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  /* Grid responsive amélioré */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (min-width: 768px) {
+  .revision-stats-modal-words-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .revision-stats-modal-words-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+}
+
+/* Word Item - Dimensions fixes */
+.revision-stats-modal-word-item {
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+  padding: 1rem;
+  transition: all 0.2s ease-in-out;
+  /* Dimensions minimales */
+  min-height: 120px;
+  width: 100%;
+  /* Éviter le débordement */
+  overflow: hidden;
+  word-wrap: break-word;
+}
+
+.revision-stats-modal-word-item:hover {
+  border-color: #fb923c;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.revision-stats-modal-word-item.dark {
+  background-color: #1f2937;
+  border-color: #4b5563;
+}
+
+.revision-stats-modal-word-item.dark:hover {
+  border-color: #fb923c;
+}
+
+/* Word Item Header */
+.revision-stats-modal-word-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  min-height: 24px; /* Hauteur minimale */
+}
+
+.revision-stats-modal-word-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0; /* Permettre la compression */
+}
+
+/* 🔧 NOUVEAU : Status Icon avec nouveaux statuts */
+.revision-stats-modal-status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  color: white;
+  flex-shrink: 0; /* Empêcher la compression */
+  transition: all 0.2s ease;
+}
+
+/* Statut : Mot disponible pour révision */
+.revision-stats-modal-status-icon.available {
+  background-color: #3b82f6; /* Bleu */
+  color: white;
+}
+
+.revision-stats-modal-status-icon.available.dark {
+  background-color: #60a5fa;
+}
+
+/* Statut : Mot maîtrisé */
+.revision-stats-modal-status-icon.mastered {
+  background-color: #10b981; /* Vert */
+  color: white;
+}
+
+.revision-stats-modal-status-icon.mastered.dark {
+  background-color: #34d399;
+}
+
+/* Statut : Mot qui nécessite du travail */
+.revision-stats-modal-status-icon.needs-work {
+  background-color: #f59e0b; /* Orange/Jaune */
+  color: white;
+}
+
+.revision-stats-modal-status-icon.needs-work.dark {
+  background-color: #fbbf24;
+}
+
+/* Ancien CSS (conservé pour compatibilité) */
+.revision-stats-modal-status-icon.correct {
+  background-color: #10b981;
+  color: white;
+}
+
+.revision-stats-modal-status-icon.incorrect {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* Word Text - Gestion du débordement */
+.revision-stats-modal-word-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  /* Gestion du texte long */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.revision-stats-modal-word-text.dark {
+  color: #f9fafb;
+}
+
+/* Translation - Gestion du débordement */
+.revision-stats-modal-translation {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+  /* Permettre le retour à la ligne */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.revision-stats-modal-translation.dark {
+  color: #9ca3af;
+}
+
+/* Next Review */
+.revision-stats-modal-next-review {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  margin-top: auto; /* Pousser vers le bas */
+}
+
+.revision-stats-modal-next-review-text {
+  font-weight: 500;
+}
+
+.revision-stats-modal-next-review-text.available {
+  color: #059669;
+}
+
+.revision-stats-modal-next-review-text.available.dark {
+  color: #34d399;
+}
+
+.revision-stats-modal-next-review-text.pending {
+  color: #4b5563;
+}
+
+.revision-stats-modal-next-review-text.pending.dark {
+  color: #9ca3af;
+}
+
+/* Responsive adaptations */
+@media (max-width: 768px) {
+  .revision-stats-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+    margin: 0.5rem;
+  }
+  
+  .revision-stats-modal-header,
+  .revision-stats-modal-category-selector {
+    padding: 1rem;
+  }
+  
+  .revision-stats-modal-content {
+    padding: 1rem;
+  }
+  
+  .revision-stats-modal-words-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .revision-stats-modal-word-item {
+    min-height: 100px;
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .revision-stats-modal {
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .revision-stats-modal-title {
+    font-size: 1.25rem;
+  }
+  
+  .revision-stats-modal-select {
+    min-width: 200px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Assurer que le modal est toujours visible */
+.revision-stats-modal-overlay[data-state="open"] {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.revision-stats-modal[data-state="open"] {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

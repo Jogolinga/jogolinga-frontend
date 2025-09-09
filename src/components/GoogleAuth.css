@@ -1,0 +1,111 @@
+/* Styles d'origine pour le bouton normal */
+.login-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .google-login-button {
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+  }
+  
+  .google-login-button:hover {
+    background-color: #3367D6;
+  }
+  
+  /* Nouveaux styles pour l'en-tête */
+  .header-auth-container {
+    position: absolute;
+    right: 50px; /* Ajustez selon votre mise en page */
+    top: 0;
+    height: 36px;
+    z-index: 10;
+  }
+  
+  .header-google-login {
+    transform: scale(0.8);
+    margin-top: -2px;
+  }
+  
+  .header-logout-button {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    height: 28px;
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .header-logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+  }
+  
+  .dark .header-logout-button {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark .header-logout-button:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .header-auth-loading {
+    color: white;
+    font-size: 14px;
+    opacity: 0.7;
+  }
+  
+  /* Ajustement pour petits écrans */
+  @media (max-width: 360px) {
+    .header-logout-button {
+      font-size: 10px;
+      padding: 4px 6px;
+      min-width: 30px;
+    }
+  }
+  
+  /* Ajout du style pour le bouton de déconnexion dans le menu principal (desktop) */
+  .modern-logout-button {
+    padding: 8px;
+    border-radius: 50%;
+    background: transparent;
+    color: #64748b;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modern-logout-button:hover {
+    background-color: #e2e8f0;
+    transform: scale(1.1);
+  }
+  
+  .dark .modern-logout-button {
+    color: #94a3b8;
+  }
+  
+  .dark .modern-logout-button:hover {
+    background-color: #334155;
+  }

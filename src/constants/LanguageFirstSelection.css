@@ -1,0 +1,172 @@
+/* LanguageFirstSelection.css */
+
+/* Overlay principal - toujours au premier plan */
+.language-first-selection-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 99999 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #334155 70%, #475569 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Container principal du sélecteur */
+.language-selection-container {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-radius: 32px !important;
+  padding: 50px 40px !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  max-width: 600px !important;
+  width: 100% !important;
+  text-align: center !important;
+  position: relative !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  z-index: 100000 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Header du sélecteur */
+.selection-header {
+  margin-bottom: 32px !important;
+}
+
+/* Grille des langues */
+.languages-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px !important;
+  max-width: 500px !important;
+  margin: 0 auto 24px auto !important;
+}
+
+/* Cartes de langues */
+.language-card {
+  background: #ffffff !important;
+  border: 3px solid #e2e8f0 !important;
+  border-radius: 20px !important;
+  padding: 24px 16px !important;
+  cursor: pointer !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 120px !important;
+}
+
+.language-card:hover {
+  transform: scale(1.05) translateY(-4px) !important;
+  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.language-card.selected {
+  transform: scale(1.05) translateY(-4px) !important;
+}
+
+/* Particules d'arrière-plan */
+.background-particles {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.particle {
+  position: absolute !important;
+  width: 4px !important;
+  height: 4px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+  pointer-events: none !important;
+}
+
+/* Styles mobiles spécifiques */
+@media (max-width: 768px) {
+  .language-first-selection-overlay {
+    padding: 10px !important;
+  }
+  
+  .language-selection-container {
+    border-radius: 20px !important;
+    padding: 30px 20px !important;
+    max-width: 90vw !important;
+  }
+  
+  .languages-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+  
+  .language-card {
+    padding: 20px 12px !important;
+    min-height: 100px !important;
+  }
+  
+  .selection-header h1 {
+    font-size: 24px !important;
+  }
+  
+  .selection-header p {
+    font-size: 14px !important;
+  }
+}
+
+/* Styles pour très petits écrans */
+@media (max-width: 480px) {
+  .languages-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  
+  .language-card {
+    padding: 15px 10px !important;
+    min-height: 80px !important;
+  }
+}
+
+/* Animation d'entrée */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.language-selection-container {
+  animation: slideInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+/* Styles pour les éléments de navigation qui pourraient interférer */
+.bottom-navigation,
+.mobile-header,
+.header-auth-container {
+  z-index: 1000 !important;
+}
+
+/* Force la priorité sur tous les autres overlays */
+.language-first-selection-overlay {
+  z-index: 999999 !important;
+}

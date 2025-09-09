@@ -1,0 +1,179 @@
+/* src/components/SwipeNavigationManager.css */
+.swipe-navigation-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
+
+/* Overlay qui apparaît pendant le swipe */
+.swipe-indicator-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.swipe-navigation-container.swiping .swipe-indicator-overlay {
+  opacity: 1;
+}
+
+/* Indicateur de swipe avec design amélioré */
+.swipe-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+/* Flèche de retour */
+.swipe-arrow {
+  font-size: 28px;
+  margin-bottom: 4px;
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+/* Message de retour */
+.swipe-message {
+  font-size: 12px;
+  color: #4b5563;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Barre de progression */
+.swipe-progress-track {
+  width: 60px;
+  height: 4px;
+  background-color: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.swipe-progress-fill {
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 2px;
+  transition: width 0.1s ease-out;
+}
+
+/* Effet de détection subtil */
+.swipe-navigation-container.swipe-detecting {
+  background-image: linear-gradient(to right, rgba(59, 130, 246, 0.07), transparent 80px);
+}
+
+/* Animation de pulsation */
+@keyframes pulse {
+  0% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
+  50% { box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3); }
+  100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); }
+}
+
+.swipe-navigation-container.swiping .swipe-indicator {
+  animation: pulse 1.2s infinite;
+}
+
+/* Support du thème sombre */
+.dark .swipe-indicator-overlay {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.dark .swipe-indicator {
+  background-color: rgba(30, 41, 59, 0.9);
+}
+
+.dark .swipe-arrow {
+  color: #60a5fa;
+}
+
+.dark .swipe-message {
+  color: #94a3b8;
+}
+
+.dark .swipe-progress-track {
+  background-color: #334155;
+}
+
+.dark .swipe-progress-fill {
+  background-color: #60a5fa;
+}
+
+/* Bouton retour flottant pour mobile */
+.mobile-floating-back {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 85%;
+  max-width: 320px;
+  display: flex;
+  justify-content: center;
+}
+
+.mobile-floating-back-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.mobile-floating-back-button:active {
+  transform: scale(0.98);
+  background-color: #2563eb;
+}
+
+/* Styles pour le mode sombre */
+.dark .mobile-floating-back-button {
+  background-color: #4f46e5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Ajustements pour les écrans plus petits */
+@media (max-width: 390px) {
+  .mobile-floating-back-button {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+  
+  .swipe-indicator {
+    padding: 10px;
+  }
+  
+  .swipe-arrow {
+    font-size: 24px;
+  }
+  
+  .swipe-message {
+    font-size: 11px;
+  }
+  
+  .swipe-progress-track {
+    width: 50px;
+  }
+}

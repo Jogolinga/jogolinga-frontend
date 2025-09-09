@@ -1,0 +1,2304 @@
+/* ===============================================
+   APP.CSS COMPLET - THÈME OCRE AVEC MODES DIFFÉRENCIÉS
+   Mode Sombre: Ocre/Terre Cuite/Marron
+   Mode Clair: Ocre Clair/Sable/Beige
+   =============================================== */
+
+   @import './components/mobile-fixes.css';
+
+/* Variables CSS pour les deux thèmes */
+:root {
+  /* Mode Sombre - Ocre/Terre Cuite/Marron */
+  --dark-primary: #cd853f;      /* Ocre */
+  --dark-secondary: #8b4513;    /* Terre cuite */
+  --dark-accent: #654321;       /* Marron foncé */
+  --dark-text: #ffffff;         /* Blanc */
+  --dark-text-secondary: #f5deb3; /* Beige clair */
+  
+  /* Mode Clair - Ocre Clair/Sable/Beige */
+  --light-primary: #daa520;     /* Or antique */
+  --light-secondary: #f4e4bc;   /* Sable */
+  --light-accent: #f5deb3;      /* Beige */
+  --light-text: #654321;        /* Marron foncé */
+  --light-text-secondary: #8b4513; /* Terre cuite */
+}
+
+/* 1. CORRECTION FRAMER MOTION - Désactiver les transformations problématiques SAUF HEADER MOBILE */
+.App div[style*="transform"]:not(.mobile-header):not(.debug-indicator):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions),
+.App div[style*="translateY"]:not(.mobile-header):not(.debug-indicator):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions),
+.App div[style*="translateZ"]:not(.mobile-header):not(.debug-indicator):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions),
+.App div[style*="translate3d"]:not(.mobile-header):not(.debug-indicator):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions) {
+  transform: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+}
+
+/* 2. FORCE l'opacité à 1 pour tous les divs animés SAUF HEADER MOBILE */
+.App div[style*="opacity"]:not(.mobile-header):not(.debug-indicator):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions) {
+  opacity: 1 !important;
+}
+
+/* 3. ANNULE tous les styles inline de position SAUF les exceptions ET HEADER MOBILE */
+.App div[style*="position: absolute"]:not(.mobile-header):not(.debug-indicator):not(.interactive-mascot):not(.loading-overlay):not(.modal):not(.tooltip):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions),
+.App div[style*="position: fixed"]:not(.mobile-header):not(.debug-indicator):not(.interactive-mascot):not(.loading-overlay):not(.modal):not(.tooltip):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions) {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* 4. CONTENEURS Framer Motion - Correction spécifique SAUF HEADER MOBILE */
+.App > div[style]:not(.mobile-header):not(.debug-indicator):not(.swipe-navigation-container) {
+  transform: none !important;
+  opacity: 1 !important;
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* 5. CORRECTION - AnimatePresence containers SAUF HEADER MOBILE */
+.App > div > div[style]:not(.mobile-header):not(.debug-indicator):not(.mobile-header *) {
+  transform: none !important;
+  opacity: 1 !important;
+  position: relative !important;
+}
+
+/* 6. DÉSACTIVE les animations Framer Motion sur tous les containers SAUF HEADER MOBILE */
+*:not(.mobile-header):not(.mobile-header *):not(.header-left):not(.header-title):not(.header-actions) {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* 7. CORRECTION MAJEURE - Positionnement avec exceptions INCLUANT HEADER MOBILE */
+.App {
+  position: relative !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* APPLIQUER position: static SEULEMENT aux éléments qui n'ont pas besoin d'être positionnés */
+.App > div:not(.mobile-header):not(.debug-indicator):not(.interactive-mascot):not(.loading-overlay):not(.modal):not(.tooltip):not(.swipe-navigation-container) {
+  position: static !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Exception EXPLICITE pour les éléments qui ont BESOIN d'être positionnés */
+.mobile-header,
+.debug-indicator,
+.interactive-mascot,
+.loading-overlay,
+.modal,
+.tooltip,
+.premium-banner,
+.swipe-navigation-container {
+  position: fixed !important;
+}
+
+/* ===============================================
+   THÈMES PRINCIPAUX - MODE SOMBRE ET CLAIR
+   =============================================== */
+
+/* MODE SOMBRE PAR DÉFAUT - Ocre/Terre Cuite/Marron */
+.App {
+  background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 50%, var(--dark-accent) 100%) !important;
+  color: var(--dark-text) !important;
+  transition: background 0.5s ease, color 0.5s ease !important;
+}
+
+/* MODE CLAIR - Ocre Clair/Sable/Beige */
+.App.light {
+  background: linear-gradient(135deg, var(--light-primary) 0%, var(--light-secondary) 50%, var(--light-accent) 100%) !important;
+  color: var(--light-text) !important;
+}
+
+/* Variantes de dégradés - Mode Sombre */
+.App.gradient-warm {
+  background: linear-gradient(135deg, #cd853f 0%, #a0522d 50%, #8b4513 100%) !important;
+}
+
+.App.gradient-earth {
+  background: linear-gradient(135deg, #daa520 0%, #cd853f 30%, #8b4513 70%, #654321 100%) !important;
+}
+
+/* Variantes de dégradés - Mode Clair */
+.App.light.gradient-sand {
+  background: linear-gradient(135deg, #f4e4bc 0%, #f5deb3 50%, #daa520 100%) !important;
+}
+
+.App.light.gradient-beach {
+  background: linear-gradient(135deg, #fff8dc 0%, #f4e4bc 50%, #daa520 100%) !important;
+}
+
+/* ===============================================
+   HEADER MOBILE - THÈMES DIFFÉRENCIÉS
+   =============================================== */
+
+/* MODE SOMBRE - Header Mobile */
+.mobile-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  height: 60px !important;
+  background: linear-gradient(to right, var(--dark-primary), var(--dark-secondary)) !important;
+  color: var(--dark-text) !important;
+  padding: 0 16px !important;
+  z-index: 100000 !important;
+  box-shadow: 0px 4px 8px rgba(139, 69, 19, 0.3) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+  margin: 0 !important;
+  border: none !important;
+  transition: background 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+/* MODE CLAIR - Header Mobile */
+.mobile-header.light {
+  background: linear-gradient(to right, var(--light-primary), var(--light-secondary)) !important;
+  color: var(--light-text) !important;
+  box-shadow: 0px 4px 8px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* FORCE tous les enfants du header mobile selon le thème */
+.mobile-header *,
+.mobile-header .header-left,
+.mobile-header .header-title,
+.mobile-header .header-title h1,
+.mobile-header .header-actions,
+.mobile-header button {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+  position: relative !important;
+  transform: none !important;
+  z-index: inherit !important;
+  transition: color 0.3s ease !important;
+}
+
+/* Couleurs des enfants - Mode Sombre */
+.mobile-header:not(.light) *,
+.mobile-header:not(.light) .header-left *,
+.mobile-header:not(.light) .header-title *,
+.mobile-header:not(.light) .header-actions * {
+  color: var(--dark-text) !important;
+}
+
+/* Couleurs des enfants - Mode Clair */
+.mobile-header.light *,
+.mobile-header.light .header-left *,
+.mobile-header.light .header-title *,
+.mobile-header.light .header-actions * {
+  color: var(--light-text) !important;
+}
+
+/* Sections du header */
+.header-left {
+  display: flex !important;
+  align-items: center !important;
+  min-width: 80px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.header-title {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  flex: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 200px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.header-title h1 {
+  font-size: 1.25rem !important;
+  margin: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+.header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 80px !important;
+  justify-content: flex-end !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Boutons du header - Mode Sombre */
+.back-button-mobile,
+.theme-toggle-button,
+.logout-button,
+.premium-header-button {
+  border: none !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: relative !important;
+  transform: none !important;
+}
+
+/* Mode Sombre - Boutons */
+.mobile-header:not(.light) .back-button-mobile,
+.mobile-header:not(.light) .theme-toggle-button {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: var(--dark-text) !important;
+}
+
+.mobile-header:not(.light) .back-button-mobile:hover,
+.mobile-header:not(.light) .theme-toggle-button:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Mode Clair - Boutons */
+.mobile-header.light .back-button-mobile,
+.mobile-header.light .theme-toggle-button {
+  background: rgba(101, 67, 33, 0.15) !important;
+  color: var(--light-text) !important;
+}
+
+.mobile-header.light .back-button-mobile:hover,
+.mobile-header.light .theme-toggle-button:hover {
+  background: rgba(101, 67, 33, 0.25) !important;
+}
+
+.premium-header-button {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: var(--dark-text) !important;
+  padding: 6px 10px !important;
+  border-radius: 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.mobile-header.light .premium-header-button {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-secondary)) !important;
+  color: var(--light-text) !important;
+  border-color: rgba(101, 67, 33, 0.3) !important;
+}
+
+.language-selector-small {
+  min-width: 110px !important;
+  height: 36px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* ===============================================
+   COMPOSANTS PRINCIPAUX - THÈMES DIFFÉRENCIÉS
+   =============================================== */
+
+/* 1. COMPOSANTS PRINCIPAUX - Plein écran */
+.modern-sentence-game,
+.sentence-gap-container,
+.modern-main-container,
+.grammar-mode-container,
+.quiz-container,
+.learn-mode {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  transition: background 0.5s ease, color 0.5s ease !important;
+}
+
+
+
+/* 3. MAIN MENU - Mode Sombre */
+.modern-main-container {
+  background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 50%, var(--dark-accent) 100%) !important;
+  color: var(--dark-text) !important;
+  padding: 2rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Mode Clair */
+.modern-main-container.light {
+  background: linear-gradient(135deg, var(--light-primary) 0%, var(--light-secondary) 50%, var(--light-accent) 100%) !important;
+  color: var(--light-text) !important;
+}
+
+/* 4. SENTENCE GAP - Mode Sombre */
+.sentence-gap-container {
+  background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 100%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Mode Clair */
+.sentence-gap-container.light {
+  background: linear-gradient(135deg, var(--light-primary) 0%, var(--light-secondary) 100%) !important;
+}
+
+.sentence-gap-game {
+  max-width: 700px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 20px !important;
+  padding: 2rem !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+  transition: box-shadow 0.3s ease !important;
+}
+
+/* Mode Sombre */
+.sentence-gap-game:not(.light) {
+  box-shadow: 0 20px 40px rgba(139, 69, 19, 0.2) !important;
+}
+
+/* Mode Clair */
+.sentence-gap-game.light {
+  box-shadow: 0 20px 40px rgba(218, 165, 32, 0.2) !important;
+}
+
+/* 5. GRAMMAR MODE - Mode Sombre */
+.grammar-mode-container {
+  background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 100%) !important;
+  color: var(--dark-text) !important;
+  padding: 2rem !important;
+}
+
+/* Mode Clair */
+.grammar-mode-container.light {
+  background: linear-gradient(135deg, var(--light-primary) 0%, var(--light-secondary) 100%) !important;
+  color: var(--light-text) !important;
+}
+
+/* ===============================================
+   ÉLÉMENTS THÉMATIQUES - MODES DIFFÉRENCIÉS
+   =============================================== */
+
+/* Logo et éléments principaux - Mode Sombre */
+.modern-logo-circle {
+  background-color: var(--dark-secondary) !important;
+  border: 3px solid var(--dark-primary) !important;
+  box-shadow: 0px 6px 12px rgba(139, 69, 19, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Mode Clair */
+.light .modern-logo-circle {
+  background-color: var(--light-secondary) !important;
+  border: 3px solid var(--light-primary) !important;
+  box-shadow: 0px 6px 12px rgba(218, 165, 32, 0.3) !important;
+}
+
+.modern-logo-circle::after {
+  background: radial-gradient(
+    circle at center,
+    rgba(205, 133, 63, 0.3) 0%,
+    rgba(205, 133, 63, 0) 70%
+  ) !important;
+}
+
+.light .modern-logo-circle::after {
+  background: radial-gradient(
+    circle at center,
+    rgba(218, 165, 32, 0.3) 0%,
+    rgba(218, 165, 32, 0) 70%
+  ) !important;
+}
+
+/* Titre logo - Mode Sombre */
+.modern-logo-title {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Mode Clair */
+.light .modern-logo-title {
+  background: linear-gradient(45deg, var(--light-text), var(--light-text-secondary)) !important;
+ -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Barres de progression - Mode Sombre */
+.modern-progress-fill {
+  background: linear-gradient(to right, var(--dark-primary), var(--dark-secondary)) !important;
+  transition: background 0.3s ease !important;
+}
+
+/* Mode Clair */
+.light .modern-progress-fill {
+  background: linear-gradient(to right, var(--light-text-secondary), var(--light-text)) !important;
+}
+
+.modern-progress-bar {
+  background-color: rgba(139, 69, 19, 0.2) !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.light .modern-progress-bar {
+  background-color: rgba(218, 165, 32, 0.2) !important;
+}
+
+/* Onglets desktop - Mode Sombre */
+.desktop-tab.active {
+  background-color: var(--dark-primary) !important;
+  border-color: var(--dark-secondary) !important;
+  color: var(--dark-text) !important;
+}
+
+.desktop-tab:hover {
+  background-color: rgba(205, 133, 63, 0.1) !important;
+  border-color: rgba(139, 69, 19, 0.3) !important;
+  color: var(--dark-primary) !important;
+}
+
+/* Mode Clair */
+.light .desktop-tab.active {
+  background-color: var(--light-primary) !important;
+  border-color: var(--light-text-secondary) !important;
+  color: var(--light-text) !important;
+}
+
+.light .desktop-tab:hover {
+  background-color: rgba(218, 165, 32, 0.1) !important;
+  border-color: rgba(139, 69, 19, 0.3) !important;
+  color: var(--light-primary) !important;
+}
+
+/* Navigation mobile - Mode Sombre */
+.bottom-nav-item.active {
+  color: var(--dark-primary) !important;
+}
+
+.bottom-nav-item.active::after {
+  background-color: var(--dark-primary) !important;
+}
+
+/* Mode Clair */
+.light .bottom-nav-item.active {
+  color: var(--light-primary) !important;
+}
+
+.light .bottom-nav-item.active::after {
+  background-color: var(--light-primary) !important;
+}
+
+/* Éléments statistiques - Mode Sombre */
+.modern-stat-icon {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: var(--dark-primary) !important;
+}
+
+.modern-stat-badge-primary {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: var(--dark-primary) !important;
+  border: 1px solid rgba(205, 133, 63, 0.3) !important;
+}
+
+.modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.2) !important;
+  color: var(--dark-secondary) !important;
+  border: 1px solid rgba(139, 69, 19, 0.3) !important;
+}
+
+/* Mode Clair */
+.light .modern-stat-icon {
+  background-color: rgba(218, 165, 32, 0.2) !important;
+  color: var(--light-primary) !important;
+}
+
+.light .modern-stat-badge-primary {
+  background-color: rgba(218, 165, 32, 0.2) !important;
+  color: var(--light-primary) !important;
+  border: 1px solid rgba(218, 165, 32, 0.3) !important;
+}
+
+.light .modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.2) !important;
+  color: var(--light-text-secondary) !important;
+  border: 1px solid rgba(139, 69, 19, 0.3) !important;
+}
+
+/* Quotas - Mode Sombre */
+.quota-progress-fill {
+  background: linear-gradient(to right, var(--dark-primary), var(--dark-secondary)) !important;
+}
+
+.quota-icon {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: var(--dark-primary) !important;
+}
+
+/* Mode Clair */
+.light .quota-progress-fill {
+  background: linear-gradient(to right, var(--light-primary), var(--light-text-secondary)) !important;
+}
+
+.light .quota-icon {
+  background-color: rgba(218, 165, 32, 0.2) !important;
+  color: var(--light-primary) !important;
+}
+
+/* Éléments Premium - Mode Sombre */
+.premium-upgrade-menu-button {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+}
+
+.floating-premium-button {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+}
+
+/* Mode Clair */
+.light .premium-upgrade-menu-button {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-text-secondary)) !important;
+}
+
+.light .floating-premium-button {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-text-secondary)) !important;
+}
+
+/* Décorations - Mode Sombre */
+.modern-decoration {
+  background: radial-gradient(circle, rgba(205, 133, 63, 0.3) 0%, rgba(205, 133, 63, 0) 70%) !important;
+}
+
+/* Mode Clair */
+.light .modern-decoration {
+  background: radial-gradient(circle, rgba(218, 165, 32, 0.3) 0%, rgba(218, 165, 32, 0) 70%) !important;
+}
+
+/* ===============================================
+   ÉLÉMENTS DE MENU - MODES DIFFÉRENCIÉS
+   =============================================== */
+
+/* Menu items - Mode Sombre */
+.modern-menu-item {
+  background-color: rgba(245, 245, 220, 0.1) !important;
+  border-color: var(--dark-primary) !important;
+  color: var(--dark-text) !important;
+  transition: all 0.3s ease !important;
+}
+
+.modern-menu-item:hover {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(205, 133, 63, 0.2) !important;
+}
+
+.modern-menu-item.active {
+  background-color: rgba(205, 133, 63, 0.3) !important;
+  border-color: var(--dark-secondary) !important;
+  border-width: 2px !important;
+}
+
+/* Mode Clair */
+.light .modern-menu-item {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: var(--light-primary) !important;
+  color: var(--light-text) !important;
+}
+
+.light .modern-menu-item:hover {
+  background-color: rgba(218, 165, 32, 0.1) !important;
+  box-shadow: 0 4px 8px rgba(218, 165, 32, 0.2) !important;
+}
+
+.light .modern-menu-item.active {
+  background-color: rgba(218, 165, 32, 0.2) !important;
+  border-color: var(--light-text-secondary) !important;
+}
+
+/* Icônes de menu - Mode Sombre */
+.modern-menu-icon {
+  background-color: rgba(139, 69, 19, 0.1) !important;
+  color: var(--dark-secondary) !important;
+}
+
+/* Mode Clair */
+.light .modern-menu-icon {
+  background-color: rgba(218, 165, 32, 0.1) !important;
+  color: var(--light-text-secondary) !important;
+}
+
+/* ===============================================
+   NIVEAU ET PROGRESSION - MODES DIFFÉRENCIÉS
+   =============================================== */
+
+/* Badge de niveau - Mode Sombre */
+.modern-badge {
+  background-color: var(--dark-secondary) !important;
+  border: 2px solid var(--dark-primary) !important;
+  color: var(--dark-text) !important;
+  box-shadow: 0px 3px 6px rgba(139, 69, 19, 0.3) !important;
+}
+
+/* Mode Clair */
+.light .modern-badge {
+  background-color: var(--light-secondary) !important;
+  border: 2px solid var(--light-primary) !important;
+  color: var(--light-text) !important;
+  box-shadow: 0px 3px 6px rgba(218, 165, 32, 0.3) !important;
+}
+
+.modern-badge::after {
+  border: 2px solid rgba(205, 133, 63, 0.3) !important;
+}
+
+.light .modern-badge::after {
+  border: 2px solid rgba(218, 165, 32, 0.3) !important;
+}
+
+/* Carte de niveau - Mode Sombre */
+.modern-level-card {
+  background-color: rgba(205, 133, 63, 0.15) !important;
+  border: 1px solid var(--dark-primary) !important;
+  color: var(--dark-text) !important;
+  box-shadow: 0px 6px 16px rgba(205, 133, 63, 0.2) !important;
+}
+
+/* Mode Clair */
+.light .modern-level-card {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid var(--light-primary) !important;
+  color: var(--light-text) !important;
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.2) !important;
+}
+
+/* Éléments statistiques détaillés - Mode Sombre */
+.modern-stat-item {
+  background-color: rgba(244, 228, 188, 0.1) !important;
+}
+
+.modern-stat-value {
+  color: var(--dark-text) !important;
+}
+
+.modern-stat-label {
+  color: rgba(245, 222, 179, 0.8) !important;
+}
+
+/* Mode Clair */
+.light .modern-stat-item {
+  background-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.light .modern-stat-value {
+  color: var(--light-text) !important;
+}
+
+.light .modern-stat-label {
+  color: rgba(139, 69, 19, 0.7) !important;
+}
+
+/* ===============================================
+   NAVIGATION BOTTOM - MODES DIFFÉRENCIÉS
+   =============================================== */
+
+/* Mode Sombre */
+.bottom-navigation {
+  background-color: rgba(139, 69, 19, 0.95) !important;
+  border-top: 1px solid var(--dark-primary) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.bottom-nav-item {
+  color: rgba(245, 245, 220, 0.8) !important;
+  transition: all 0.2s ease !important;
+}
+
+.bottom-nav-item:hover {
+  background-color: rgba(205, 133, 63, 0.1) !important;
+  color: var(--dark-primary) !important;
+}
+
+/* Mode Clair */
+.light .bottom-navigation {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-top: 1px solid var(--light-primary) !important;
+}
+
+.light .bottom-nav-item {
+  color: rgba(101, 67, 33, 0.8) !important;
+}
+
+.light .bottom-nav-item:hover {
+  background-color: rgba(218, 165, 32, 0.1) !important;
+  color: var(--light-primary) !important;
+}
+
+/* ===============================================
+   RESPONSIVE - MOBILE AVEC THÈMES DIFFÉRENCIÉS
+   =============================================== */
+
+@media (max-width: 768px) {
+  /* Ajustement pour le header mobile */
+  body.mobile-view {
+    padding-top: 60px !important;
+    overflow-x: hidden !important;
+    margin: 0 !important;
+    transition: background-color 0.5s ease !important;
+  }
+
+  /* Body mobile - Mode Sombre */
+  body.mobile-view:not(.light) {
+    background-color: var(--dark-accent) !important;
+  }
+
+  /* Body mobile - Mode Clair */
+  body.mobile-view.light {
+    background-color: var(--light-accent) !important;
+  }
+
+  /* FORCE le header mobile sur mobile avec thèmes */
+  .mobile-header:not(.light) {
+    display: flex !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 60px !important;
+    z-index: 100000 !important;
+    background: linear-gradient(to right, var(--dark-primary), var(--dark-secondary)) !important;
+    color: var(--dark-text) !important;
+    padding: 0 16px !important;
+    box-shadow: 0px 4px 8px rgba(139, 69, 19, 0.3) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .mobile-header.light {
+    background: linear-gradient(to right, var(--light-primary), var(--light-secondary)) !important;
+    color: var(--light-text) !important;
+    box-shadow: 0px 4px 8px rgba(218, 165, 32, 0.3) !important;
+  }
+
+  /* Composants mobiles - Mode Sombre */
+  .modern-sentence-game:not(.light),
+  .sentence-gap-container:not(.light),
+  .modern-main-container:not(.light),
+  .grammar-mode-container:not(.light) {
+    padding: 1rem !important;
+    min-height: 100vh !important;
+    background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 50%, var(--dark-accent) 100%) !important;
+    color: var(--dark-text) !important;
+  }
+
+  /* Composants mobiles - Mode Clair */
+  .modern-sentence-game.light,
+  .sentence-gap-container.light,
+  .modern-main-container.light,
+  .grammar-mode-container.light {
+    background: linear-gradient(135deg, var(--light-primary) 0%, var(--light-secondary) 50%, var(--light-accent) 100%) !important;
+    color: var(--light-text) !important;
+  }
+  
+  .modern-game-container,
+  .sentence-gap-game {
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Transitions mobiles plus rapides */
+  * {
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ===============================================
+   ÉLÉMENTS POSITIONNÉS - AVEC THÈMES
+   =============================================== */
+
+/* 1. INTERACTIVE MASCOT - Position fixe */
+.interactive-mascot {
+  position: fixed !important;
+  top: 20px !important;
+  left: 20px !important;
+  z-index: 1000 !important;
+  width: 60px !important;
+  height: 60px !important;
+}
+
+/* 2. Ajustement si header mobile présent */
+.has-mobile-header .modern-sentence-game,
+.has-mobile-header .sentence-gap-container,
+.has-mobile-header .modern-main-container {
+  padding-top: 80px !important;
+}
+
+/* 3. SWIPE NAVIGATION - Plein écran */
+.swipe-navigation-container,
+.swipe-navigation-manager {
+  width: 100% !important;
+  height: 100vh !important;
+  position: relative !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 4. LOADING OVERLAY - Mode Sombre */
+.loading-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(139, 69, 19, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9998 !important;
+  color: white !important;
+  font-size: 18px !important;
+}
+
+/* Mode Clair */
+.light .loading-overlay {
+  background: rgba(218, 165, 32, 0.8) !important;
+  color: var(--light-text) !important;
+}
+
+/* ===============================================
+   ANIMATIONS ET TRANSITIONS - THÈMES
+   =============================================== */
+
+/* 1. ANIMATIONS - Réactiver seulement l'opacité */
+.App > div:not(.mobile-header):not(.debug-indicator) {
+  animation: fadeInComponent 0.3s ease-in-out !important;
+}
+
+@keyframes fadeInComponent {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animation spécifique ocre - Mode Sombre */
+@keyframes ocre-glow-dark {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(205, 133, 63, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(205, 133, 63, 0.8);
+  }
+}
+
+/* Animation spécifique ocre - Mode Clair */
+@keyframes ocre-glow-light {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(218, 165, 32, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.8);
+  }
+}
+
+.modern-badge:not(.light) {
+  animation: ocre-glow-dark 3s ease-in-out infinite !important;
+}
+
+.light .modern-badge {
+  animation: ocre-glow-light 3s ease-in-out infinite !important;
+}
+
+/* 2. TRANSITIONS DE MODE */
+.mode-transition {
+  opacity: 0.7 !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.component-transition {
+  opacity: 0.8 !important;
+  transition: opacity 0.2s ease !important;
+}
+
+/* Transition de thème globale */
+.theme-transition {
+  transition: all 0.5s ease !important;
+}
+
+/* ===============================================
+   DEBUG ET DÉVELOPPEMENT
+   =============================================== */
+
+/* 1. DEBUG INDICATOR - SOUS LE HEADER MOBILE */
+.debug-indicator {
+  position: fixed !important;
+  top: 70px !important;
+  right: 10px !important;
+  z-index: 99999 !important;
+  background: rgba(205, 133, 63, 0.9) !important;
+  color: white !important;
+  padding: 10px !important;
+  border-radius: 5px !important;
+  font-size: 12px !important;
+}
+
+.light .debug-indicator {
+  background: rgba(218, 165, 32, 0.9) !important;
+  color: var(--light-text) !important;
+}
+
+/* ===============================================
+   PREMIUM ET MODALS - THÈMES DIFFÉRENCIÉS
+   =============================================== */
+
+/* 1. PREMIUM BANNER - Mode Sombre */
+.premium-banner {
+  position: fixed !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+  color: var(--dark-text) !important;
+  padding: 12px 20px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3) !important;
+  z-index: 9997 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+/* Mode Clair */
+.light .premium-banner {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-text-secondary)) !important;
+  color: var(--light-text) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3) !important;
+}
+
+.premium-upgrade-button {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.premium-upgrade-button:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+.light .premium-upgrade-button {
+  background: rgba(101, 67, 33, 0.2) !important;
+  border-color: rgba(101, 67, 33, 0.3) !important;
+  color: var(--light-text) !important;
+}
+
+.light .premium-upgrade-button:hover {
+  background: rgba(101, 67, 33, 0.3) !important;
+}
+
+/* 2. MODALS - Mode Sombre */
+.modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(139, 69, 19, 0.7) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9996 !important;
+}
+
+/* Mode Clair */
+.light .modal {
+  background: rgba(218, 165, 32, 0.7) !important;
+}
+
+/* ===============================================
+   TOOLTIPS ET NOTIFICATIONS - THÈMES
+   =============================================== */
+
+/* Tooltips - Mode Sombre */
+.premium-tooltip {
+  background-color: var(--dark-secondary) !important;
+  color: var(--dark-text) !important;
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3) !important;
+}
+
+.premium-tooltip::before {
+  border-bottom-color: var(--dark-secondary) !important;
+}
+
+/* Mode Clair */
+.light .premium-tooltip {
+  background-color: var(--light-secondary) !important;
+  color: var(--light-text) !important;
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.3) !important;
+}
+
+.light .premium-tooltip::before {
+  border-bottom-color: var(--light-secondary) !important;
+}
+
+/* Notifications - Mode Sombre */
+.modern-notification {
+  background-color: var(--dark-secondary) !important;
+  color: var(--dark-text-secondary) !important;
+  box-shadow: 0px 6px 12px rgba(139, 69, 19, 0.3) !important;
+}
+
+/* Mode Clair */
+.light .modern-notification {
+  background-color: var(--light-primary) !important;
+  color: var(--light-text) !important;
+  box-shadow: 0px 6px 12px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* ===============================================
+   BOUTONS ET INTERACTIONS - THÈMES COMPLETS
+   =============================================== */
+
+/* Boutons principaux - Mode Sombre */
+.modern-theme-button,
+.modern-logout-button,
+.reset-quotas-button {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+  color: var(--dark-text) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.modern-theme-button:hover,
+.modern-logout-button:hover {
+  background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent)) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Mode Clair */
+.light .modern-theme-button,
+.light .modern-logout-button,
+.light .reset-quotas-button {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-text-secondary)) !important;
+  color: var(--light-text) !important;
+}
+
+.light .modern-theme-button:hover,
+.light .modern-logout-button:hover {
+  background: linear-gradient(45deg, var(--light-text-secondary), var(--light-text)) !important;
+}
+
+.reset-quotas-button {
+  background-color: rgba(205, 133, 63, 0.1) !important;
+  color: var(--dark-primary) !important;
+  border: 1px solid rgba(205, 133, 63, 0.3) !important;
+}
+
+.reset-quotas-button:hover {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+.light .reset-quotas-button {
+  background-color: rgba(218, 165, 32, 0.1) !important;
+  color: var(--light-primary) !important;
+  border-color: rgba(218, 165, 32, 0.3) !important;
+}
+
+.light .reset-quotas-button:hover {
+  background-color: rgba(218, 165, 32, 0.2) !important;
+}
+
+/* ===============================================
+   CORRECTIONS SPÉCIFIQUES
+   =============================================== */
+
+/* 1. Box-sizing global */
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+/* 2. Max-width pour éviter les débordements */
+* {
+  max-width: 100% !important;
+}
+
+/* 3. Suppression des marges par défaut */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.5s ease, color 0.5s ease !important;
+}
+
+/* 4. Configuration pour les écrans très petits */
+@media (max-width: 480px) {
+  .App {
+    font-size: 14px !important;
+  }
+  
+  .modern-main-container,
+  .modern-sentence-game,
+  .sentence-gap-container,
+  .grammar-mode-container {
+    padding: 0.5rem !important;
+  }
+
+  /* Header mobile plus petit sur très petits écrans */
+  .mobile-header {
+    height: 50px !important;
+  }
+
+  body.mobile-view {
+    padding-top: 50px !important;
+  }
+
+  .debug-indicator {
+    top: 60px !important;
+  }
+}
+
+/* ===============================================
+   SUPPRESSION ÉLÉMENTS NOIRS INDÉSIRABLES
+   =============================================== */
+
+/* Supprimer tous les éléments qui pourraient créer une barre noire */
+.black-bar,
+.top-black-bar,
+.header-black-background,
+*[style*="background: black"],
+*[style*="background-color: black"],
+*[style*="background: #000"],
+*[style*="background-color: #000000"],
+*[style*="background: rgb(0, 0, 0)"],
+*[style*="background-color: rgb(0, 0, 0)"] {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Suppression d'éléments spécifiques qui pourraient causer des problèmes */
+.SwipeNavigationManager:before,
+.PullToRefresh:before,
+.mobile-view:before,
+.App:before,
+.swipe-navigation-container:before {
+  display: none !important;
+  content: none !important;
+  background: transparent !important;
+}
+
+/* ===============================================
+   FOCUS ET ACCESSIBILITÉ - THÈMES
+   =============================================== */
+
+/* Focus states - Mode Sombre */
+.modern-menu-item:focus-visible,
+.desktop-tab:focus-visible,
+.bottom-nav-item:focus-visible,
+.modern-theme-button:focus-visible,
+.modern-logout-button:focus-visible,
+.premium-upgrade-menu-button:focus-visible,
+.modern-reset-button:focus-visible,
+.reset-quotas-button:focus-visible {
+  outline: 2px solid var(--dark-primary) !important;
+  outline-offset: 2px !important;
+}
+
+/* Mode Clair */
+.light .modern-menu-item:focus-visible,
+.light .desktop-tab:focus-visible,
+.light .bottom-nav-item:focus-visible,
+.light .modern-theme-button:focus-visible,
+.light .modern-logout-button:focus-visible,
+.light .premium-upgrade-menu-button:focus-visible,
+.light .modern-reset-button:focus-visible,
+.light .reset-quotas-button:focus-visible {
+  outline: 2px solid var(--light-primary) !important;
+}
+
+/* ===============================================
+   PRINT STYLES - THÈMES
+   =============================================== */
+
+@media print {
+  .modern-main-container {
+    background: white !important;
+    color: var(--dark-secondary) !important;
+    box-shadow: none !important;
+    padding: 20px !important;
+  }
+  
+  .floating-premium-button,
+  .bottom-navigation,
+  .modern-theme-button,
+  .modern-logout-button,
+  .premium-upgrade-menu-button {
+    display: none !important;
+  }
+  
+  .modern-menu-item {
+    border: 1px solid var(--dark-primary) !important;
+    background: white !important;
+    color: var(--dark-secondary) !important;
+    break-inside: avoid !important;
+  }
+  
+  .modern-level-card {
+    border: 1px solid var(--dark-primary) !important;
+    background: white !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* ===============================================
+   MÉDIAS QUERIES AVANCÉES
+   =============================================== */
+
+/* Tablettes */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modern-main-container {
+    padding: 1.5rem !important;
+    max-width: 90% !important;
+  }
+  
+  .mobile-header {
+    display: none !important;
+  }
+}
+
+/* Desktop large */
+@media (min-width: 1200px) {
+  .modern-main-container {
+    max-width: 1000px !important;
+    padding: 3rem !important;
+  }
+  
+  .App {
+    background-attachment: fixed !important;
+  }
+}
+
+/* Mode sombre système */
+@media (prefers-color-scheme: dark) {
+  .App:not(.light) {
+    --dark-primary: #daa520;
+    --dark-secondary: #cd853f;
+    --dark-accent: #8b4513;
+  }
+}
+
+/* Réduction des animations si demandée */
+@media (prefers-reduced-motion: reduce) {
+  .modern-badge,
+  .modern-progress-fill::after,
+  .floating-premium-button.with-pulse {
+    animation: none !important;
+  }
+  
+  .modern-menu-item,
+  .desktop-tab,
+  .bottom-nav-item,
+  .modern-theme-button,
+  .modern-logout-button {
+    transition: none !important;
+  }
+  
+  .modern-menu-grid {
+    animation: none !important;
+  }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+  .modern-menu-item {
+    border-width: 3px !important;
+    border-color: var(--dark-secondary) !important;
+  }
+  
+  .modern-badge {
+    border-width: 3px !important;
+    border-color: var(--dark-primary) !important;
+  }
+  
+  .premium-tooltip {
+    border: 2px solid currentColor !important;
+  }
+  
+  .modern-level-card {
+    border-width: 2px !important;
+    border-color: var(--dark-secondary) !important;
+  }
+  
+  .light .modern-menu-item {
+    border-color: var(--light-text-secondary) !important;
+  }
+  
+  .light .modern-badge {
+    border-color: var(--light-primary) !important;
+  }
+  
+  .light .modern-level-card {
+    border-color: var(--light-text-secondary) !important;
+  }
+}
+
+/* ===============================================
+   PERFORMANCE ET OPTIMISATIONS
+   =============================================== */
+
+/* GPU acceleration pour les éléments animés */
+.modern-menu-item,
+.modern-badge,
+.modern-progress-fill,
+.floating-premium-button,
+.mobile-header {
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+}
+
+/* Optimisation des fonts */
+.modern-main-container,
+.mobile-header {
+  font-display: swap !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+/* ===============================================
+   CLASSES UTILITAIRES THÈMES
+   =============================================== */
+
+/* Classes utilitaires - Mode Sombre */
+.ocre-bg {
+  background-color: var(--dark-primary) !important;
+}
+
+.ocre-text {
+  color: var(--dark-primary) !important;
+}
+
+.ocre-border {
+  border-color: var(--dark-primary) !important;
+}
+
+.ocre-gradient {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+}
+
+/* Mode Clair */
+.light .ocre-bg {
+  background-color: var(--light-primary) !important;
+}
+
+.light .ocre-text {
+  color: var(--light-primary) !important;
+}
+
+.light .ocre-border {
+  border-color: var(--light-primary) !important;
+}
+
+.light .ocre-gradient {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-text-secondary)) !important;
+}
+
+.sable-bg {
+  background-color: var(--light-secondary) !important;
+}
+
+.terre-cuite-bg {
+  background-color: var(--dark-secondary) !important;
+}
+
+/* ===============================================
+   CORRECTIONS FINALES ET SÉCURITÉ
+   =============================================== */
+
+/* Protection contre les modifications externes */
+.modern-main-container,
+.modern-main-container .modern-menu-container,
+.modern-main-container .modern-menu-grid,
+.modern-main-container .modern-level-card,
+.modern-main-container .modern-logo-container {
+  position: relative !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Classe pour les transitions d'onglets */
+.tab-transition {
+  animation: fadeInOut 0.25s ease-out !important;
+}
+
+@keyframes fadeInOut {
+  0% { 
+    opacity: 0; 
+    transform: translateY(8px); 
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Corrections d'overflow et de débordement */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#root {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+/* Force la suppression de tous les éléments framer-motion sur mobile */
+@media (max-width: 768px) {
+  .mobile-component-container [style*="transform"],
+  .mobile-component-container [style*="opacity"],
+  .mobile-component-container [style*="position: absolute"] {
+    transform: none !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+}
+
+/* ===============================================
+   TRANSITIONS DE THÈME FLUIDES
+   =============================================== */
+
+/* Transition globale pour tous les éléments lors du changement de thème */
+.App,
+.mobile-header,
+.modern-main-container,
+.modern-level-card,
+.modern-menu-item,
+.modern-badge,
+.modern-logo-circle,
+.premium-upgrade-menu-button,
+.floating-premium-button,
+.bottom-navigation,
+.modern-notification,
+.premium-tooltip,
+.loading-overlay {
+  transition: 
+    background 0.5s ease,
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease,
+    box-shadow 0.5s ease !important;
+}
+/* ===============================================
+   AMÉLIORATIONS CONTRASTE - THÈME OCRE/TERRE CUITE
+   À ajouter à la fin de MainMenu.css et App.css
+   =============================================== */
+
+/* ===============================================
+   AMÉLIORATION DES CONTRASTES - POLICE
+   =============================================== */
+
+/* Variables pour améliorer le contraste */
+:root {
+  /* Mode Sombre - Contrastes améliorés */
+  --dark-text-primary: #ffffff;        /* Blanc pur pour texte principal */
+  --dark-text-secondary: #f5f5dc;      /* Beige très clair pour texte secondaire */
+  --dark-text-accent: #fffacd;         /* Crème pour accents */
+  
+  /* Mode Clair - Contrastes améliorés */
+  --light-text-primary: #4a2c17;       /* Marron très foncé pour texte principal */
+  --light-text-secondary: #5d3317;     /* Marron foncé pour texte secondaire */
+  --light-text-accent: #2f1b14;        /* Marron très sombre pour accents */
+}
+
+/* ===============================================
+   TEXTES PRINCIPAUX - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Mode Sombre - Textes plus contrastés */
+.modern-main-container {
+  color: var(--dark-text-primary) !important;
+}
+
+.modern-level-title,
+.modern-menu-label,
+.modern-logo-title,
+.modern-section-title,
+.modern-stat-value {
+  color: var(--dark-text-primary) !important;
+  font-weight: 700 !important; /* Plus gras pour plus de lisibilité */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre subtile */
+}
+
+.modern-level-description,
+.modern-menu-description,
+.modern-stat-label {
+  color: var(--dark-text-secondary) !important;
+  font-weight: 500 !important; /* Légèrement plus gras */
+}
+
+/* Mode Clair - Textes plus contrastés */
+.light .modern-main-container {
+  color: var(--light-text-primary) !important;
+}
+
+.light .modern-level-title,
+.light .modern-menu-label,
+.light .modern-logo-title,
+.light .modern-section-title,
+.light .modern-stat-value {
+  color: var(--light-text-primary) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important; /* Ombre claire */
+}
+
+.light .modern-level-description,
+.light .modern-menu-description,
+.light .modern-stat-label {
+  color: var(--light-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* ===============================================
+   ENCADRÉS - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Carte de niveau - Mode Sombre */
+.modern-level-card {
+  background-color: rgba(205, 133, 63, 0.25) !important; /* Plus opaque */
+  border: 2px solid rgba(205, 133, 63, 0.6) !important; /* Bordure plus visible */
+  box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.4) !important; /* Ombre plus marquée */
+  backdrop-filter: blur(15px) !important; /* Plus de flou */
+}
+
+/* Mode Clair */
+.light .modern-level-card {
+  background-color: rgba(255, 255, 255, 0.9) !important; /* Plus opaque */
+  border: 2px solid rgba(218, 165, 32, 0.7) !important; /* Bordure plus visible */
+  box-shadow: 0px 8px 20px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* Éléments de menu - Mode Sombre */
+.modern-menu-item {
+  background-color: rgba(245, 245, 220, 0.15) !important; /* Plus opaque */
+  border: 2px solid rgba(205, 133, 63, 0.5) !important; /* Bordure plus visible */
+  box-shadow: 0 4px 12px rgba(205, 133, 63, 0.3) !important; /* Ombre plus marquée */
+  backdrop-filter: blur(10px) !important;
+}
+
+.modern-menu-item:hover {
+  background-color: rgba(205, 133, 63, 0.3) !important; /* Plus visible au survol */
+  border-color: rgba(205, 133, 63, 0.8) !important;
+  box-shadow: 0 6px 16px rgba(205, 133, 63, 0.4) !important;
+}
+
+.modern-menu-item.active {
+  background-color: rgba(205, 133, 63, 0.4) !important; /* Plus visible quand actif */
+  border: 3px solid var(--dark-secondary) !important; /* Bordure plus épaisse */
+}
+
+/* Mode Clair */
+.light .modern-menu-item {
+  background-color: rgba(255, 255, 255, 0.95) !important; /* Très opaque */
+  border: 2px solid rgba(218, 165, 32, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.25) !important;
+}
+
+.light .modern-menu-item:hover {
+  background-color: rgba(218, 165, 32, 0.15) !important;
+  border-color: rgba(218, 165, 32, 0.8) !important;
+  box-shadow: 0 6px 16px rgba(218, 165, 32, 0.3) !important;
+}
+
+.light .modern-menu-item.active {
+  background-color: rgba(218, 165, 32, 0.25) !important;
+  border: 3px solid var(--light-text-secondary) !important;
+}
+
+/* ===============================================
+   BADGES ET ICÔNES - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Badge de niveau - Mode Sombre */
+.modern-badge {
+  background-color: var(--dark-secondary) !important;
+  border: 3px solid rgba(205, 133, 63, 0.8) !important; /* Bordure plus contrastée */
+  color: var(--dark-text-primary) !important;
+  box-shadow: 0px 4px 8px rgba(139, 69, 19, 0.5) !important; /* Ombre plus marquée */
+  font-weight: 700 !important; /* Plus gras */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Mode Clair */
+.light .modern-badge {
+  background-color: var(--light-secondary) !important;
+  border: 3px solid rgba(218, 165, 32, 0.8) !important;
+  color: var(--light-text-primary) !important;
+  box-shadow: 0px 4px 8px rgba(218, 165, 32, 0.4) !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Icônes de menu - Mode Sombre */
+.modern-menu-icon {
+  background-color: rgba(139, 69, 19, 0.2) !important; /* Plus opaque */
+  color: var(--dark-text-primary) !important; /* Couleur plus contrastée */
+  border: 1px solid rgba(205, 133, 63, 0.3) !important; /* Bordure subtile */
+  box-shadow: 0 2px 4px rgba(139, 69, 19, 0.3) !important; /* Ombre légère */
+}
+
+/* Mode Clair */
+.light .modern-menu-icon {
+  background-color: rgba(218, 165, 32, 0.15) !important;
+  color: var(--light-text-primary) !important;
+  border: 1px solid rgba(218, 165, 32, 0.4) !important;
+  box-shadow: 0 2px 4px rgba(218, 165, 32, 0.2) !important;
+}
+
+/* ===============================================
+   STATISTIQUES - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Badges de statistiques - Mode Sombre */
+.modern-stat-badge-primary {
+  background-color: rgba(205, 133, 63, 0.3) !important; /* Plus opaque */
+  color: var(--dark-text-primary) !important;
+  border: 2px solid rgba(205, 133, 63, 0.6) !important; /* Bordure plus visible */
+  font-weight: 600 !important;
+}
+
+.modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.3) !important;
+  color: var(--dark-text-secondary) !important;
+  border: 2px solid rgba(139, 69, 19, 0.6) !important;
+  font-weight: 600 !important;
+}
+
+/* Mode Clair */
+.light .modern-stat-badge-primary {
+  background-color: rgba(218, 165, 32, 0.25) !important;
+  color: var(--light-text-primary) !important;
+  border: 2px solid rgba(218, 165, 32, 0.6) !important;
+}
+
+.light .modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.25) !important;
+  color: var(--light-text-secondary) !important;
+  border: 2px solid rgba(139, 69, 19, 0.6) !important;
+}
+
+/* Éléments statistiques détaillés - Mode Sombre */
+.modern-stat-item {
+  background-color: rgba(244, 228, 188, 0.15) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.3) !important; /* Bordure subtile */
+  box-shadow: 0 2px 6px rgba(139, 69, 19, 0.2) !important; /* Ombre légère */
+}
+
+/* Mode Clair */
+.light .modern-stat-item {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(218, 165, 32, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(218, 165, 32, 0.15) !important;
+}
+
+/* ===============================================
+   QUOTAS - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Éléments de quota - Mode Sombre */
+.quota-item {
+  background-color: rgba(244, 228, 188, 0.2) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.4) !important; /* Bordure ajoutée */
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2) !important; /* Ombre */
+}
+
+.quota-label {
+  color: var(--dark-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.quota-count {
+  color: var(--dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* Mode Clair */
+.light .quota-item {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(218, 165, 32, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.15) !important;
+}
+
+.light .quota-label {
+  color: var(--light-text-primary) !important;
+}
+
+.light .quota-count {
+  color: var(--light-text-secondary) !important;
+}
+
+/* ===============================================
+   ONGLETS DESKTOP - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Onglets desktop - Mode Sombre */
+.desktop-tabs {
+  background-color: rgba(244, 228, 188, 0.8) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.5) !important; /* Bordure ajoutée */
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2) !important; /* Ombre */
+}
+
+.desktop-tab {
+  color: var(--dark-text-primary) !important;
+  font-weight: 500 !important;
+}
+
+.desktop-tab.active {
+  background-color: var(--dark-primary) !important;
+  border-color: var(--dark-secondary) !important;
+  color: var(--dark-text-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3) !important;
+}
+
+/* Mode Clair */
+.light .desktop-tabs {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(218, 165, 32, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.15) !important;
+}
+
+.light .desktop-tab {
+  color: var(--light-text-primary) !important;
+}
+
+.light .desktop-tab.active {
+  background-color: var(--light-primary) !important;
+  border-color: var(--light-text-secondary) !important;
+  color: var(--light-text-primary) !important;
+}
+
+/* ===============================================
+   NAVIGATION MOBILE - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Navigation mobile - Mode Sombre */
+.bottom-navigation {
+  background-color: rgba(139, 69, 19, 0.98) !important; /* Plus opaque */
+  border-top: 2px solid rgba(205, 133, 63, 0.7) !important; /* Bordure plus visible */
+  box-shadow: 0px -4px 12px rgba(139, 69, 19, 0.3) !important; /* Ombre plus marquée */
+}
+
+.bottom-nav-item {
+  color: var(--dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.bottom-nav-item.active {
+  color: var(--dark-text-primary) !important;
+  font-weight: 700 !important;
+}
+
+.bottom-nav-item.active::after {
+  background-color: var(--dark-text-primary) !important;
+  height: 4px !important; /* Plus épais */
+}
+
+/* Mode Clair */
+.light .bottom-navigation {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-top: 2px solid rgba(218, 165, 32, 0.7) !important;
+  box-shadow: 0px -4px 12px rgba(218, 165, 32, 0.2) !important;
+}
+
+.light .bottom-nav-item {
+  color: var(--light-text-secondary) !important;
+}
+
+.light .bottom-nav-item.active {
+  color: var(--light-text-primary) !important;
+}
+
+.light .bottom-nav-item.active::after {
+  background-color: var(--light-text-primary) !important;
+}
+
+/* ===============================================
+   BOUTONS - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Boutons principaux - Mode Sombre */
+.premium-upgrade-menu-button,
+.reset-quotas-button,
+.modern-reset-button {
+  font-weight: 700 !important; /* Plus gras */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre de texte */
+  border: 2px solid rgba(255, 255, 255, 0.2) !important; /* Bordure subtile */
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4) !important; /* Ombre plus marquée */
+}
+
+.premium-upgrade-menu-button:hover,
+.reset-quotas-button:hover,
+.modern-reset-button:hover {
+  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.5) !important;
+  transform: translateY(-3px) !important; /* Effet de survol plus marqué */
+}
+
+/* Mode Clair */
+.light .premium-upgrade-menu-button,
+.light .reset-quotas-button,
+.light .modern-reset-button {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* ===============================================
+   BARRES DE PROGRESSION - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Barre de progression - Mode Sombre */
+.modern-progress-bar {
+  background-color: rgba(139, 69, 19, 0.3) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.4) !important; /* Bordure ajoutée */
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.3) !important; /* Ombre interne */
+}
+
+.modern-progress-fill {
+  box-shadow: 0px 0px 12px rgba(205, 133, 63, 0.6) !important; /* Lueur plus marquée */
+}
+
+/* Mode Clair */
+.light .modern-progress-bar {
+  background-color: rgba(218, 165, 32, 0.25) !important;
+  border: 1px solid rgba(218, 165, 32, 0.5) !important;
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.light .modern-progress-fill {
+  box-shadow: 0px 0px 12px rgba(139, 69, 19, 0.4) !important;
+}
+
+/* ===============================================
+   RESPONSIVE - AMÉLIORATIONS MOBILE
+   =============================================== */
+
+@media (max-width: 768px) {
+  /* Sur mobile, augmenter encore plus le contraste */
+  .modern-level-title,
+  .modern-menu-label {
+    font-weight: 800 !important; /* Encore plus gras sur mobile */
+    font-size: 1.1em !important; /* Légèrement plus grand */
+  }
+  
+  .modern-menu-item {
+    border-width: 2px !important; /* Bordures plus épaisses sur mobile */
+  }
+  
+  .modern-badge {
+    border-width: 3px !important; /* Badge plus visible sur mobile */
+    font-size: 1.1em !important; /* Légèrement plus grand */
+  }
+}
+
+/* ===============================================
+   ANIMATIONS AVEC CONTRASTE
+   =============================================== */
+
+/* Animation spécifique avec meilleur contraste - Mode Sombre */
+@keyframes ocre-glow-enhanced-dark {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(205, 133, 63, 0.6), 0 0 16px rgba(205, 133, 63, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(205, 133, 63, 0.8), 0 0 32px rgba(205, 133, 63, 0.5);
+  }
+}
+
+/* Animation spécifique avec meilleur contraste - Mode Clair */
+@keyframes ocre-glow-enhanced-light {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(218, 165, 32, 0.6), 0 0 16px rgba(218, 165, 32, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(218, 165, 32, 0.8), 0 0 32px rgba(218, 165, 32, 0.5);
+  }
+}
+
+/* Application des animations améliorées */
+.modern-badge:not(.light) {
+  animation: ocre-glow-enhanced-dark 3s ease-in-out infinite !important;
+}
+
+.light .modern-badge {
+  animation: ocre-glow-enhanced-light 3s ease-in-out infinite !important;
+}
+
+/* ===============================================
+   ACCESSIBILITÉ - CONTRASTE OPTIMAL
+   =============================================== */
+
+/* Contraste élevé pour l'accessibilité */
+@media (prefers-contrast: high) {
+  .modern-level-title,
+  .modern-menu-label,
+  .modern-logo-title {
+    color: #ffffff !important; /* Blanc pur en mode sombre */
+    font-weight: 900 !important; /* Très gras */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important; /* Ombre marquée */
+  }
+  
+  .light .modern-level-title,
+  .light .modern-menu-label,
+  .light .modern-logo-title {
+    color: #000000 !important; /* Noir pur en mode clair */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  .modern-menu-item {
+    border-width: 3px !important; /* Bordures très épaisses */
+  }
+  
+  .modern-badge {
+    border-width: 4px !important; /* Badge très visible */
+  }
+}
+
+/* ===============================================
+   CORRECTIONS APP.CSS POUR SUPPRIMER LE CURSEUR DESKTOP
+   À ajouter à la fin de App.css
+   =============================================== */
+
+/* 1. CORRECTION GLOBALE - Suppression overflow horizontal */
+* {
+  box-sizing: border-box !important;
+}
+
+html {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  height: auto !important;
+}
+
+#root {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* 2. CORRECTION APP CONTAINER - Desktop */
+@media (min-width: 769px) {
+  .App {
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+  
+  /* Container pour les composants desktop */
+  .desktop-navigation-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .desktop-component-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    display: flex !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* 3. CORRECTION COMPOSANTS PRINCIPAUX - Desktop */
+@media (min-width: 769px) {
+  .modern-main-container,
+  .modern-sentence-game,
+  .sentence-gap-container,
+  .grammar-mode-container,
+  .quiz-container {
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+}
+
+/* 4. CORRECTION SPÉCIFIQUE FRAMER MOTION - Desktop uniquement */
+@media (min-width: 769px) {
+  /* Désactiver les transformations problématiques sur desktop */
+  .App div[style*="transform"]:not(.mobile-header):not(.floating-premium-button) {
+    transform: none !important;
+  }
+  
+  .App div[style*="position: absolute"]:not(.floating-premium-button):not(.premium-tooltip):not(.modal) {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+  
+  /* Forcer l'opacité et la visibilité */
+  .App div[style*="opacity"]:not(.loading-overlay) {
+    opacity: 1 !important;
+  }
+}
+
+/* 5. CORRECTION LARGEURS EXCESSIVES */
+@media (min-width: 769px) {
+  /* S'assurer qu'aucun élément ne dépasse */
+  .modern-header,
+  .modern-logo-container,
+  .modern-level-card,
+  .desktop-tabs,
+  .modern-menu-container,
+  .modern-menu-grid,
+  .quotas-section,
+  .premium-footer {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Éléments de grille */
+  .modern-menu-item,
+  .quota-item,
+  .modern-stat-item {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    word-wrap: break-word !important;
+    hyphens: auto !important;
+  }
+}
+
+/* 6. CORRECTION TEXTES LONGS */
+@media (min-width: 769px) {
+  .modern-menu-label,
+  .modern-menu-description,
+  .modern-level-title,
+  .modern-level-description,
+  .language-option-name,
+  .language-name {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+  }
+}
+
+/* 7. CORRECTION SÉLECTEUR DE LANGUE - Desktop */
+@media (min-width: 769px) {
+  .language-selector-container {
+    max-width: 180px !important;
+    min-width: 140px !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+  
+  .language-dropdown {
+    left: 0 !important;
+    right: auto !important;
+    max-width: 200px !important;
+    min-width: 160px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 8. CORRECTION ÉLÉMENTS FLOTTANTS - Desktop */
+@media (min-width: 769px) {
+  .floating-premium-button {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    max-width: 200px !important;
+    overflow: hidden !important;
+    z-index: 1000 !important;
+  }
+  
+  .premium-tooltip {
+    max-width: 250px !important;
+    overflow: hidden !important;
+    word-wrap: break-word !important;
+  }
+}
+
+/* 9. CORRECTION VIEWPORT - Desktop */
+@media (min-width: 769px) {
+  .App {
+    /* Assurer que l'app ne dépasse jamais la largeur de l'écran */
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+  
+  /* Container principal centré avec limites */
+  .modern-main-container {
+    max-width: min(900px, 95vw) !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+  }
+}
+
+/* 10. CORRECTION ANIMATIONS - Desktop */
+@media (min-width: 769px) {
+  /* Désactiver les animations qui peuvent causer des débordements */
+  .modern-menu-item:hover {
+    transform: translateY(-2px) !important;
+    /* Éviter les transformations horizontales */
+  }
+  
+  .modern-badge {
+    /* Limiter l'animation du badge */
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+}
+
+/* 11. CORRECTION FINALE - Force l'état propre */
+@media (min-width: 769px) {
+  /* Règle de sécurité finale */
+  .App, .App * {
+    max-width: 100% !important;
+  }
+  
+  /* Exceptions pour les éléments qui ont besoin de largeurs fixes */
+  .floating-premium-button,
+  .premium-tooltip,
+  .modern-notification,
+  .loading-overlay {
+    max-width: none !important;
+  }
+}
+
+/* 12. DÉBUG - Classe temporaire pour identifier les éléments problématiques */
+@media (min-width: 769px) {
+  /* Décommentez cette section pour débugger */
+  /*
+  * {
+    outline: 1px solid rgba(255, 0, 0, 0.1) !important;
+  }
+  
+  .modern-main-container {
+    outline: 2px solid blue !important;
+  }
+  
+  .modern-header {
+    outline: 2px solid green !important;
+  }
+  */
+}
+
+.mobile-view {
+  background-color: #0f172a !important;
+  min-height: 100vh !important;
+}
+
+.mobile-view .App {
+  background-color: #0f172a !important;
+  min-height: 100vh !important;
+}
+
+/* Force l'affichage correct après reset */
+@media (max-width: 768px) {
+  .modern-main-container {
+    position: relative !important;
+    z-index: 10 !important;
+  }
+}
+
+

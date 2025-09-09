@@ -1,0 +1,276 @@
+/* XPAnimation.css */
+
+.xp-animation-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    margin: 20px 0;
+    overflow: hidden;
+    z-index: 10;
+  }
+  
+  .xp-animation-container.large {
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+  }
+  
+  .xp-animation-container.compact {
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.25);
+  }
+  
+  .xp-animation-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+      transparent 30%, 
+      rgba(255, 255, 255, 0.1) 50%, 
+      transparent 70%
+    );
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  
+  .xp-burst-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+  }
+  
+  .xp-burst-particle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(45deg, #fbbf24, #f59e0b);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+  }
+  
+  .xp-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    z-index: 2;
+  }
+  
+  .xp-animation-container.large .xp-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+  }
+  
+  .xp-animation-container.compact .xp-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+  
+  .xp-counter {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+  }
+  
+  .xp-prefix {
+    font-size: 1.5rem;
+    color: #fbbf24;
+  }
+  
+  .xp-value {
+    font-size: 2.5rem;
+    color: white;
+    min-width: 3ch;
+    text-align: center;
+  }
+  
+  .xp-suffix {
+    font-size: 1.2rem;
+    color: #e5e7eb;
+    margin-left: 4px;
+  }
+  
+  .xp-animation-container.large .xp-prefix {
+    font-size: 2rem;
+  }
+  
+  .xp-animation-container.large .xp-value {
+    font-size: 3.5rem;
+  }
+  
+  .xp-animation-container.large .xp-suffix {
+    font-size: 1.5rem;
+  }
+  
+  .xp-animation-container.compact .xp-prefix {
+    font-size: 1.2rem;
+  }
+  
+  .xp-animation-container.compact .xp-value {
+    font-size: 2rem;
+  }
+  
+  .xp-animation-container.compact .xp-suffix {
+    font-size: 1rem;
+  }
+  
+  .xp-description {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 8px;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    z-index: 2;
+  }
+  
+  .xp-animation-container.large .xp-description {
+    font-size: 1.1rem;
+    margin-top: 12px;
+  }
+  
+  .xp-animation-container.compact .xp-description {
+    font-size: 0.8rem;
+    margin-top: 6px;
+  }
+  
+  .xp-floating-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .floating-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #fbbf24, #f59e0b);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(251, 191, 36, 0.8);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Variantes de couleur pour différents contextes */
+  .xp-animation-container.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  }
+  
+  .xp-animation-container.warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+  }
+  
+  .xp-animation-container.info {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  }
+  
+  /* Mode sombre */
+  .dark-mode .xp-animation-container {
+    background: linear-gradient(135deg, #4c1d95 0%, #5b21b6 100%);
+    box-shadow: 0 8px 25px rgba(76, 29, 149, 0.4);
+  }
+  
+  .dark-mode .xp-animation-container.success {
+    background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+    box-shadow: 0 8px 25px rgba(6, 95, 70, 0.4);
+  }
+  
+  .dark-mode .xp-animation-container.warning {
+    background: linear-gradient(135deg, #92400e 0%, #b45309 100%);
+    box-shadow: 0 8px 25px rgba(146, 64, 14, 0.4);
+  }
+  
+  .dark-mode .xp-animation-container.info {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+  }
+  
+  /* Animations de pulsation pour attirer l'attention */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+      box-shadow: 0 8px 35px rgba(102, 126, 234, 0.5);
+    }
+  }
+  
+  .xp-animation-container.pulse {
+    animation: pulse-glow 2s infinite;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .xp-animation-container {
+      padding: 16px;
+      margin: 16px 0;
+    }
+    
+    .xp-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+    
+    .xp-value {
+      font-size: 2rem;
+    }
+    
+    .xp-prefix {
+      font-size: 1.3rem;
+    }
+    
+    .xp-suffix {
+      font-size: 1rem;
+    }
+    
+    .xp-description {
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+    
+    .xp-animation-container.large {
+      padding: 20px;
+    }
+    
+    .xp-animation-container.large .xp-icon {
+      font-size: 3rem;
+    }
+    
+    .xp-animation-container.large .xp-value {
+      font-size: 2.5rem;
+    }
+  }

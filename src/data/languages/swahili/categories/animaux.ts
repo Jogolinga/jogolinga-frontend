@@ -1,0 +1,57 @@
+// data/languages/swahili/categories/animaux.ts
+
+import { CategoryData } from '../../../../types/types';
+
+export const animaux: CategoryData = {
+  'Mbwa': { translation: 'Chien', audio: '/audio/Sw-mbwa.wav', illustration: '🐕' },
+  'Paka': { translation: 'Chat', audio: '/audio/Sw-paka.wav', illustration: '🐈' },
+  'Farasi': { translation: 'Cheval', audio: '/audio/Sw-farasi.wav', illustration: '🐎' },
+  'Ng\'ombe': { translation: 'Vache', audio: '/audio/Sw-ngombe.wav', illustration: '🐄' },
+  'Mbuzi': { translation: 'Chèvre', audio: '/audio/Sw-mbuzi.wav', illustration: '🐐' },
+  'Kondoo': { translation: 'Mouton', audio: '/audio/Sw-kondoo.wav', illustration: '🐑' },
+  'Kuku': { translation: 'Poule', audio: '/audio/Sw-kuku.wav', illustration: '🐔' },
+  'Ndege': { translation: 'Oiseau', audio: '/audio/Sw-ndege.wav', illustration: '🐦' },
+  'Samaki': { translation: 'Poisson', audio: '/audio/Sw-samaki.wav', illustration: '🐟' },
+  'Ndovu': { translation: 'Éléphant', audio: '/audio/Sw-ndovu.wav', illustration: '🐘' },
+  'Simba': { translation: 'Lion', audio: '/audio/Sw-simba.wav', illustration: '🦁' },
+  'Fisi': { translation: 'Hyène', audio: '/audio/Sw-fisi.wav', illustration: '🐺' },
+  'Nyoka': { translation: 'Serpent', audio: '/audio/Sw-nyoka.wav', illustration: '🐍' },
+  'Punda': { translation: 'Âne', audio: '/audio/Sw-punda.wav', illustration: '🐴' },
+  'Punda milia': { translation: 'Zèbre', audio: '/audio/Sw-punda-milia.wav', illustration: '🦓' },
+  'Panya': { translation: 'Souris', audio: '/audio/Sw-panya.wav', illustration: '🐭' },
+  'Mamba': { translation: 'Crocodile', audio: '/audio/Sw-mamba.wav', illustration: '🐊' },
+  'Tumbili': { translation: 'Singe', audio: '/audio/Sw-tumbili.wav', illustration: '🐒' },
+  'Mbweha': { translation: 'Chacal', audio: '/audio/Sw-mbweha.wav', illustration: '🐺' },
+  'Chui': { translation: 'Panthère / Léopard', audio: '/audio/Sw-chui.wav', illustration: '🐆' },
+  'Kiboko': { translation: 'Hippopotame', audio: '/audio/Sw-kiboko.wav', illustration: '🦛' },
+  'Swala': { translation: 'Gazelle / Antilope', audio: '/audio/Sw-swala.wav', illustration: '🦌' },
+  'Twiga': { translation: 'Girafe', audio: '/audio/Sw-twiga.wav', illustration: '🦒' },
+  'Jogoo': { translation: 'Coq', audio: '/audio/Sw-jogoo.wav', illustration: '🐓' },
+  'Ng\'ombe dume': { translation: 'Bœuf', audio: '/audio/Sw-ngombe-dume.wav', illustration: '🐂' },
+  'Chura': { translation: 'Grenouille', audio: '/audio/Sw-chura.wav', illustration: '🐸' },
+  'Paa': { translation: 'Biche / Antilope', audio: '/audio/Sw-paa.wav', illustration: '🦌' },
+  'Kobe': { translation: 'Tortue', audio: '/audio/Sw-kobe.wav', illustration: '🐢' },
+  'Mjusi': { translation: 'Lézard / Iguane', audio: '/audio/Sw-mjusi.wav', illustration: '🦎' },
+  'Sungura': { translation: 'Lièvre / Lapin', audio: '/audio/Sw-sungura.wav', illustration: '🐰' },
+  'Kunguru': { translation: 'Corbeau', audio: '/audio/Sw-kunguru.wav', illustration: '🐦' },
+  'Tai': { translation: 'Aigle', audio: '/audio/Sw-tai.wav', illustration: '🦅' },
+  'Kozi': { translation: 'Vautour', audio: '/audio/Sw-kozi.wav', illustration: '🦅' },
+  'Njiwa': { translation: 'Pigeon', audio: '/audio/Sw-njiwa.wav', illustration: '🕊️' },
+  'Kinyonga': { translation: 'Caméléon', audio: '/audio/Sw-kinyonga.wav', illustration: '🦎' },
+  'Inzi': { translation: 'Mouche', audio: '/audio/Sw-inzi.wav', illustration: '🪰' },
+  'Nyuki': { translation: 'Abeille', audio: '/audio/Sw-nyuki.wav', illustration: '🐝' },
+  'Siafu': { translation: 'Fourmi', audio: '/audio/Sw-siafu.wav', illustration: '🐜' },
+  'Chugu': { translation: 'Termite', audio: '/audio/Sw-chugu.wav', illustration: '🐜' },
+  'Minyoo': { translation: 'Ver de terre', audio: '/audio/Sw-minyoo.wav', illustration: '🪱' },
+  'Nge': { translation: 'Scorpion', audio: '/audio/Sw-nge.wav', illustration: '🦂' },
+  'Mbu': { translation: 'Moustique', audio: '/audio/Sw-mbu.wav', illustration: '🦟' },
+  'Kipepeo': { translation: 'Papillon', audio: '/audio/Sw-kipepeo.wav', illustration: '🦋' },
+  'Sokwe': { translation: 'Singe (grand singe)', audio: '/audio/Sw-sokwe.wav', illustration: '🐒' },
+  'Kasuku': { translation: 'Perroquet', audio: '/audio/Sw-kasuku.wav', illustration: '🦜' },
+  'Dudu': { translation: 'Insecte / Scarabée', audio: '/audio/Sw-dudu.wav', illustration: '🪲' },
+  'Kanga': { translation: 'Pintade', audio: '/audio/Sw-kanga.wav', illustration: '🐔' },
+};
+
+export default animaux;
+
+export {};

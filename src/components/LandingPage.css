@@ -1,0 +1,701 @@
+/* ===============================================
+   LANDINGPAGE.CSS - THÈME OCRE/TERRE CUITE HARMONISÉ
+   =============================================== */
+
+/* Variables CSS pour cohérence avec le thème principal */
+:root {
+  /* Mode Sombre - Ocre/Terre Cuite/Marron */
+  --dark-primary: #cd853f;      /* Ocre */
+  --dark-secondary: #8b4513;    /* Terre cuite */
+  --dark-accent: #654321;       /* Marron foncé */
+  --dark-text: #ffffff;         /* Blanc */
+  --dark-text-secondary: #f5deb3; /* Beige clair */
+  
+  /* Mode Clair - Ocre Clair/Sable/Beige */
+  --light-primary: #daa520;     /* Or antique */
+  --light-secondary: #f4e4bc;   /* Sable */
+  --light-accent: #f5deb3;      /* Beige */
+  --light-text: #654321;        /* Marron foncé */
+  --light-text-secondary: #8b4513; /* Terre cuite */
+}
+
+/* ===============================================
+   CONTENEUR PRINCIPAL
+   =============================================== */
+
+.landing-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Mode Clair - Dégradé sable/beige */
+  background: linear-gradient(135deg, var(--light-secondary) 0%, var(--light-accent) 50%, var(--light-primary) 100%);
+  position: relative;
+  overflow: hidden;
+  color: var(--light-text);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre - Dégradé ocre/terre cuite */
+.landing-page.dark {
+  background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 50%, var(--dark-accent) 100%);
+  color: var(--dark-text);
+}
+
+.landing-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+}
+
+/* ===============================================
+   CONTENU PRINCIPAL
+   =============================================== */
+
+.landing-content {
+  /* Mode Clair - Fond beige transparent */
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(218, 165, 32, 0.3);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: 0 12px 30px rgba(218, 165, 32, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .landing-content {
+  background-color: rgba(139, 69, 19, 0.9);
+  border: 2px solid rgba(205, 133, 63, 0.4);
+  box-shadow: 0 12px 30px rgba(139, 69, 19, 0.3);
+}
+
+/* ===============================================
+   LOGO ET TITRE
+   =============================================== */
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.landing-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  /* Mode Clair - Bordure ocre */
+  border: 4px solid var(--light-primary);
+  padding: 4px;
+  background-color: white;
+  box-shadow: 0 6px 16px rgba(218, 165, 32, 0.3);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .landing-logo {
+  border-color: var(--dark-primary);
+  background-color: rgba(245, 222, 179, 0.1);
+  box-shadow: 0 6px 16px rgba(205, 133, 63, 0.4);
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  /* Mode Clair - Couleur terre cuite */
+  color: var(--light-text-secondary);
+  margin: 0;
+  letter-spacing: -0.5px;
+  /* Dégradé de texte pour plus d'élégance */
+  background: linear-gradient(45deg, var(--light-text-secondary), var(--light-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .app-title {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  /* Mode Clair - Texte marron */
+  color: var(--light-text);
+  margin-bottom: 2rem;
+  font-weight: 500;
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .app-description {
+  color: var(--dark-text-secondary);
+}
+
+/* ===============================================
+   CONTENEUR D'AUTHENTIFICATION
+   =============================================== */
+
+.authentication-container {
+  margin-bottom: 2rem;
+}
+
+.auth-option {
+  margin-bottom: 1.5rem;
+}
+
+.auth-option h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  /* Mode Clair */
+  color: var(--light-text);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .auth-option h3 {
+  color: var(--dark-text);
+}
+
+.auth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ===============================================
+   BOUTONS D'AUTHENTIFICATION
+   =============================================== */
+
+.landing-google-btn {
+  width: 100%;
+  max-width: 300px;
+  margin: 0.5rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Personnalisation du bouton Google pour s'harmoniser avec le thème */
+.landing-google-btn > div {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+/* Style du bouton Google en mode clair */
+.landing-google-btn button {
+  background: linear-gradient(45deg, var(--light-primary), var(--light-secondary)) !important;
+  border: 2px solid var(--light-text-secondary) !important;
+  color: var(--light-text) !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.landing-google-btn button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(218, 165, 32, 0.4) !important;
+}
+
+/* Style du bouton Google en mode sombre */
+.dark .landing-google-btn button {
+  background: linear-gradient(45deg, var(--dark-primary), var(--dark-secondary)) !important;
+  border: 2px solid var(--dark-text-secondary) !important;
+  color: var(--dark-text) !important;
+  box-shadow: 0 4px 12px rgba(205, 133, 63, 0.4) !important;
+}
+
+.dark .landing-google-btn button:hover {
+  box-shadow: 0 6px 16px rgba(205, 133, 63, 0.5) !important;
+}
+
+/* ===============================================
+   SÉPARATEUR ET BOUTON INVITÉ
+   =============================================== */
+
+.auth-separator {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  /* Mode Clair */
+  color: var(--light-text-secondary);
+  font-weight: 500;
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .auth-separator {
+  color: var(--dark-text-secondary);
+}
+
+.auth-separator::before,
+.auth-separator::after {
+  content: "";
+  flex: 1;
+  height: 2px; /* Plus épais pour plus de visibilité */
+  /* Mode Clair */
+  background: linear-gradient(to right, transparent, var(--light-primary), transparent);
+}
+
+/* Mode Sombre */
+.dark .auth-separator::before,
+.dark .auth-separator::after {
+  background: linear-gradient(to right, transparent, var(--dark-primary), transparent);
+}
+
+.auth-separator span {
+  padding: 0 1rem;
+  background-color: inherit;
+  font-weight: 600;
+}
+
+.guest-button {
+  background: transparent;
+  /* Mode Clair - Couleur et bordure ocre */
+  color: var(--light-text-secondary);
+  border: 2px solid var(--light-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.guest-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(218, 165, 32, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.guest-button:hover::before {
+  left: 100%;
+}
+
+.guest-button:hover {
+  background: linear-gradient(45deg, rgba(218, 165, 32, 0.1), rgba(245, 222, 179, 0.1));
+  border-color: var(--light-text-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+}
+
+/* Mode Sombre */
+.dark .guest-button {
+  color: var(--dark-text-secondary);
+  border-color: var(--dark-primary);
+}
+
+.dark .guest-button::before {
+  background: linear-gradient(90deg, transparent, rgba(205, 133, 63, 0.2), transparent);
+}
+
+.dark .guest-button:hover {
+  background: linear-gradient(45deg, rgba(205, 133, 63, 0.1), rgba(245, 222, 179, 0.1));
+  border-color: var(--dark-text-secondary);
+  box-shadow: 0 4px 12px rgba(205, 133, 63, 0.4);
+}
+
+/* ===============================================
+   FONCTIONNALITÉS DE L'APP
+   =============================================== */
+
+.app-features {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  /* Mode Clair - Fond subtil */
+  background: rgba(245, 222, 179, 0.2);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.2);
+}
+
+/* Mode Sombre */
+.dark .feature {
+  background: rgba(205, 133, 63, 0.15);
+  border-color: rgba(205, 133, 63, 0.4);
+}
+
+.dark .feature:hover {
+  box-shadow: 0 4px 12px rgba(205, 133, 63, 0.3);
+}
+
+.feature-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.feature span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  /* Mode Clair */
+  color: var(--light-text);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .feature span {
+  color: var(--dark-text-secondary);
+}
+
+/* ===============================================
+   OVERLAY DE CHARGEMENT
+   =============================================== */
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Mode Clair */
+  background: linear-gradient(135deg, rgba(245, 222, 179, 0.9), rgba(218, 165, 32, 0.9));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .loading-overlay {
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.9), rgba(205, 133, 63, 0.9));
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  /* Mode Clair */
+  border: 4px solid var(--light-primary);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  margin-bottom: 1rem;
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .spinner {
+  border-color: var(--dark-primary);
+  border-bottom-color: transparent;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  /* Mode Clair */
+  color: var(--light-text);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+}
+
+/* Mode Sombre */
+.dark .loading-overlay p {
+  color: var(--dark-text);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* ===============================================
+   BOUTON DE THÈME
+   =============================================== */
+
+.theme-toggle {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 48px; /* Plus grand pour plus de visibilité */
+  height: 48px;
+  border-radius: 50%;
+  /* Mode Clair */
+  background: linear-gradient(45deg, var(--light-secondary), white);
+  border: 2px solid var(--light-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.5rem; /* Plus grand */
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 6px 16px rgba(218, 165, 32, 0.4);
+}
+
+/* Mode Sombre */
+.dark .theme-toggle {
+  background: linear-gradient(45deg, var(--dark-secondary), var(--dark-accent));
+  border-color: var(--dark-primary);
+  box-shadow: 0 4px 12px rgba(205, 133, 63, 0.4);
+}
+
+.dark .theme-toggle:hover {
+  box-shadow: 0 6px 16px rgba(205, 133, 63, 0.5);
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN
+   =============================================== */
+
+@media (max-width: 768px) {
+  .landing-content {
+    padding: 2rem;
+    margin: 1rem;
+  }
+  
+  .app-features {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .feature {
+    flex-direction: row;
+    text-align: left;
+    padding: 0.75rem;
+  }
+  
+  .landing-logo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .app-title {
+    font-size: 2rem;
+  }
+  
+  .theme-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  /* Harmonisation des boutons sur mobile */
+  .landing-google-btn {
+    transform: none;
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+  }
+  
+  .landing-google-btn > div,
+  .landing-google-btn iframe,
+  .landing-google-btn button {
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+    border-radius: 12px !important;
+  }
+  
+  .landing-google-btn button span {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+  }
+  
+  .auth-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .authentication-container {
+    width: 100%;
+    padding: 0 1rem;
+  }
+  
+  .guest-button {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 12px;
+  }
+  
+  /* Styles harmonisés pour les boutons mobiles */
+  .auth-buttons,
+  .authentication-container {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  
+  .auth-separator {
+    margin: 1rem 0 !important;
+    width: 100%;
+  }
+}
+
+/* ===============================================
+   TRÈS PETITS ÉCRANS
+   =============================================== */
+
+@media (max-width: 480px) {
+  .landing-content {
+    padding: 1.5rem;
+    margin: 0.5rem;
+  }
+  
+  .app-title {
+    font-size: 1.75rem;
+  }
+  
+  .app-description {
+    font-size: 1rem;
+  }
+  
+  .landing-logo {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .feature {
+    padding: 0.5rem;
+  }
+  
+  .feature-icon {
+    font-size: 1.5rem;
+  }
+  
+  .feature span {
+    font-size: 0.8rem;
+  }
+}
+
+/* ===============================================
+   ANIMATIONS AMÉLIORÉES
+   =============================================== */
+
+/* Animation d'entrée pour le logo */
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.landing-logo {
+  animation: logoFloat 4s ease-in-out infinite;
+}
+
+/* Animation de pulsation pour les fonctionnalités */
+@keyframes featurePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.feature:hover {
+  animation: featurePulse 2s ease-in-out infinite;
+}
+
+/* Animation de gradient pour le titre */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.app-title {
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* ===============================================
+   CONTRASTE ÉLEVÉ POUR ACCESSIBILITÉ
+   =============================================== */
+
+@media (prefers-contrast: high) {
+  .landing-content {
+    border-width: 3px !important;
+  }
+  
+  .landing-logo {
+    border-width: 5px !important;
+  }
+  
+  .guest-button {
+    border-width: 3px !important;
+    font-weight: 700 !important;
+  }
+  
+  .theme-toggle {
+    border-width: 3px !important;
+  }
+  
+  .app-title {
+    font-weight: 800 !important;
+  }
+}
+
+/* Réduction des animations si demandée */
+@media (prefers-reduced-motion: reduce) {
+  .landing-logo,
+  .feature,
+  .app-title {
+    animation: none !important;
+  }
+  
+  .theme-toggle:hover {
+    transform: scale(1.05) !important;
+  }
+}

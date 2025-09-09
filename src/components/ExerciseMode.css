@@ -1,0 +1,1534 @@
+/* ===============================================
+   EXERCISEMODE.CSS - VERSION EXERCICES IMMERSIFS
+   VIEWPORT ET CURSEUR CORRIGÉS + PROGRESSION À DROITE
+   =============================================== */
+
+/* ===============================================
+   VARIABLES COULEURS TERRE CUITE
+   =============================================== */
+:root {
+  /* Mode Clair */
+  --exercise-primary: #daa520;
+  --exercise-secondary: #cd853f;
+  --exercise-accent: #b8860b;
+  --exercise-bg: #f8f6f0;
+  --exercise-card: #ffffff;
+  --exercise-border: rgba(218, 165, 32, 0.3);
+  --exercise-text: #8b4513;
+  --exercise-text-secondary: #5d3317;
+
+  /* Mode Sombre */
+  --exercise-dark-primary: #8b4513;
+  --exercise-dark-secondary: #5d3317;
+  --exercise-dark-accent: #a0522d;
+  --exercise-dark-bg: #2a1810;
+  --exercise-dark-card: #3d2817;
+  --exercise-dark-border: rgba(139, 69, 19, 0.3);
+  --exercise-dark-text: #f5deb3;
+  --exercise-dark-text-secondary: #deb887;
+
+  /* Nouveaux styles immersifs */
+  --shadow-glow: 0 20px 60px rgba(139, 69, 19, 0.15);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.1);
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Espacements */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  
+  /* Rayons */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 50%;
+  
+  /* Ombres standard */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  
+  /* Transitions */
+  --transition-normal: 0.25s ease-out;
+}
+
+/* ===============================================
+   RESET ET BASE - VIEWPORT CORRIGÉ
+   =============================================== */
+
+/* Force le container à prendre tout l'espace disponible */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+.exercise-immersive-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #daa520 0%, #8b4513 50%, #cd853f 100%);
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 1000;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dark .exercise-immersive-container {
+  background: linear-gradient(135deg, #8b4513 0%, #2a1810 50%, #5d3317 100%);
+}
+
+/* Assurer que les containers parents n'interfèrent pas */
+.exercise-immersive-container * {
+  box-sizing: border-box;
+}
+
+/* ===============================================
+   BOUTON RETOUR PERMANENT - POSITION FINALE CORRIGÉE
+   =============================================== */
+.permanent-back-button {
+  position: fixed;
+  top: 1.5rem;
+  left: 1rem;
+  z-index: 10000; /* Z-index maximum */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(218, 165, 32, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.5);
+  font-size: 0;
+  
+  /* CORRECTIFS MOBILE CRITIQUES */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+  will-change: transform;
+  
+  /* Force la position même avec zoom */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Empêcher les problèmes de touch */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* S'assurer qu'il reste au-dessus de TOUT */
+  pointer-events: auto;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* MASQUER LE BOUTON RETOUR PERMANENT DANS LE DASHBOARD */
+.exercise-immersive-container .immersive-dashboard-container ~ * .permanent-back-button,
+.immersive-dashboard-container .permanent-back-button {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.permanent-back-button:hover,
+.permanent-back-button:focus,
+.permanent-back-button:active {
+  background: rgba(218, 165, 32, 1);
+  transform: translateZ(0) scale(1.1);
+  box-shadow: 0 6px 25px rgba(139, 69, 19, 0.6);
+  z-index: 10000;
+}
+
+.permanent-back-button:active {
+  transform: translateZ(0) scale(0.95);
+}
+
+.dark .permanent-back-button {
+  background: rgba(139, 69, 19, 0.95);
+  border-color: rgba(245, 222, 179, 0.8);
+}
+
+.dark .permanent-back-button:hover,
+.dark .permanent-back-button:focus,
+.dark .permanent-back-button:active {
+  background: rgba(139, 69, 19, 1);
+}
+
+.permanent-back-button:focus {
+  outline: 3px solid rgba(218, 165, 32, 0.5);
+  outline-offset: 2px;
+}
+
+.dark .permanent-back-button:focus {
+  outline-color: rgba(139, 69, 19, 0.5);
+}
+
+/* Animation de pulsation pour indiquer l'interactivité */
+@keyframes pulse-back {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(139, 69, 19, 0.5), 0 0 0 4px rgba(218, 165, 32, 0.2);
+  }
+}
+
+.permanent-back-button:hover {
+  animation: pulse-back 2s infinite;
+}
+
+/* ===============================================
+   PARTICULES D'ARRIÈRE-PLAN
+   =============================================== */
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(218, 165, 32, 0.4);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.dark .particle {
+  background: rgba(245, 222, 179, 0.3);
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+    opacity: 0.3; 
+  }
+  50% { 
+    transform: translateY(-20px) rotate(180deg); 
+    opacity: 0.8; 
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===============================================
+   CONTAINER PRINCIPAL - AJUSTÉ POUR PROGRESSION À DROITE
+   =============================================== */
+.exercise-main-container {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 2rem 1rem 4rem; /* Plus d'espace à droite pour le header */
+  background: rgba(139, 69, 19, 0.05);
+  backdrop-filter: blur(20px);
+  box-sizing: border-box;
+  overflow-y: auto;
+  
+  /* Éviter les conflits de transform */
+  -webkit-transform: none;
+  transform: none;
+}
+
+.dark .exercise-main-container {
+  background: rgba(42, 24, 16, 0.1);
+}
+
+/* ===============================================
+   HEADER FLOTTANT - POSITIONNÉ À DROITE
+   =============================================== */
+.floating-exercise-header {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem; /* Positionné à droite */
+  background: rgba(218, 165, 32, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(218, 165, 32, 0.3);
+  border-radius: 20px;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 5000;
+  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.2);
+  max-width: 280px;
+  box-sizing: border-box;
+}
+
+.dark .floating-exercise-header {
+  background: rgba(139, 69, 19, 0.2);
+  border-color: rgba(139, 69, 19, 0.4);
+}
+
+.progress-ring-container {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.progress-ring-container svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.progress-ring-container circle {
+  fill: none;
+  stroke-width: 3;
+}
+
+.progress-ring-bg {
+  stroke: rgba(218, 165, 32, 0.2);
+}
+
+.progress-ring-fill {
+  stroke: #daa520;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-smooth);
+}
+
+.dark .progress-ring-fill {
+  stroke: #f5deb3;
+}
+
+.progress-ring-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #f5deb3;
+  font-weight: 700;
+  font-size: 10px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.header-exercise-info {
+  color: #f5deb3;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.header-exercise-info h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-exercise-info p {
+  font-size: 11px;
+  opacity: 0.8;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===============================================
+   CARTE D'EXERCICE CENTRALE - AJUSTÉE
+   =============================================== */
+.exercise-immersive-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+  width: calc(95% - 300px); /* Éviter le header à droite */
+  margin: 5rem auto 1rem auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow-glow);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-height: auto;
+}
+
+.dark .exercise-immersive-card {
+  background: rgba(61, 40, 23, 0.95);
+  border-color: rgba(139, 69, 19, 0.3);
+}
+
+/* Effet de lueur */
+.exercise-immersive-card::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #daa520, #cd853f, #daa520);
+  border-radius: 22px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.exercise-immersive-card.active::before {
+  opacity: 0.3;
+}
+
+.dark .exercise-immersive-card::before {
+  background: linear-gradient(45deg, #8b4513, #5d3317, #8b4513);
+}
+
+/* ===============================================
+   ZONE DE QUESTION - COMPACTE
+   =============================================== */
+.immersive-question-zone {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.question-animated-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.immersive-question-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  line-height: 1.3;
+  margin: 0 0 0.5rem 0;
+}
+
+.dark .immersive-question-text {
+  color: var(--exercise-dark-text);
+}
+
+.immersive-question-category {
+  font-size: 1rem;
+  color: #8b4513;
+  font-weight: 500;
+  background: rgba(218, 165, 32, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.dark .immersive-question-category {
+  color: var(--exercise-dark-text-secondary);
+  background: rgba(139, 69, 19, 0.2);
+}
+
+/* ===============================================
+   ZONE DE RÉPONSE - OPTIMISÉE
+   =============================================== */
+.immersive-answer-zone {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Style pour choix multiples - responsive */
+.immersive-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.immersive-option-card {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 1.2rem;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2d3748;
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.dark .immersive-option-card {
+  background: linear-gradient(135deg, var(--exercise-dark-card) 0%, rgba(61, 40, 23, 0.8) 100%);
+  color: var(--exercise-dark-text);
+}
+
+.immersive-option-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.immersive-option-card:hover::before {
+  left: 100%;
+}
+
+.immersive-option-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: #8b4513;
+  box-shadow: 0 15px 35px rgba(139, 69, 19, 0.2);
+}
+
+.immersive-option-card.selected {
+  border-color: #8b4513;
+  background: linear-gradient(135deg, #daa520 0%, #8b4513 100%);
+  color: white;
+  transform: scale(1.05);
+}
+
+.immersive-option-card.correct {
+  border-color: #228b22;
+  background: linear-gradient(135deg, #228b22 0%, #32cd32 100%);
+  color: white;
+  animation: correctPulse 0.6s ease;
+}
+
+.immersive-option-card.incorrect {
+  border-color: #ff6b6b;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+  color: white;
+  animation: shake 0.6s ease;
+}
+
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1.05); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ===============================================
+   INPUT DE TRADUCTION - CURSEUR CORRIGÉ ET COMPACT
+   =============================================== */
+.immersive-translation-input {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  outline: none;
+  transition: all 0.3s ease;
+  margin-bottom: 1.2rem;
+  color: #2d3748;
+  caret-color: #8b4513;
+  box-sizing: border-box;
+}
+
+.dark .immersive-translation-input {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #8b4513;
+  color: #2d3748;
+  caret-color: #daa520;
+}
+
+.immersive-translation-input:focus {
+  border-color: #8b4513;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+  transform: scale(1.02);
+  caret-color: #8b4513;
+}
+
+.immersive-translation-input:active {
+  caret-color: #8b4513;
+}
+
+.dark .immersive-translation-input:focus {
+  caret-color: #daa520;
+}
+
+.dark .immersive-translation-input:active {
+  caret-color: #daa520;
+}
+
+.immersive-translation-input::placeholder {
+  color: rgba(45, 55, 72, 0.5);
+  font-style: italic;
+}
+
+.immersive-translation-input::-webkit-input-placeholder {
+  color: rgba(45, 55, 72, 0.5);
+}
+
+.immersive-translation-input::-moz-placeholder {
+  color: rgba(45, 55, 72, 0.5);
+  opacity: 1;
+}
+
+.immersive-translation-input:-ms-input-placeholder {
+  color: rgba(45, 55, 72, 0.5);
+}
+
+.immersive-translation-input:-moz-placeholder {
+  color: rgba(45, 55, 72, 0.5);
+  opacity: 1;
+}
+
+.immersive-submit-btn {
+  background: linear-gradient(135deg, #daa520 0%, #8b4513 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.immersive-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3);
+}
+
+.immersive-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===============================================
+   EXERCICES D'ASSOCIATION
+   =============================================== */
+.immersive-association-container {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.immersive-association-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.immersive-association-header {
+  text-align: center;
+  font-weight: 600;
+  color: #8b4513;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(218, 165, 32, 0.1);
+  border-radius: 10px;
+}
+
+.dark .immersive-association-header {
+  color: var(--exercise-dark-text-secondary);
+  background: rgba(139, 69, 19, 0.2);
+}
+
+.immersive-association-item {
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  font-weight: 500;
+  position: relative;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2d3748;
+}
+
+.dark .immersive-association-item {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 246, 240, 0.9) 100%);
+  color: #2d3748;
+}
+
+.immersive-association-item:hover {
+  transform: translateX(5px);
+  border-color: #8b4513;
+}
+
+.immersive-association-item.selected {
+  border-color: #8b4513;
+  background: linear-gradient(135deg, #daa520 0%, #8b4513 100%);
+  color: white;
+  transform: scale(1.05);
+}
+
+.immersive-association-item.matched {
+  border-color: #228b22;
+  background: linear-gradient(135deg, #228b22 0%, #32cd32 100%);
+  color: white;
+  pointer-events: none;
+}
+
+.immersive-connection-lines {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(139, 69, 19, 0.5);
+  font-size: 1.5rem;
+}
+
+/* ===============================================
+   FEEDBACK ZONE
+   =============================================== */
+.immersive-feedback-zone {
+  position: fixed;
+  top: 6rem;              /* ← Changé de bottom: 2rem à top: 6rem */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-card);
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  z-index: 9500;          /* ← Augmenté pour passer au-dessus du header */
+  max-width: 90vw;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .immersive-feedback-zone {
+    top: 5rem;            /* ← Un peu moins haut sur mobile */
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .immersive-feedback-zone {
+    top: 4.5rem;          /* ← Encore plus bas sur très petit écran */
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+.immersive-feedback-zone.show {
+  display: flex;
+  animation: slideUp 0.5s ease;
+}
+
+.dark .immersive-feedback-zone {
+  background: rgba(61, 40, 23, 0.95);
+  border-color: rgba(139, 69, 19, 0.3);
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateX(-50%) translateY(100%); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(-50%) translateY(0); 
+  }
+}
+
+.feedback-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.feedback-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.immersive-feedback-zone.correct {
+  background: linear-gradient(135deg, rgba(34, 139, 34, 0.95) 0%, rgba(50, 205, 50, 0.95) 100%);
+  color: white;
+}
+
+.immersive-feedback-zone.incorrect {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.95) 0%, rgba(255, 142, 83, 0.95) 100%);
+  color: white;
+}
+
+/* ===============================================
+   BOUTON AUDIO FLOTTANT
+   =============================================== */
+.immersive-audio-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(139, 69, 19, 0.9);
+  color: #f5deb3;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  z-index: 20;
+}
+
+.immersive-audio-btn:hover {
+  background: rgba(139, 69, 19, 1);
+  transform: scale(1.1);
+}
+
+/* ===============================================
+   DASHBOARD IMMERSIF - COMPACT
+   =============================================== */
+.immersive-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.immersive-dashboard-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+.immersive-dashboard-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f5deb3;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.immersive-dashboard-description {
+  font-size: 1rem;
+  color: rgba(245, 222, 179, 0.8);
+  margin-bottom: 2rem;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+/* ===============================================
+   BOUTONS DU DASHBOARD - NOUVEAUX STYLES
+   =============================================== */
+.dashboard-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.immersive-start-button {
+  background: linear-gradient(135deg, #daa520 0%, #8b4513 100%);
+  color: white;
+  border: none;
+  padding: 1.5rem 3rem;
+  border-radius: 30px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 10px 30px rgba(139, 69, 19, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.immersive-start-button:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(139, 69, 19, 0.4);
+}
+
+.immersive-start-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.immersive-back-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(245, 222, 179, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  backdrop-filter: blur(10px);
+  width: 100%;
+  justify-content: center;
+}
+
+.immersive-back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dark .immersive-back-button {
+  background: rgba(139, 69, 19, 0.3);
+  border-color: rgba(245, 222, 179, 0.4);
+}
+
+.dark .immersive-back-button:hover {
+  background: rgba(139, 69, 19, 0.4);
+}
+
+/* ===============================================
+   PROGRESSION DANS LA CARTE D'EXERCICE
+   =============================================== */
+.card-progress-header {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 10;
+}
+
+.card-back-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(139, 69, 19, 0.9);
+  color: #f5deb3;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.card-back-button:hover {
+  background: rgba(139, 69, 19, 1);
+  transform: scale(1.1);
+}
+
+.card-progress-ring-container {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.card-progress-ring-container svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.card-progress-ring-container circle {
+  fill: none;
+  stroke-width: 2;
+}
+
+.card-progress-ring-bg {
+  stroke: rgba(139, 69, 19, 0.2);
+}
+
+.card-progress-ring-fill {
+  stroke: #8b4513;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-smooth);
+}
+
+.dark .card-progress-ring-fill {
+  stroke: #daa520;
+}
+
+.card-progress-ring-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #8b4513;
+  font-weight: 700;
+  font-size: 8px;
+}
+
+.dark .card-progress-ring-text {
+  color: #daa520;
+}
+
+.card-progress-info {
+  color: #8b4513;
+}
+
+.card-progress-info h3 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dark .card-progress-info {
+  color: var(--exercise-dark-text);
+}
+
+/* ===============================================
+   STYLES HÉRITÉS POUR COMPATIBILITÉ
+   =============================================== */
+
+/* Container principal historique */
+.exercise-mode-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: var(--exercise-bg);
+  color: var(--exercise-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  position: relative;
+  top: 0;
+  left: 0;
+  transform: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.dark .exercise-mode-container,
+[data-theme="dark"] .exercise-mode-container {
+  background: var(--exercise-dark-bg);
+  color: var(--exercise-dark-text);
+}
+
+/* Header historique */
+.exercise-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  position: relative;
+  top: auto;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--exercise-primary), var(--exercise-secondary));
+  color: white;
+  box-shadow: var(--shadow-lg);
+  flex-shrink: 0;
+}
+
+.dark .exercise-header,
+[data-theme="dark"] .exercise-header {
+  background: linear-gradient(135deg, var(--exercise-dark-primary), var(--exercise-dark-secondary));
+}
+
+.exercise-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: inherit;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exercise-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+/* Boutons de navigation historiques */
+.close-button,
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.close-button {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  padding: 0;
+  font-size: 20px;
+}
+
+.close-button:hover,
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Contenu wrapper historique */
+.exercise-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--exercise-bg);
+  position: relative;
+  top: 0;
+  transform: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dark .exercise-content-wrapper,
+[data-theme="dark"] .exercise-content-wrapper {
+  background: var(--exercise-dark-bg);
+}
+
+/* Container général historique */
+.chapters-container {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-3xl) var(--spacing-2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  top: 0;
+  transform: none;
+}
+
+/* Titres et descriptions historiques */
+.section-title {
+  font-size: clamp(28px, 5vw, 36px);
+  font-weight: 800;
+  color: var(--exercise-text);
+  text-align: center;
+  margin: 0 0 var(--spacing-lg) 0;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.dark .section-title,
+[data-theme="dark"] .section-title {
+  color: var(--exercise-dark-text);
+}
+
+.section-description {
+  font-size: 18px;
+  color: var(--exercise-text-secondary);
+  text-align: center;
+  margin: 0 auto var(--spacing-3xl) auto;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.dark .section-description,
+[data-theme="dark"] .section-description {
+  color: var(--exercise-dark-text-secondary);
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN AMÉLIORÉ - MOBILE FIXÉ
+   =============================================== */
+@media (max-width: 768px) {
+  .permanent-back-button {
+    top: 1rem;
+    left: 0.75rem;
+    width: 48px;
+    height: 48px;
+    z-index: 10000;
+  }
+
+  .exercise-main-container {
+    padding: 1rem 1rem 1rem 3.5rem;
+  }
+
+  .exercise-immersive-card {
+    margin: 4rem auto 1rem auto;
+    padding: 1.5rem;
+    border-radius: 15px;
+    width: 95%;
+  }
+
+  .immersive-question-text {
+    font-size: 1.3rem;
+  }
+
+  .immersive-options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .immersive-association-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .dashboard-buttons-container {
+    max-width: 280px;
+  }
+
+  .immersive-start-button {
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .immersive-back-button {
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .permanent-back-button {
+    top: 0.75rem;
+    left: 0.5rem;
+    width: 45px;
+    height: 45px;
+  }
+
+  .exercise-main-container {
+    padding: 1rem 1rem 1rem 3rem;
+  }
+
+  .exercise-immersive-card {
+    padding: 1rem;
+    margin: 3.5rem auto 0.5rem auto;
+  }
+
+  .immersive-question-text {
+    font-size: 1.1rem;
+  }
+
+  .immersive-option-card {
+    padding: 1rem;
+    font-size: 0.9rem;
+    min-height: 45px;
+  }
+
+  .immersive-translation-input {
+    font-size: 16px;
+    padding: 0.9rem;
+  }
+
+  .question-animated-icon {
+    font-size: 2.5rem;
+  }
+
+  .immersive-dashboard-icon {
+    font-size: 3rem;
+  }
+
+  .immersive-dashboard-title {
+    font-size: 1.6rem;
+  }
+
+  .dashboard-buttons-container {
+    max-width: 260px;
+  }
+
+  .immersive-start-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .immersive-back-button {
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* CORRECTION SPÉCIALE - Écrans avec hauteur réduite */
+@media (max-height: 600px) {
+  .permanent-back-button {
+    top: 0.75rem;
+    left: 0.25rem;
+    width: 42px;
+    height: 42px;
+    z-index: 10000;
+    background: rgba(218, 165, 32, 1);
+    border: 2px solid white;
+    
+    position: fixed !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .exercise-main-container {
+    padding: 0.5rem 0.25rem 0.25rem 3rem;
+  }
+
+  .exercise-immersive-card {
+    margin: 3rem auto 0.5rem auto;
+    padding: 1rem;
+  }
+
+  .immersive-question-zone {
+    margin-bottom: 1rem;
+  }
+
+  .question-animated-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .immersive-question-text {
+    font-size: 1rem;
+  }
+
+  .immersive-dashboard-container {
+    min-height: calc(100vh - 1rem);
+    padding: 0.5rem;
+  }
+
+  .immersive-dashboard-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .immersive-dashboard-title {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .immersive-dashboard-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .immersive-start-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .immersive-back-button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ===============================================
+   ACCESSIBILITÉ ET FOCUS
+   =============================================== */
+.immersive-translation-input:focus,
+.immersive-option-card:focus,
+.immersive-association-item:focus,
+.immersive-submit-btn:focus,
+.immersive-start-button:focus,
+.immersive-back-button:focus {
+  outline: 2px solid var(--exercise-primary);
+  outline-offset: 2px;
+}
+
+.dark .immersive-translation-input:focus,
+.dark .immersive-option-card:focus,
+.dark .immersive-association-item:focus,
+.dark .immersive-submit-btn:focus,
+.dark .immersive-start-button:focus,
+.dark .immersive-back-button:focus {
+  outline-color: var(--exercise-dark-primary);
+}
+
+/* Réduction du mouvement pour les utilisateurs sensibles */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .immersive-option-card:hover,
+  .immersive-submit-btn:hover,
+  .immersive-start-button:hover,
+  .immersive-back-button:hover,
+  .permanent-back-button:hover {
+    transform: none;
+  }
+}
+
+/* ===============================================
+   CORRECTIONS MODES SOMBRES SPÉCIFIQUES
+   =============================================== */
+.dark .exercise-mode-container,
+[data-theme="dark"] .exercise-mode-container {
+  background: var(--exercise-dark-bg);
+  color: var(--exercise-dark-text);
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  top: 0;
+  transform: none;
+}
+
+.dark .exercise-content-wrapper,
+[data-theme="dark"] .exercise-content-wrapper {
+  background: var(--exercise-dark-bg);
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  top: 0;
+  transform: none;
+}
+
+.dark .exercise-header,
+[data-theme="dark"] .exercise-header {
+  background: linear-gradient(135deg, var(--exercise-dark-primary), var(--exercise-dark-secondary));
+  position: relative;
+  top: auto;
+}
+
+/* Corrections positionnement global */
+.exercise-mode-container > div {
+  position: relative !important;
+  top: 0 !important;
+  transform: none !important;
+}
+
+/* ===============================================
+   AMÉLIORATION DES PERFORMANCES
+   =============================================== */
+.exercise-mode-container,
+.exercise-content-wrapper,
+.chapters-container,
+.exercise-immersive-card,
+.exercise-main-container {
+  will-change: transform;
+}
+
+.immersive-option-card,
+.immersive-submit-btn,
+.immersive-start-button,
+.immersive-back-button,
+.permanent-back-button {
+  will-change: transform;
+}
+
+/* ===============================================
+   PRINT STYLES (OPTIONNEL)
+   =============================================== */
+@media print {
+  .permanent-back-button,
+  .floating-exercise-header,
+  .immersive-feedback-zone,
+  .particles-container {
+    display: none !important;
+  }
+  
+  .exercise-immersive-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+  
+  .exercise-main-container {
+    padding: 1rem;
+  }
+}

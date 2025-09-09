@@ -1,0 +1,45 @@
+.level-progress-container {
+    width: 100%;
+    padding: 0 10px;
+  }
+  
+  .level-progress-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .level-progress-bar {
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .level-progress-fill {
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.3s ease-in-out;
+    border-radius: 20px;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .level-progress-percentage {
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 45px;
+    color: #333;
+  }
+  
+  /* Dark mode */
+  .dark .level-progress-bar {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark .level-progress-percentage {
+    color: #fff;
+  }

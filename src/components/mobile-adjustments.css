@@ -1,0 +1,551 @@
+/* Ajustements spécifiques pour mobile */
+@media (max-width: 768px) {
+    /* Structure principale */
+    body {
+      padding-top: 60px;
+    }
+    
+    .App {
+      max-width: 100%;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Conteneurs principaux */
+    .main-menu,
+    .category-selection,
+    .learn-mode-container,
+    .quiz-container,
+    .sentence-construction-game,
+    .modern-main-container,
+    .sentence-gap-game,
+    .grammar-mode,
+    .revision-mode {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 60px 0 20px 0 !important;
+      padding: 16px !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    
+    /* Menu principal */
+    .menu-grid {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+    
+    .menu-button {
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      min-height: 60px !important;
+      padding: 12px 16px !important;
+      gap: 16px !important;
+    }
+    
+    .menu-icon {
+      margin-bottom: 0 !important;
+      font-size: 24px !important;
+    }
+    
+    .menu-label {
+      text-align: left !important;
+      font-size: 16px !important;
+    }
+    
+    /* Sélection de catégories */
+    .category-carousel-container {
+      padding: 12px !important;
+    }
+    
+    .category-item {
+      width: 100% !important;
+    }
+    
+    .category-button {
+      height: 180px !important;
+    }
+    
+    /* Mode d'apprentissage */
+    .learn-mode-options {
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+    
+    .learn-mode-word h3 {
+      font-size: 24px !important;
+    }
+    
+    .learn-mode-translation {
+      font-size: 18px !important;
+    }
+    
+    /* Mascotte interactive */
+    .mascot-container {
+      top: 70px !important;
+      right: 10px !important;
+      width: 60px !important;
+      height: 60px !important;
+    }
+    
+    /* SpeechBubble de la mascotte */
+    .speech-bubble {
+      max-width: 150px !important;
+      font-size: 12px !important;
+      padding: 8px !important;
+    }
+    
+    /* Bouton retour fixe */
+    .back-button {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      width: 90% !important;
+      max-width: 400px !important;
+      margin: 0 auto !important;
+      z-index: 100 !important;
+      border-radius: 10px !important;
+    }
+    
+    /* Quiz */
+    .quiz-container {
+      width: 100% !important;
+      padding: 16px !important;
+    }
+    
+    .quiz-options {
+      grid-template-columns: 1fr !important;
+    }
+    
+    /* Construction de phrases */
+    .construction-area {
+      padding: 12px !important;
+      min-height: 100px !important;
+    }
+    
+    .word-item {
+      padding: 8px 12px !important;
+      font-size: 14px !important;
+    }
+    
+    /* Style pour les modaux */
+    .modal-content {
+      width: 95% !important;
+      max-width: 95% !important;
+      padding: 16px !important;
+      margin: 0 auto !important;
+    }
+    
+    /* Améliorations tactiles */
+    button, 
+    .menu-button,
+    .category-button,
+    .learn-mode-option,
+    .word-item,
+    .quiz-option {
+      min-height: 44px !important;
+      touch-action: manipulation !important;
+    }
+    
+    /* Optimisation des animations */
+    * {
+      transition-duration: 0.2s !important;
+    }
+    
+    /* Support de la réduction des animations */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  }
+  
+  /* Orientation paysage */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .menu-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .learn-mode-options {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .construction-area {
+      min-height: 80px !important;
+    }
+  }
+
+  /* CORRECTION PRINCIPALE - Un seul composant visible sur mobile */
+@media (max-width: 768px) {
+  .App > div:not(:last-child) {
+    display: none !important;
+  }
+  
+  .App > div:last-child {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    z-index: 5 !important;
+    overflow-y: auto !important;
+    padding-top: 60px !important; /* Espace pour l'en-tête */
+  }
+}
+
+/* SOLUTION CSS - Ajoutez à mobile-adjustments.css */
+
+/* CORRECTION PRINCIPALE - Conteneur mobile unique */
+@media (max-width: 768px) {
+  
+  /* Structure App mobile simplifiée */
+  .App {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Conteneur pour un seul composant mobile */
+  .mobile-component-container {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-top: 60px !important; /* Espace pour l'en-tête mobile */
+    z-index: 1 !important;
+  }
+
+  /* Chaque composant mobile occupe tout l'écran */
+  .mobile-component-container > * {
+    width: 100% !important;
+    min-height: calc(100vh - 60px) !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Désactiver complètement AnimatePresence sur mobile */
+  .swipe-navigation-container .mobile-component-container {
+    /* Forcer l'affichage statique */
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Masquer tous les autres enfants de App sur mobile */
+  .App > *:not(.swipe-navigation-container) {
+    display: none !important;
+  }
+
+  /* SwipeNavigationManager doit occuper tout l'écran */
+  .swipe-navigation-container {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    z-index: 5 !important;
+  }
+
+  /* Styles spécifiques pour chaque composant */
+  .modern-main-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .category-selection,
+  .learn-mode-container,
+  .quiz-container,
+  .sentence-construction-game,
+  .sentence-gap-container,
+  .grammar-mode-container,
+  .revision-mode,
+  .exercise-mode-container,
+  .progress-stats-container {
+    background-color: #f8fafc !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+  }
+
+  /* Menu principal mobile */
+  .modern-menu-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .modern-menu-item {
+    min-height: 60px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Assurer que les contenus ne débordent pas */
+  .mobile-component-container * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Règles de debug - à supprimer en production */
+@media (max-width: 768px) {
+  .debug-mobile-container {
+    position: fixed !important;
+    top: 60px !important;
+    right: 10px !important;
+    background: rgba(255, 0, 0, 0.8) !important;
+    color: white !important;
+    padding: 5px !important;
+    font-size: 10px !important;
+    z-index: 9999 !important;
+    border-radius: 3px !important;
+  }
+}
+
+/* Correction pour éviter les débordements horizontaux */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #root {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+}
+
+/* Force la suppression de tous les éléments framer-motion sur mobile */
+@media (max-width: 768px) {
+  .mobile-component-container [style*="transform"],
+  .mobile-component-container [style*="opacity"],
+  .mobile-component-container [style*="position: absolute"] {
+    transform: none !important;
+    opacity: 1 !important;
+    position: relative !important;
+  }
+}
+
+/* CORRECTION HEADER ET SCROLL MOBILE - Ajoutez à mobile-adjustments.css */
+
+@media (max-width: 768px) {
+  
+  /* CORRECTION 1: Header mobile visible */
+  .mobile-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: 60px !important;
+    z-index: 1000 !important; /* Au-dessus de tout le contenu */
+    background: linear-gradient(to right, #3b82f6, #6366f1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 16px !important;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* CORRECTION 2: SwipeNavigationManager sous le header */
+  .swipe-navigation-container {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100vh !important;
+    z-index: 5 !important; /* Sous le header */
+  }
+
+  /* CORRECTION 3: Container mobile avec scroll amélioré */
+  .mobile-component-container {
+    position: absolute !important;
+    top: 60px !important; /* Espace pour le header */
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - 60px) !important; /* Hauteur totale moins header */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important; /* Scroll fluide iOS */
+    padding: 0 !important; /* Pas de padding sur le container */
+    z-index: 1 !important;
+  }
+
+  /* CORRECTION 4: Contenu des composants avec padding et scroll sécurisé */
+  .mobile-component-container > * {
+    width: 100% !important;
+    min-height: calc(100vh - 60px) !important; /* Hauteur minimum pour occuper l'écran */
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 16px !important; /* Padding sur le contenu, pas le container */
+    padding-bottom: 80px !important; /* Espace supplémentaire en bas */
+    box-sizing: border-box !important;
+  }
+
+  /* CORRECTION 5: Body mobile avec header */
+  body.mobile-view {
+    padding-top: 0 !important; /* Enlever le padding-top du body */
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    background-color: #0f172a !important;
+  }
+
+  /* CORRECTION 6: App container mobile */
+  .App {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* CORRECTION 7: Styles spécifiques pour chaque composant */
+  .modern-main-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: calc(100vh - 60px) !important;
+  }
+
+  .category-selection,
+  .learn-mode-container,
+  .quiz-container,
+  .sentence-construction-game,
+  .sentence-gap-container,
+  .grammar-mode-container,
+  .revision-mode,
+  .exercise-mode-container,
+  .progress-stats-container {
+    background-color: #f8fafc !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    min-height: calc(100vh - 60px) !important;
+  }
+
+  /* CORRECTION 8: Zones de scroll sécurisées */
+  .mobile-component-container::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .mobile-component-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  .mobile-component-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 2px;
+  }
+
+  /* CORRECTION 9: Menu principal mobile avec scroll */
+  .modern-menu-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-bottom: 40px !important; /* Espace en bas pour le scroll */
+  }
+
+  .modern-menu-item {
+    min-height: 60px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* CORRECTION 10: Masquer autres éléments qui pourraient interférer */
+  .App > *:not(.mobile-header):not(.swipe-navigation-container) {
+    display: none !important;
+  }
+
+  /* CORRECTION 11: Assurer que le header est toujours visible */
+  .mobile-header * {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1001 !important;
+  }
+
+  /* CORRECTION 12: Boutons flottants ajustés */
+  .floating-premium-button {
+    bottom: 20px !important;
+    right: 16px !important;
+    z-index: 999 !important; /* Sous le header mais au-dessus du contenu */
+  }
+
+  /* CORRECTION 13: Modals au-dessus de tout */
+  .modal,
+  .confirmation-modal,
+  .subscription-modal {
+    z-index: 2000 !important; /* Au-dessus du header */
+  }
+
+  /* CORRECTION 14: Debug temporaire - à supprimer */
+  .debug-mobile-container {
+    position: fixed !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    background: rgba(0, 255, 0, 0.8) !important;
+    color: black !important;
+    padding: 5px !important;
+    font-size: 10px !important;
+    z-index: 1500 !important;
+    border-radius: 3px !important;
+  }
+}
+
+/* CORRECTION 15: Orientation paysage */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-component-container {
+    top: 50px !important; /* Header plus petit en paysage */
+    height: calc(100vh - 50px) !important;
+  }
+
+  .mobile-header {
+    height: 50px !important;
+  }
+
+  .mobile-component-container > * {
+    min-height: calc(100vh - 50px) !important;
+    padding-bottom: 60px !important;
+  }
+}
+
+/* CORRECTION 16: Très petits écrans */
+@media (max-width: 480px) {
+  .mobile-component-container > * {
+    padding: 12px !important;
+    padding-bottom: 70px !important;
+  }
+
+  .modern-menu-grid {
+    gap: 8px !important;
+    margin-bottom: 50px !important;
+  }
+}

@@ -1,0 +1,66 @@
+// data/languages/swahili/categories/nombres.ts
+
+import { CategoryData } from '../../../../types/types';
+
+export {};
+
+export const nombres: CategoryData = {
+  'Sifuri': { translation: 'Zéro', audio: '/audio/Sw-sifuri.wav', illustration: '0' },
+  'Moja': { translation: 'Un', audio: '/audio/Sw-moja.ogg', illustration: '1️⃣' },
+  'Mbili': { translation: 'Deux', audio: '/audio/Sw-mbili.ogg', illustration: '2️⃣' },
+  'Tatu': { translation: 'Trois', audio: '/audio/Sw-tatu.ogg', illustration: '3️⃣' },
+  'Nne': { translation: 'Quatre', audio: '/audio/Sw-nne.ogg', illustration: '4️⃣' },
+  'Tano': { translation: 'Cinq', audio: '/audio/Sw-tano.ogg', illustration: '5️⃣' },
+  'Sita': { translation: 'Six', audio: '/audio/sita.wav', illustration: '6️⃣' },
+  'Saba': { translation: 'Sept', audio: '/audio/saba.wav', illustration: '7️⃣' },
+  'Nane': { translation: 'Huit', audio: '/audio/nane.wav', illustration: '8️⃣' },
+  'Tisa': { translation: 'Neuf', audio: '/audio/tisa.wav', illustration: '9️⃣' },
+  'Kumi': { translation: 'Dix', audio: '/audio/Sw-kumi.ogg', illustration: '🔟' },
+  'Kumi na moja': { translation: 'Onze', audio: '/audio/kumi_na_moja.wav', illustration: '1️⃣1️⃣' },
+  'Kumi na mbili': { translation: 'Douze', audio: '/audio/kumi_na_mbili.wav', illustration: '1️⃣2️⃣' },
+  'Kumi na tatu': { translation: 'Treize', audio: '/audio/kumi_na_tatu.wav', illustration: '1️⃣3️⃣' },
+  'Kumi na nne': { translation: 'Quatorze', audio: '/audio/kumi_na_nne.wav', illustration: '1️⃣4️⃣' },
+  'Kumi na tano': { translation: 'Quinze', audio: '/audio/kumi_na_tano.wav', illustration: '1️⃣5️⃣' },
+  'Kumi na sita': { translation: 'Seize', audio: '/audio/kumi_na_sita.wav', illustration: '1️⃣6️⃣' },
+  'Kumi na saba': { translation: 'Dix-sept', audio: '/audio/kumi_na_saba.wav', illustration: '1️⃣7️⃣' },
+  'Kumi na nane': { translation: 'Dix-huit', audio: '/audio/kumi_na_nane.wav', illustration: '1️⃣8️⃣' },
+  'Kumi na tisa': { translation: 'Dix-neuf', audio: '/audio/kumi_na_tisa.wav', illustration: '1️⃣9️⃣' },
+  'Ishirini': { translation: 'Vingt', audio: '/audio/ishirini.wav', illustration: '2️⃣0️⃣' },
+  'Ishirini na moja': { translation: 'Vingt-et-un', audio: '/audio/Sw-ishirini-na-moja.ogg', illustration: '2️⃣1️⃣' },
+  'Ishirini na mbili': { translation: 'Vingt-deux', audio: '/audio/Sw-ishirini-na-mbili.ogg', illustration: '2️⃣2️⃣' },
+  'Ishirini na tatu': { translation: 'Vingt-trois', audio: '/audio/Sw-ishirini-na-tatu.ogg', illustration: '2️⃣3️⃣' },
+  'Ishirini na nne': { translation: 'Vingt-quatre', audio: '/audio/Sw-ishirini-na-nne.ogg', illustration: '2️⃣4️⃣' },
+  'Ishirini na tano': { translation: 'Vingt-cinq', audio: '/audio/Sw-ishirini-na-tano.ogg', illustration: '2️⃣5️⃣' },
+  'Thelathini': { translation: 'Trente', audio: '/audio/Sw-thelathini.ogg', illustration: '3️⃣0️⃣' },
+  'Thelathini na moja': { translation: 'Trente-et-un', audio: '/audio/Sw-thelathini-na-moja.ogg', illustration: '3️⃣1️⃣' },
+  'Arobaini': { translation: 'Quarante', audio: '/audio/arobaini.wav', illustration: '4️⃣0️⃣' },
+  'Arobaini na moja': { translation: 'Quarante-et-un', audio: '/audio/Sw-arobaini-na-moja.ogg', illustration: '4️⃣1️⃣' },
+  'Hamsini': { translation: 'Cinquante', audio: '/audio/Sw-hamsini.ogg', illustration: '5️⃣0️⃣' },
+  'Hamsini na moja': { translation: 'Cinquante-et-un', audio: '/audio/Sw-hamsini-na-moja.ogg', illustration: '5️⃣1️⃣' },
+  'Sitini': { translation: 'Soixante', audio: '/audio/Sw-sitini.ogg', illustration: '6️⃣0️⃣' },
+  'Sitini na moja': { translation: 'Soixante-et-un', audio: '/audio/Sw-sitini-na-moja.ogg', illustration: '6️⃣1️⃣' },
+  'Sabini': { translation: 'Soixante-dix', audio: '/audio/Sw-sabini.ogg', illustration: '7️⃣0️⃣' },
+  'Sabini na moja': { translation: 'Soixante-et-onze', audio: '/audio/Sw-sabini-na-moja.ogg', illustration: '7️⃣1️⃣' },
+  'Themanini': { translation: 'Quatre-vingts', audio: '/audio/Sw-themanini.ogg', illustration: '8️⃣0️⃣' },
+  'Themanini na moja': { translation: 'Quatre-vingt-un', audio: '/audio/Sw-themanini-na-moja.ogg', illustration: '8️⃣1️⃣' },
+  'Tisini': { translation: 'Quatre-vingt-dix', audio: '/audio/Sw-tisini.ogg', illustration: '9️⃣0️⃣' },
+  'Tisini na moja': { translation: 'Quatre-vingt-onze', audio: '/audio/Sw-tisini-na-moja.ogg', illustration: '9️⃣1️⃣' },
+  'Mia': { translation: 'Cent', audio: '/audio/mia.wav', illustration: '💯' },
+  'Mia mbili': { translation: 'Deux cents', audio: '/audio/Sw-mia-mbili.ogg', illustration: '2️⃣0️⃣0️⃣' },
+  'Mia tatu': { translation: 'Trois cents', audio: '/audio/Sw-mia-tatu.ogg', illustration: '3️⃣0️⃣0️⃣' },
+  'Mia nne': { translation: 'Quatre cents', audio: '/audio/Sw-mia-nne.ogg', illustration: '4️⃣0️⃣0️⃣' },
+  'Mia tano': { translation: 'Cinq cents', audio: '/audio/Sw-mia-tano.ogg', illustration: '5️⃣0️⃣0️⃣' },
+  'Mia sita': { translation: 'Six cents', audio: '/audio/Sw-mia-sita.ogg', illustration: '6️⃣0️⃣0️⃣' },
+  'Mia saba': { translation: 'Sept cents', audio: '/audio/Sw-mia-saba.ogg', illustration: '7️⃣0️⃣0️⃣' },
+  'Mia nane': { translation: 'Huit cents', audio: '/audio/Sw-mia-nane.ogg', illustration: '8️⃣0️⃣0️⃣' },
+  'Mia tisa': { translation: 'Neuf cents', audio: '/audio/Sw-mia-tisa.ogg', illustration: '9️⃣0️⃣0️⃣' },
+  'Elfu': { translation: 'Mille', audio: '/audio/Sw-elfu.ogg', illustration: '1️⃣0️⃣0️⃣0️⃣' },
+  'Elfu mbili': { translation: 'Deux mille', audio: '/audio/Sw-elfu-mbili.ogg', illustration: '2️⃣0️⃣0️⃣0️⃣' },
+  'Elfu kumi': { translation: 'Dix mille', audio: '/audio/Sw-elfu-kumi.ogg', illustration: '1️⃣0️⃣0️⃣0️⃣0️⃣' },
+  'Elfu mia': { translation: 'Cent mille', audio: '/audio/Sw-elfu-mia.ogg', illustration: '1️⃣0️⃣0️⃣0️⃣0️⃣0️⃣' },
+  'Milioni': { translation: 'Million', audio: '/audio/milioni.wav', illustration: '1️⃣0️⃣0️⃣0️⃣0️⃣0️⃣0️⃣' },
+  // ... autres nombres
+};
+
+export default nombres;
+export {};

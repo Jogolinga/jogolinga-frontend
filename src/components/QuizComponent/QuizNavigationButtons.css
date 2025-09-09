@@ -1,0 +1,101 @@
+/* Styles spécifiques pour la navigation du quiz qui n'entrent pas en conflit avec mobile-overrides.css */
+.quiz-nav-return-btn {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding: 12px 24px !important;
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 20px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    z-index: 2000 !important; /* Valeur très élevée pour dépasser tout autre élément */
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.2s ease !important;
+    width: auto !important;
+    min-width: 120px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  .quiz-nav-return-btn::before {
+    content: '←';
+    margin-right: 8px;
+    font-size: 18px;
+  }
+  
+  .quiz-nav-return-btn:hover {
+    background-color: #e2e8f0 !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+  }
+  
+  /* Styles pour le bouton de retour dans l'écran de démarrage et de fin de jeu */
+  .quiz-nav-menu-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    margin: 20px auto 10px !important;
+    padding: 14px 20px !important;
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .quiz-nav-menu-btn:hover {
+    background-color: #e2e8f0 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Styles pour le mode sombre */
+  .dark .quiz-nav-return-btn {
+    background-color: #334155 !important;
+    color: #f1f5f9 !important;
+    border-color: #475569 !important;
+  }
+  
+  .dark .quiz-nav-return-btn:hover {
+    background-color: #475569 !important;
+  }
+  
+  .dark .quiz-nav-menu-btn {
+    background-color: #334155 !important;
+    color: #f1f5f9 !important;
+    border-color: #475569 !important;
+  }
+  
+  .dark .quiz-nav-menu-btn:hover {
+    background-color: #475569 !important;
+  }
+  
+  /* Assurer la visibilité sur tous les écrans */
+  @media (max-width: 768px) {
+    .quiz-nav-return-btn,
+    .quiz-nav-menu-btn {
+      display: flex !important;
+    }
+    
+    /* Ajuster pour les écrans très petits */
+    @media (max-width: 360px) {
+      .quiz-nav-return-btn {
+        padding: 10px 20px !important;
+        font-size: 14px !important;
+      }
+    }
+  }
+  
+  /* Ajouter du padding au conteneur pour éviter que le bouton flottant ne cache du contenu */
+  .quiz-container {
+    padding-bottom: 80px !important;
+  }

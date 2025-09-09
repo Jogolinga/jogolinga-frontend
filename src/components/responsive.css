@@ -1,0 +1,123 @@
+/* Styles globaux pour la version mobile */
+@media (max-width: 768px) {
+    .App {
+      max-width: 100%;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Ajustements pour le conteneur principal */
+    .app-container {
+      width: 100%;
+      margin: 0;
+      padding: 12px;
+      border-radius: 0;
+    }
+    
+    /* Correction des marges et padding pour mobile */
+    .main-menu {
+      border-radius: 8px;
+      margin-top: 10px;
+      max-width: 100%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Mascotte pour mobile */
+    .interactive-mascot {
+      top: 16px;
+      right: 2px;
+      width: 16px;
+      height: 16px;
+      z-index: 1001;
+    }
+    
+    /* Ajustements pour les boutons de menu */
+    .menu-button {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      border-radius: 8px;
+      min-height: 70px;
+      padding: 12px;
+      gap: 12px;
+      width: 100%;
+    }
+    
+    .menu-icon {
+      font-size: 1.25rem;
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
+    
+    .menu-label {
+      font-size: 0.95rem;
+      text-align: left;
+    }
+    
+    /* Ajustement des images et logos */
+    .logo-image {
+      width: 100px;
+      height: auto;
+    }
+    
+    /* Niveau et progression */
+    .level-info {
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px;
+    }
+    
+    .level-progress {
+      width: 100%;
+    }
+    
+    .level-stats {
+      font-size: 0.75rem;
+    }
+    
+    /* Ajustements pour la sélection de catégories */
+    .category-selection {
+      padding: 10px;
+    }
+    
+    .category-carousel-container {
+      padding: 10px;
+    }
+    
+    .category-button {
+      height: 180px;
+    }
+    
+    /* Mode d'apprentissage */
+    .learn-mode-container {
+      padding: 15px;
+      margin: 10px;
+    }
+    
+    .learn-mode-word h3 {
+      font-size: 1.5rem;
+    }
+    
+    .learn-mode-translation {
+      font-size: 1.25rem;
+    }
+    
+    .learn-mode-options {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    
+    /* Style pour les boutons de retour */
+    .back-button {
+      width: calc(100% - 20px);
+      margin: 15px auto;
+      font-size: 0.95rem;
+      padding: 12px;
+    }
+    
+    /* GoogleAuth component */
+    .google-auth-container {
+      margin-top: 5px;
+    }
+  }

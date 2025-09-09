@@ -1,0 +1,93 @@
+/* Animations de transition pour mobile */
+@media (max-width: 768px) {
+    /* Transition de base pour tous les éléments animés */
+    .page-transition {
+      position: relative;
+      will-change: transform, opacity;
+    }
+    
+    /* Transition du menu vers la sélection de catégorie */
+    .menu-to-category-enter {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    
+    .menu-to-category-enter-active {
+      transform: translateX(0);
+      opacity: 1;
+      transition: transform 250ms ease-out, opacity 250ms ease-out;
+    }
+    
+    .menu-to-category-exit {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    
+    .menu-to-category-exit-active {
+      transform: translateX(-30%);
+      opacity: 0;
+      transition: transform 250ms ease-in, opacity 250ms ease-in;
+    }
+    
+    /* Transition de la sélection de catégorie au mode d'apprentissage */
+    .category-to-learn-enter {
+      transform: translateY(30px);
+      opacity: 0;
+    }
+    
+    .category-to-learn-enter-active {
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform 250ms ease-out, opacity 250ms ease-out;
+    }
+    
+    .category-to-learn-exit {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .category-to-learn-exit-active {
+      transform: translateY(-30px);
+      opacity: 0;
+      transition: transform 250ms ease-in, opacity 250ms ease-in;
+    }
+    
+    /* Transition pour le retour (navigation arrière) */
+    .back-transition-enter {
+      transform: translateX(-30%);
+      opacity: 0;
+    }
+    
+    .back-transition-enter-active {
+      transform: translateX(0);
+      opacity: 1;
+      transition: transform 250ms ease-out, opacity 250ms ease-out;
+    }
+    
+    .back-transition-exit {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    
+    .back-transition-exit-active {
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 250ms ease-in, opacity 250ms ease-in;
+    }
+    
+    /* Optimisations pour les animations */
+    .transition-group {
+      position: relative;
+      min-height: 100vh;
+    }
+    
+    .transition-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }

@@ -1,0 +1,38 @@
+import { CategoryData } from '../../../../types/types';
+
+export const verbes: CategoryData = {
+  'Nekk (Être)': { translation: 'Être', audio: 'Wf-nekk' },
+  'Am (Avoir)': { translation: 'Avoir', audio: 'Wf-am' },
+  'Def (Faire)': { translation: 'Faire', audio: 'Wf-def' },
+  'Dem (Aller)': { translation: 'Aller', audio: 'Wf-dem' },
+  'Ñëw (Venir)': { translation: 'Venir', audio: 'Wf-ñëw' },
+  'Gis (Voir)': { translation: 'Voir', audio: 'Wf-gis' },
+  'Dégg (Entendre)': { translation: 'Entendre', audio: 'Wf-degg' },
+  'Lekk (Manger)': { translation: 'Manger', audio: 'Wf-lekk' },
+  'Naan (Boire)': { translation: 'Boire', audio: 'Wf-naan' },
+  'Nelaw (Dormir)': { translation: 'Dormir', audio: 'Wf-nelaw' },
+  'Wax (Parler)': { translation: 'Parler', audio: 'Wf-wax' },
+  'Bind (Écrire)': { translation: 'Écrire', audio: 'Wf-bind' },
+  'Jàng (Lire)': { translation: 'Lire', audio: 'Wf-jàng' },
+  'Bëgg (Aimer / Vouloir)': { translation: 'Aimer / Vouloir', audio: 'Wf-bëgg' },
+  'Liggéey (Travailler)': { translation: 'Travailler', audio: 'Wf-liggéey' },
+  'Toog (S\'asseoir)': { translation: 'S\'asseoir', audio: 'Wf-toog' },
+  'Taxaw (Se lever / Être debout)': { translation: 'Se lever / Être debout', audio: 'Wf-taxaw' },
+  'Dox (Marcher)': { translation: 'Marcher', audio: 'Wf-dox' },
+  'Faj (Guérir)': { translation: 'Guérir', audio: 'Wf-faj' },
+  'Joxe (Donner)': { translation: 'Donner', audio: 'Wf-joxe' },
+  'Jël (Prendre)': { translation: 'Prendre', audio: 'Wf-jël' },
+  'Xool (Regarder)': { translation: 'Regarder', audio: 'Wf-xool' },
+  'Xam (Savoir / Connaître)': { translation: 'Savoir / Connaître', audio: 'Wf-xam' },
+  'Jaaxle (Être surpris)': { translation: 'Être surpris', audio: 'Wf-jaaxle' },
+  'Yëngal (Bouger)': { translation: 'Bouger', audio: 'Wf-yëngal' },
+  'Niroo (Ressembler)': { translation: 'Ressembler', audio: 'Wf-niroo' },
+  'Nuyu (Saluer)': { translation: 'Saluer', audio: 'Wf-nuyu' },
+  'Noppi (Se taire)': { translation: 'Se taire', audio: 'Wf-noppi' },
+  'Waññi (Baisser)': { translation: 'Baisser', audio: 'Wf-waññi' },
+  'Seet (Chercher)': { translation: 'Chercher', audio: 'Wf-seet' },
+  'Laaj (Demander)': { translation: 'Demander', audio: 'Wf-laaj' },
+  'And (Marcher)': { translation: 'Marcher', audio: 'Wf-and' },
+};
+
+export default verbes;

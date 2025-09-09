@@ -1,0 +1,251 @@
+.swipeable-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+  }
+  
+  /* Header avec les tabs */
+  .swipeable-header {
+    background-color: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 2;
+    padding: 4px 0; /* Padding supplémentaire */
+  }
+  
+  .swipeable-tabs {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 4px 0; /* Padding supplémentaire */
+    min-height: 80px; /* Hauteur minimale garantie pour le conteneur */
+  }
+  
+  .swipeable-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .swipeable-tab {
+    flex: 1;
+    min-width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 8px; /* Augmentation du padding vertical */
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #64748b;
+    font-size: 12px;
+    transition-property: color, border-color; /* Limiter les transitions */
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+    cursor: pointer;
+    min-height: 70px; /* Hauteur minimale garantie */
+    box-sizing: border-box; /* Garantir que le padding ne s'ajoute pas à la hauteur */
+  }
+  
+  .swipeable-tab.active {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+    font-weight: 500; /* Au lieu de bold qui peut changer la taille */
+    transform: none; /* Désactiver toute transformation qui pourrait affecter la taille */
+  }
+  
+  .tab-icon {
+    font-size: 24px; /* Légèrement plus grand */
+    line-height: 28px; /* Assurer un bon alignement vertical */
+    margin-bottom: 8px; /* Plus d'espace entre l'icône et le texte */
+    height: 28px; /* Hauteur explicite pour l'icône */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    will-change: color;
+    transform: translateZ(0); /* Utiliser l'accélération matérielle */
+  }
+  
+  .tab-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+  
+  /* Zone de contenu swipeable */
+  .swipeable-content-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    touch-action: pan-y;
+  }
+  
+  .swipeable-content {
+    display: flex;
+    width: 400%; /* 100% * nombre de vues */
+    height: 100%;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  .swipeable-view {
+    flex: 0 0 25%; /* 100% / nombre de vues */
+    width: 25%;
+    height: 100%;
+    overflow-y: auto;
+    padding-bottom: 50px; /* Espace pour éviter que le contenu soit caché par la navigation */
+    will-change: contents;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  
+  /* S'assurer que le contenu de la vue Liste est bien positionné */
+  .swipeable-view[data-view="list"] {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 4px; /* Petit padding en haut pour éviter les collages */
+  }
+  
+  /* Navigation */
+  .swipeable-navigation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid #e2e8f0;
+    z-index: 3;
+  }
+  
+  .nav-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .nav-button:not(:disabled):hover,
+  .nav-button:not(:disabled):active {
+    background-color: #f8fafc;
+    color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .pagination-dots {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .pagination-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .pagination-dot.active {
+    background-color: #3b82f6;
+    transform: scale(1.2);
+  }
+  
+  /* Indicateurs de swipe */
+  .swipe-indicator {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  
+  .swipe-indicator.left {
+    left: 16px;
+  }
+  
+  .swipe-indicator.right {
+    right: 16px;
+  }
+  
+  .is-swiping .swipe-indicator {
+    opacity: 0.8;
+  }
+  
+  /* Mode sombre */
+  .swipeable-container.dark .swipeable-header {
+    background-color: #0f172a;
+    border-bottom-color: #334155;
+  }
+  
+  .swipeable-container.dark .swipeable-tab {
+    color: #94a3b8;
+  }
+  
+  .swipeable-container.dark .swipeable-tab.active {
+    color: #60a5fa;
+    border-bottom-color: #60a5fa;
+  }
+  
+  .swipeable-container.dark .swipeable-navigation {
+    background-color: rgba(15, 23, 42, 0.9);
+    border-top-color: #334155;
+  }
+  
+  .swipeable-container.dark .nav-button {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+  }
+  
+  .swipeable-container.dark .nav-button:not(:disabled):hover,
+  .swipeable-container.dark .nav-button:not(:disabled):active {
+    background-color: #334155;
+    color: #60a5fa;
+  }
+  
+  .swipeable-container.dark .pagination-dot {
+    background-color: #475569;
+  }
+  
+  .swipeable-container.dark .pagination-dot.active {
+    background-color: #60a5fa;
+  }
+  
+  .swipeable-container.dark .swipe-indicator {
+    background-color: rgba(96, 165, 250, 0.1);
+    color: #60a5fa;
+  }

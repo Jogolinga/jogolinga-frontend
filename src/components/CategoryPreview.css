@@ -1,0 +1,1220 @@
+/* ===============================================
+   CATEGORYPREVIEW.CSS - VERSION HARMONISÉE AVEC GRAMMARMODE
+   Utilise exactement les mêmes variables et styles que GrammarMode.css
+   =============================================== */
+
+/* ===============================================
+   VARIABLES COULEURS - IDENTIQUES AU GRAMMARMODE
+   =============================================== */
+:root {
+  /* Mode Sombre - Couleurs Terre Cuite et Crème (IDENTIQUE GRAMMARMODE) */
+  --grammar-dark-primary: #8b4513;      /* Terre cuite principal */
+  --grammar-dark-secondary: #5d3317;    /* Marron foncé */
+  --grammar-dark-accent: #a0522d;       /* Terre rouge */
+  --grammar-dark-bg: rgba(139, 69, 19, 0.1);   /* Terre cuite transparent */
+  --grammar-dark-card: rgba(139, 69, 19, 0.15); /* Terre cuite transparent */
+  --grammar-dark-border: rgba(139, 69, 19, 0.3); /* Bordure terre cuite */
+  --grammar-dark-text: #f5deb3;         /* Crème */
+  --grammar-dark-text-secondary: #deb887; /* Beige */
+  
+  /* Mode Clair - Couleurs Sable/Beige (IDENTIQUE GRAMMARMODE) */
+  --grammar-light-primary: #daa520;     /* Or antique */
+  --grammar-light-secondary: #cd853f;   /* Ocre */
+  --grammar-light-accent: #b8860b;      /* Ocre foncé */
+  --grammar-light-bg: rgba(245, 222, 179, 0.3); /* Beige transparent */
+  --grammar-light-card: rgba(255, 255, 255, 0.9); /* Blanc transparent */
+  --grammar-light-border: rgba(218, 165, 32, 0.4); /* Bordure or */
+  --grammar-light-text: #8b4513;        /* Terre cuite */
+  --grammar-light-text-secondary: #5d3317; /* Marron foncé */
+
+  /* Espacement et transitions (IDENTIQUE GRAMMARMODE) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ===============================================
+   CONTENEUR PRINCIPAL - STYLE GRAMMARMODE
+   =============================================== */
+.word-list-preview-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 10 !important;
+  overflow-y: auto !important;
+  
+  /* Arrière-plan identique au style GrammarMode */
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-bg) 0%, 
+    var(--grammar-dark-card) 50%, 
+    var(--grammar-dark-border) 100%);
+  
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: var(--spacing-lg);
+  
+  /* Optimisations identiques au GrammarMode */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.light .word-list-preview-container,
+[data-theme="light"] .word-list-preview-container {
+  background: linear-gradient(135deg, 
+    var(--grammar-light-bg) 0%, 
+    var(--grammar-light-card) 50%, 
+    var(--grammar-light-border) 100%);
+}
+
+.word-list-preview {
+  width: 100%;
+  max-width: 800px; /* Identique au GrammarMode max-width */
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  
+  /* Styles identiques au grammar-main-container */
+  background-color: var(--grammar-dark-bg);
+  color: var(--grammar-dark-text);
+  border: 2px solid var(--grammar-dark-border);
+  
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  border-radius: var(--radius-lg);
+  box-shadow: 0px 8px 24px rgba(139, 69, 19, 0.3);
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(15px);
+  overflow: hidden;
+  position: relative;
+}
+
+.light .word-list-preview,
+[data-theme="light"] .word-list-preview {
+  background-color: var(--grammar-light-bg);
+  color: var(--grammar-light-text);
+  border-color: var(--grammar-light-border);
+  box-shadow: 0px 8px 24px rgba(218, 165, 32, 0.2);
+}
+
+/* ===============================================
+   HEADER - STYLE GRAMMAR-HEADER
+   =============================================== */
+.word-header {
+  /* Styles identiques au grammar-header */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-primary), 
+    var(--grammar-dark-secondary));
+  color: var(--grammar-dark-text);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--grammar-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+  text-align: center;
+  position: relative;
+}
+
+.light .word-header,
+[data-theme="light"] .word-header {
+  background: linear-gradient(135deg, 
+    var(--grammar-light-primary), 
+    var(--grammar-light-secondary));
+  color: var(--grammar-light-card);
+  border-color: var(--grammar-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: inherit;
+  text-align: center;
+}
+
+.word-number-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+.word-number {
+  /* Style identique aux badges GrammarMode */
+  background: rgba(245, 222, 179, 0.2);
+  border: 2px solid rgba(245, 222, 179, 0.4);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  backdrop-filter: blur(10px);
+  color: inherit;
+}
+
+.light .word-number,
+[data-theme="light"] .word-number {
+  background: rgba(139, 69, 19, 0.2);
+  border-color: rgba(139, 69, 19, 0.4);
+}
+
+/* ===============================================
+   GRILLE DE MOTS - STYLE GRAMMAR-MENU-GRID
+   =============================================== */
+.word-content-section {
+  padding: var(--spacing-lg) 0;
+}
+
+.words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  min-height: 400px;
+}
+
+/* ===============================================
+   CARTES DE MOTS - STYLE GRAMMAR-MENU-ITEM
+   =============================================== */
+.word-card {
+  /* Styles identiques aux grammar-menu-item */
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: var(--spacing-md) !important;
+  border-radius: var(--radius-md) !important;
+  
+  /* Couleurs harmonisées identiques */
+  border: 2px solid var(--grammar-dark-border) !important;
+  background: var(--grammar-dark-card) !important;
+  color: var(--grammar-dark-text) !important;
+  
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: all var(--transition-fast) !important;
+  cursor: pointer !important;
+  position: relative !important;
+  min-height: 120px !important;
+  width: 100% !important;
+  max-width: 280px !important;
+  justify-self: center !important;
+}
+
+.light .word-card,
+[data-theme="light"] .word-card {
+  background: var(--grammar-light-card) !important;
+  border-color: var(--grammar-light-border) !important;
+  color: var(--grammar-light-text) !important;
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25) !important;
+}
+
+.word-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.4) !important;
+  background: rgba(139, 69, 19, 0.3) !important;
+  border-color: #8b4513 !important;
+}
+
+.light .word-card:hover,
+[data-theme="light"] .word-card:hover {
+  background: rgba(218, 165, 32, 0.2) !important;
+  border-color: var(--grammar-light-primary) !important;
+  box-shadow: 0px 8px 20px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* ===============================================
+   CONTENU DES CARTES - STYLE GRAMMAR-MENU
+   =============================================== */
+.word-details {
+  padding: var(--spacing-md);
+  text-align: center;
+  width: 100%;
+}
+
+.foreign-word {
+  /* Style identique grammar-menu-label */
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  text-align: center !important;
+  color: var(--grammar-dark-text) !important;
+  margin-bottom: var(--spacing-sm) !important;
+  line-height: 1.2;
+}
+
+.light .foreign-word,
+[data-theme="light"] .foreign-word {
+  color: var(--grammar-light-text) !important;
+}
+
+.translation {
+  /* Style identique grammar-menu-info */
+  font-size: 14px !important;
+  font-weight: 500;
+  text-align: center !important;
+  color: var(--grammar-dark-text-secondary) !important;
+  margin-bottom: var(--spacing-md);
+}
+
+.light .translation,
+[data-theme="light"] .translation {
+  color: var(--grammar-light-text-secondary) !important;
+}
+
+.explanation {
+  font-size: 12px !important;
+  opacity: 0.8 !important;
+  text-align: center !important;
+  color: var(--grammar-dark-text-secondary) !important;
+  font-style: italic;
+  line-height: 1.4;
+  margin-bottom: var(--spacing-sm);
+}
+
+.light .explanation,
+[data-theme="light"] .explanation {
+  color: var(--grammar-light-text-secondary) !important;
+}
+
+.example {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: rgba(139, 69, 19, 0.1);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--grammar-dark-primary);
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.light .example,
+[data-theme="light"] .example {
+  background: rgba(218, 165, 32, 0.1);
+  border-left-color: var(--grammar-light-primary);
+}
+
+.example strong {
+  color: var(--grammar-dark-text);
+  font-weight: 600;
+}
+
+.light .example strong,
+[data-theme="light"] .example strong {
+  color: var(--grammar-light-text);
+}
+
+/* ===============================================
+   BOUTON AUDIO - STYLE GRAMMAR-ACTION-BUTTON
+   =============================================== */
+.audio-button {
+  /* Style identique aux grammar-action-button */
+  background: transparent;
+  border: 2px solid var(--grammar-dark-primary);
+  color: var(--grammar-dark-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  margin: var(--spacing-md) auto 0;
+}
+
+.light .audio-button,
+[data-theme="light"] .audio-button {
+  border-color: var(--grammar-light-primary);
+  color: var(--grammar-light-primary);
+}
+
+.audio-button:hover {
+  background-color: var(--grammar-dark-primary);
+  color: var(--grammar-dark-text);
+  transform: scale(1.1);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.light .audio-button:hover,
+[data-theme="light"] .audio-button:hover {
+  background-color: var(--grammar-light-primary);
+  color: var(--grammar-light-card);
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.3);
+}
+
+.audio-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.audio-button:disabled:hover {
+  transform: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ===============================================
+   PAGINATION - STYLE GRAMMAR-STATS-CONTAINER
+   =============================================== */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background: var(--grammar-dark-bg);
+  border-top: 2px solid var(--grammar-dark-border);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.light .pagination-controls,
+[data-theme="light"] .pagination-controls {
+  background: var(--grammar-light-bg);
+  border-top-color: var(--grammar-light-border);
+}
+
+.pagination-button {
+  /* Style identique aux grammar-action-button */
+  background: transparent;
+  border: 2px solid var(--grammar-dark-border);
+  color: var(--grammar-dark-text);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.light .pagination-button,
+[data-theme="light"] .pagination-button {
+  border-color: var(--grammar-light-border);
+  color: var(--grammar-light-text);
+}
+
+.pagination-button:hover:not(:disabled) {
+  background: var(--grammar-dark-primary);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.light .pagination-button:hover:not(:disabled),
+[data-theme="light"] .pagination-button:hover:not(:disabled) {
+  background: var(--grammar-light-primary);
+  color: var(--grammar-light-card);
+  border-color: var(--grammar-light-secondary);
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.3);
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--grammar-dark-text-secondary);
+  font-weight: 500;
+}
+
+.light .pagination-info,
+[data-theme="light"] .pagination-info {
+  color: var(--grammar-light-text-secondary);
+}
+
+.page-number {
+  /* Style identique aux grammar-stat-card */
+  background: var(--grammar-dark-card);
+  color: var(--grammar-dark-text);
+  border: 2px solid var(--grammar-dark-border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.light .page-number,
+[data-theme="light"] .page-number {
+  background: var(--grammar-light-card);
+  color: var(--grammar-light-text);
+  border-color: var(--grammar-light-border);
+}
+
+/* ===============================================
+   BOUTONS D'ACTION - STYLE GRAMMAR-ACTION-BUTTON
+   =============================================== */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  background: var(--grammar-dark-bg);
+  border-top: 2px solid var(--grammar-dark-border);
+}
+
+.light .action-buttons,
+[data-theme="light"] .action-buttons {
+  background: var(--grammar-light-bg);
+  border-top-color: var(--grammar-light-border);
+}
+
+.action-button {
+  /* Style identique aux grammar-action-button principaux */
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-primary), 
+    var(--grammar-dark-secondary));
+  color: var(--grammar-dark-text);
+  border: none;
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  min-width: 140px;
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.light .action-button,
+[data-theme="light"] .action-button {
+  background: linear-gradient(135deg, 
+    var(--grammar-light-primary), 
+    var(--grammar-light-secondary));
+  color: var(--grammar-light-card);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.action-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.4);
+}
+
+.light .action-button:hover,
+[data-theme="light"] .action-button:hover {
+  box-shadow: 0px 8px 20px rgba(218, 165, 32, 0.4);
+}
+
+.action-button:active {
+  transform: translateY(-1px);
+}
+
+.action-button.secondary {
+  background: transparent;
+  color: var(--grammar-dark-text);
+  border: 2px solid var(--grammar-dark-border);
+}
+
+.light .action-button.secondary,
+[data-theme="light"] .action-button.secondary {
+  color: var(--grammar-light-text);
+  border-color: var(--grammar-light-border);
+}
+
+.action-button.secondary:hover {
+  background: var(--grammar-dark-primary);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-secondary);
+}
+
+.light .action-button.secondary:hover,
+[data-theme="light"] .action-button.secondary:hover {
+  background: var(--grammar-light-primary);
+  color: var(--grammar-light-card);
+  border-color: var(--grammar-light-secondary);
+}
+
+/* ===============================================
+   ÉTATS DE CHARGEMENT - STYLE GRAMMAR
+   =============================================== */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  color: var(--grammar-dark-text-secondary);
+}
+
+.light .loading-state,
+[data-theme="light"] .loading-state {
+  color: var(--grammar-light-text-secondary);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--grammar-dark-border);
+  border-top: 4px solid var(--grammar-dark-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: var(--spacing-md);
+}
+
+.light .loading-spinner,
+[data-theme="light"] .loading-spinner {
+  border-color: var(--grammar-light-border);
+  border-top-color: var(--grammar-light-primary);
+}
+
+/* ===============================================
+   ÉTATS VIDES ET ERREURS - STYLE GRAMMAR
+   =============================================== */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--grammar-dark-text-secondary);
+}
+
+.light .empty-state,
+[data-theme="light"] .empty-state {
+  color: var(--grammar-light-text-secondary);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  color: var(--grammar-dark-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.light .empty-state h3,
+[data-theme="light"] .empty-state h3 {
+  color: var(--grammar-light-text);
+}
+
+.error-state {
+  background: rgba(139, 69, 19, 0.1);
+  border: 2px solid var(--grammar-dark-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  text-align: center;
+  margin: var(--spacing-lg);
+}
+
+.light .error-state,
+[data-theme="light"] .error-state {
+  background: rgba(218, 165, 32, 0.1);
+  border-color: var(--grammar-light-border);
+}
+
+/* ===============================================
+   ANIMATIONS - IDENTIQUES AU GRAMMARMODE
+   =============================================== */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN - IDENTIQUE AU GRAMMARMODE
+   =============================================== */
+@media (max-width: 768px) {
+  .word-list-preview-container {
+    padding: var(--spacing-md);
+  }
+
+  .word-list-preview {
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+  }
+
+  .word-header {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 22px;
+  }
+
+  .word-number-title {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .words-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .word-card {
+    padding: var(--spacing-md);
+    min-height: 100px;
+  }
+
+  .foreign-word {
+    font-size: 16px;
+  }
+
+  .translation {
+    font-size: 13px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .action-button {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .word-list-preview-container {
+    padding: var(--spacing-sm);
+  }
+
+  .word-header {
+    padding: var(--spacing-sm);
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  .word-number {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .word-content-section {
+    padding: var(--spacing-md);
+  }
+
+  .word-card {
+    padding: var(--spacing-sm);
+    min-height: 80px;
+  }
+
+  .foreign-word {
+    font-size: 15px;
+  }
+
+  .translation {
+    font-size: 12px;
+  }
+
+  .explanation,
+  .example {
+    font-size: 11px;
+  }
+}
+
+/* ===============================================
+   ACCESSIBILITÉ - IDENTIQUE AU GRAMMARMODE
+   =============================================== */
+@media (prefers-reduced-motion: reduce) {
+  .word-list-preview,
+  .word-card,
+  .action-button,
+  .pagination-button,
+  .audio-button {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .word-card:hover,
+  .action-button:hover,
+  .pagination-button:hover,
+  .audio-button:hover {
+    transform: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .word-list-preview,
+  .word-card,
+  .action-button,
+  .pagination-button {
+    border-width: 3px !important;
+  }
+}
+
+/* Focus indicators identiques au GrammarMode */
+.word-list-preview-container *:focus {
+  outline: 2px solid var(--grammar-dark-primary);
+  outline-offset: 2px;
+}
+
+.light .word-list-preview-container *:focus,
+[data-theme="light"] .word-list-preview-container *:focus {
+  outline-color: var(--grammar-light-primary);
+}
+
+/* ===============================================
+   OPTIMISATIONS PERFORMANCES - IDENTIQUES
+   =============================================== */
+.word-card,
+.action-button,
+.pagination-button,
+.audio-button {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.word-list-preview-container {
+  contain: layout style paint;
+}
+
+.words-grid {
+  contain: layout;
+}
+
+/* ===============================================
+   SCROLLBAR - IDENTIQUE AU GRAMMARMODE
+   =============================================== */
+.word-list-preview-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.word-list-preview-container::-webkit-scrollbar-track {
+  background: rgba(139, 69, 19, 0.1);
+  border-radius: 4px;
+}
+
+.word-list-preview-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #8b4513, #a0522d);
+  border-radius: 4px;
+}
+
+.word-list-preview-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #a0522d, #8b4513);
+}
+
+.light .word-list-preview-container::-webkit-scrollbar-track,
+[data-theme="light"] .word-list-preview-container::-webkit-scrollbar-track {
+  background: rgba(218, 165, 32, 0.15);
+}
+
+.light .word-list-preview-container::-webkit-scrollbar-thumb,
+[data-theme="light"] .word-list-preview-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #daa520, #cd853f);
+}
+
+/* ===============================================
+   COMPATIBILITÉ AVEC ANCIENNES CLASSES
+   =============================================== */
+.dark-mode .word-list-preview-container {
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-bg) 0%, 
+    var(--grammar-dark-card) 50%, 
+    var(--grammar-dark-border) 100%);
+}
+
+.dark-mode .word-list-preview {
+  background-color: var(--grammar-dark-bg);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-border);
+}
+
+.dark-mode .word-header {
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-primary), 
+    var(--grammar-dark-secondary));
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-border);
+}
+
+.dark-mode .word-card {
+  background: var(--grammar-dark-card) !important;
+  border-color: var(--grammar-dark-border) !important;
+  color: var(--grammar-dark-text) !important;
+}
+
+.dark-mode .word-card:hover {
+  background: rgba(139, 69, 19, 0.3) !important;
+  border-color: #8b4513 !important;
+}
+
+.dark-mode .foreign-word {
+  color: var(--grammar-dark-text) !important;
+}
+
+.dark-mode .translation,
+.dark-mode .explanation {
+  color: var(--grammar-dark-text-secondary) !important;
+}
+
+.dark-mode .example {
+  background: rgba(139, 69, 19, 0.1);
+  border-left-color: var(--grammar-dark-primary);
+}
+
+.dark-mode .example strong {
+  color: var(--grammar-dark-text);
+}
+
+.dark-mode .audio-button {
+  border-color: var(--grammar-dark-primary);
+  color: var(--grammar-dark-primary);
+}
+
+.dark-mode .audio-button:hover {
+  background-color: var(--grammar-dark-primary);
+  color: var(--grammar-dark-text);
+}
+
+.dark-mode .pagination-controls,
+.dark-mode .action-buttons {
+  background: var(--grammar-dark-bg);
+  border-top-color: var(--grammar-dark-border);
+}
+
+.dark-mode .pagination-button {
+  border-color: var(--grammar-dark-border);
+  color: var(--grammar-dark-text);
+}
+
+.dark-mode .pagination-button:hover:not(:disabled) {
+  background: var(--grammar-dark-primary);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-secondary);
+}
+
+.dark-mode .pagination-info {
+  color: var(--grammar-dark-text-secondary);
+}
+
+.dark-mode .page-number {
+  background: var(--grammar-dark-card);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-border);
+}
+
+.dark-mode .action-button {
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-primary), 
+    var(--grammar-dark-secondary));
+  color: var(--grammar-dark-text);
+}
+
+.dark-mode .action-button.secondary {
+  background: transparent;
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-border);
+}
+
+.dark-mode .action-button.secondary:hover {
+  background: var(--grammar-dark-primary);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-secondary);
+}
+
+.dark-mode .loading-spinner {
+  border-color: var(--grammar-dark-border);
+  border-top-color: var(--grammar-dark-primary);
+}
+
+.dark-mode .empty-state {
+  color: var(--grammar-dark-text-secondary);
+}
+
+.dark-mode .empty-state h3 {
+  color: var(--grammar-dark-text);
+}
+
+.dark-mode .error-state {
+  background: rgba(139, 69, 19, 0.1);
+  border-color: var(--grammar-dark-border);
+}
+
+/* ===============================================
+   DARK MODE SYSTÈME - IDENTIQUE AU GRAMMARMODE
+   =============================================== */
+@media (prefers-color-scheme: dark) {
+  .word-list-preview-container:not(.light):not([data-theme="light"]) {
+    background: linear-gradient(135deg, 
+      var(--grammar-dark-bg) 0%, 
+      var(--grammar-dark-card) 50%, 
+      var(--grammar-dark-border) 100%);
+  }
+
+  .word-list-preview:not(.light):not([data-theme="light"]) {
+    background-color: var(--grammar-dark-bg);
+    color: var(--grammar-dark-text);
+    border-color: var(--grammar-dark-border);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .word-list-preview-container:not(.dark):not([data-theme="dark"]) {
+    background: linear-gradient(135deg, 
+      var(--grammar-light-bg) 0%, 
+      var(--grammar-light-card) 50%, 
+      var(--grammar-light-border) 100%);
+  }
+
+  .word-list-preview:not(.dark):not([data-theme="dark"]) {
+    background-color: var(--grammar-light-bg);
+    color: var(--grammar-light-text);
+    border-color: var(--grammar-light-border);
+  }
+}
+
+/* ===============================================
+   CLASSES UTILITAIRES - IDENTIQUES AU GRAMMARMODE
+   =============================================== */
+
+/* Classes d'espacement identiques */
+.grammar-spacing-xs { margin: var(--spacing-xs); }
+.grammar-spacing-sm { margin: var(--spacing-sm); }
+.grammar-spacing-md { margin: var(--spacing-md); }  
+.grammar-spacing-lg { margin: var(--spacing-lg); }
+.grammar-spacing-xl { margin: var(--spacing-xl); }
+
+/* Classes de texte identiques */
+.grammar-text-primary { color: var(--grammar-dark-text) !important; }
+.grammar-text-secondary { color: var(--grammar-dark-text-secondary) !important; }
+
+.light .grammar-text-primary,
+[data-theme="light"] .grammar-text-primary {
+  color: var(--grammar-light-text) !important;
+}
+
+.light .grammar-text-secondary,
+[data-theme="light"] .grammar-text-secondary {
+  color: var(--grammar-light-text-secondary) !important;
+}
+
+/* Classes d'arrière-plan identiques */
+.grammar-bg-card { background: var(--grammar-dark-card) !important; }
+.grammar-bg-primary { background: var(--grammar-dark-primary) !important; }
+
+.light .grammar-bg-card,
+[data-theme="light"] .grammar-bg-card {
+  background: var(--grammar-light-card) !important;
+}
+
+.light .grammar-bg-primary,
+[data-theme="light"] .grammar-bg-primary {
+  background: var(--grammar-light-primary) !important;
+}
+
+/* ===============================================
+   PRINT STYLES - IDENTIQUES AU GRAMMARMODE
+   =============================================== */
+@media print {
+  .word-list-preview-container {
+    position: static !important;
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  .word-list-preview {
+    background: white !important;
+    color: #8b4513 !important;
+    box-shadow: none !important;
+    border: 1px solid #8b4513 !important;
+  }
+
+  .word-header {
+    background: #8b4513 !important;
+    color: white !important;
+    border-bottom: 2px solid #8b4513 !important;
+  }
+
+  .word-card {
+    border: 1px solid #8b4513 !important;
+    background: white !important;
+    color: #8b4513 !important;
+    break-inside: avoid !important;
+  }
+
+  .action-buttons,
+  .pagination-controls {
+    display: none !important;
+  }
+
+  .audio-button {
+    display: none !important;
+  }
+
+  .words-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ===============================================
+   CORRECTIONS FINALES POUR L'HARMONISATION TOTALE
+   =============================================== */
+
+/* S'assurer que tous les éléments suivent le thème GrammarMode */
+.word-list-preview-container h1,
+.word-list-preview-container h2,
+.word-list-preview-container h3,
+.word-list-preview-container h4 {
+  color: var(--grammar-dark-text) !important;
+}
+
+.light .word-list-preview-container h1,
+.light .word-list-preview-container h2,
+.light .word-list-preview-container h3,
+.light .word-list-preview-container h4,
+[data-theme="light"] .word-list-preview-container h1,
+[data-theme="light"] .word-list-preview-container h2,
+[data-theme="light"] .word-list-preview-container h3,
+[data-theme="light"] .word-list-preview-container h4 {
+  color: var(--grammar-light-text) !important;
+}
+
+/* Assurer que les paragraphes suivent le thème */
+.word-list-preview-container p {
+  color: var(--grammar-dark-text-secondary);
+}
+
+.light .word-list-preview-container p,
+[data-theme="light"] .word-list-preview-container p {
+  color: var(--grammar-light-text-secondary);
+}
+
+/* ===============================================
+   SUPPORT POUR CONTRASTE ÉLEVÉ - IDENTIQUE
+   =============================================== */
+@media (prefers-contrast: high) {
+  .word-list-preview {
+    border-width: 3px !important;
+  }
+  
+  .word-card {
+    border-width: 3px !important;
+    box-shadow: none !important;
+  }
+  
+  .word-header {
+    border-width: 3px !important;
+  }
+  
+  .action-button,
+  .pagination-button {
+    border-width: 3px !important;
+  }
+  
+  .light .word-card,
+  [data-theme="light"] .word-card {
+    background: white !important;
+    color: var(--grammar-light-text) !important;
+  }
+}
+
+/* ===============================================
+   VARIABLES CSS CUSTOM PROPERTIES FALLBACK
+   =============================================== */
+@supports not (color: var(--grammar-dark-primary)) {
+  .word-list-preview {
+    background-color: rgba(139, 69, 19, 0.1);
+    color: #f5deb3;
+    border-color: rgba(139, 69, 19, 0.3);
+  }
+  
+  .light .word-list-preview {
+    background-color: rgba(245, 222, 179, 0.3);
+    color: #8b4513;
+    border-color: rgba(218, 165, 32, 0.4);
+  }
+}
+
+/* ===============================================
+   MODES THÈME GLOBAUX - HARMONISATION FINALE
+   =============================================== */
+
+/* Application du thème terre cuite dans tous les contextes */
+.App[data-theme="dark"] .word-list-preview-container,
+[data-theme="dark"] .word-list-preview-container,
+.dark .word-list-preview-container {
+  background: linear-gradient(135deg, 
+    var(--grammar-dark-bg) 0%, 
+    var(--grammar-dark-card) 50%, 
+    var(--grammar-dark-border) 100%);
+}
+
+.App[data-theme="light"] .word-list-preview-container,
+[data-theme="light"] .word-list-preview-container,
+.light .word-list-preview-container {
+  background: linear-gradient(135deg, 
+    var(--grammar-light-bg) 0%, 
+    var(--grammar-light-card) 50%, 
+    var(--grammar-light-border) 100%);
+}
+
+.App[data-theme="dark"] .word-list-preview,
+[data-theme="dark"] .word-list-preview,
+.dark .word-list-preview {
+  background-color: var(--grammar-dark-bg);
+  color: var(--grammar-dark-text);
+  border-color: var(--grammar-dark-border);
+}
+
+.App[data-theme="light"] .word-list-preview,
+[data-theme="light"] .word-list-preview,
+.light .word-list-preview {
+  background-color: var(--grammar-light-bg);
+  color: var(--grammar-light-text);
+  border-color: var(--grammar-light-border);
+}
+
+/* Assurer que tous les éléments suivent le thème */
+.App[data-theme="dark"] .word-list-preview-container *,
+[data-theme="dark"] .word-list-preview-container *,
+.dark .word-list-preview-container * {
+  color: inherit;
+}
+
+.App[data-theme="light"] .word-list-preview-container *,
+[data-theme="light"] .word-list-preview-container *,
+.light .word-list-preview-container * {
+  color: inherit;
+}
+
+/* ===============================================
+   FIN DU FICHIER - CATEGORYPREVIEW.CSS HARMONISÉ
+   Version strictement identique au GrammarMode.css
+   =============================================== */

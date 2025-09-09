@@ -1,0 +1,3752 @@
+/* ===============================================
+   MAINMENU.CSS - VERSION COMPLÈTE COMPACTE
+   Optimisé pour éviter l'étirement vertical
+   =============================================== */
+
+/* ===============================================
+   RESET ET BASE
+   =============================================== */
+
+/* Reset global pour éviter les conflits */
+.modern-main-container,
+.modern-main-container * {
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Suppression des éléments pseudo qui créent de l'espace blanc */
+.modern-main-container::before,
+.modern-main-container::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* ===============================================
+   CONTENEUR PRINCIPAL - VERSION COMPACTE
+   =============================================== */
+
+.modern-main-container {
+  width: 100%;
+  max-width: 800px; /* Réduit de 900px */
+  margin: 0 auto;
+  padding: 16px; /* Réduit de 20px */
+  background-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #f1f5f9;
+  
+  /* CORRECTIONS PRINCIPALES - HAUTEUR COMPACTE */
+  position: relative !important;
+  min-height: auto !important; /* Supprime min-height: 100vh */
+  height: auto !important;
+  transform: none !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  
+  /* CENTRAGE SANS ÉTIREMENT */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important; /* Pas de centrage vertical */
+  align-items: center !important;
+  gap: 16px; /* Espacement uniforme entre éléments */
+}
+
+/* ===============================================
+   SUPPORT DES THÈMES
+   =============================================== */
+
+/* Mode sombre (par défaut) */
+.modern-main-container {
+  color: #f1f5f9;
+}
+
+/* Mode clair */
+.light .modern-main-container {
+  color: #1e293b;
+}
+
+.light .modern-theme-button,
+.light .modern-logout-button {
+  color: #64748b;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.light .modern-theme-button:hover,
+.light .modern-logout-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.light .modern-logo-circle {
+  background-color: #dbeafe;
+  border-color: #bfdbfe;
+  box-shadow: 0px 6px 12px rgba(59, 130, 246, 0.2);
+}
+
+.light .modern-logo-title {
+  color: #4f46e5;
+}
+
+.light .modern-level-card {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-color: #e2e8f0;
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.light .modern-level-title {
+  color: #1e293b;
+}
+
+.light .modern-level-description {
+  color: #64748b;
+}
+
+.light .modern-badge {
+  background-color: #d1fae5;
+  border-color: #a7f3d0;
+  color: #064e3b;
+  box-shadow: 0px 3px 6px rgba(16, 185, 129, 0.2);
+}
+
+.light .modern-progress-bar {
+  background-color: #f1f5f9;
+}
+
+.light .modern-progress-fill {
+  background: linear-gradient(to right, #4ade80, #34d399);
+}
+
+.light .modern-stat-badge-primary {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+.light .modern-stat-badge-secondary {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.light .modern-stat-item {
+  background-color: rgba(241, 245, 249, 0.7);
+}
+
+.light .modern-stat-icon {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.light .modern-stat-icon.review-icon {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.light .modern-stat-value {
+  color: #0f172a;
+}
+
+.light .modern-stat-label {
+  color: #64748b;
+}
+
+.light .modern-notification {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.light .premium-tooltip {
+  background-color: #f8fafc;
+  color: #0f172a;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.light .premium-tooltip::before {
+  border-bottom-color: #f8fafc;
+}
+
+.light .premium-link {
+  color: #ea580c;
+}
+
+.light .premium-link:hover {
+  background-color: rgba(234, 88, 12, 0.1);
+}
+
+.light .premium-footer {
+  color: #64748b;
+}
+
+.light .quota-item {
+  background-color: rgba(226, 232, 240, 0.5);
+}
+
+.light .quota-icon {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.light .quota-label {
+  color: #0f172a;
+}
+
+.light .quota-count {
+  color: #475569;
+}
+
+.light .quota-progress-bar {
+  background-color: rgba(203, 213, 225, 0.5);
+}
+
+.light .reset-quotas-button {
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+.light .reset-quotas-button:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.light .bottom-navigation {
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.light .bottom-nav-item {
+  color: #64748b;
+}
+
+.light .bottom-nav-item.active {
+  color: #2563eb;
+}
+
+.light .bottom-nav-item.active::after {
+  background-color: #2563eb;
+}
+
+.light .bottom-nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.light .desktop-tabs {
+  background-color: rgba(30, 41, 59, 0.1);
+}
+
+.light .desktop-tab {
+  color: #475569;
+}
+
+/* ===============================================
+   HEADER - VERSION COMPACTE
+   =============================================== */
+
+.modern-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px; /* Réduit de 24px */
+  position: relative !important;
+  transform: none !important;
+  z-index: 10 !important;
+}
+
+.modern-language-selector {
+  position: relative;
+  z-index: 10;
+}
+
+.modern-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Réduit de 12px */
+}
+
+.modern-theme-button,
+.modern-logout-button {
+  padding: 8px; /* Réduit de 10px */
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modern-theme-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: rotate(30deg);
+}
+
+.modern-logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* ===============================================
+   LOGO ET BRANDING - VERSION COMPACTE
+   =============================================== */
+
+.modern-logo-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin-bottom: 20px; /* Réduit de 32px */
+  position: relative !important;
+  transform: none !important;
+}
+
+.modern-logo-circle {
+  width: 70px; /* Réduit de 90px */
+  height: 70px;
+  background-color: #1e40af;
+  border: 3px solid #3b82f6; /* Réduit de 4px */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px; /* Réduit de 12px */
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0px 6px 12px rgba(30, 64, 175, 0.3); /* Réduit l'ombre */
+}
+
+.modern-logo-circle::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -20%;
+  right: -20%;
+  bottom: -20%;
+  background: radial-gradient(
+    circle at center,
+    rgba(59, 130, 246, 0.3) 0%,
+    rgba(59, 130, 246, 0) 70%
+  );
+  animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.modern-logo-image {
+  width: 56px; /* Réduit de 70px */
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+}
+
+.modern-logo-title {
+  font-size: 24px; /* Réduit de 28px */
+  font-weight: 700;
+  color: #818cf8;
+  margin: 0;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Bouton Premium compact */
+.premium-upgrade-menu-button {
+  margin-top: 8px; /* Réduit de 12px */
+  padding: 8px 14px; /* Réduit le padding */
+  background: linear-gradient(45deg, #f59e0b, #f97316);
+  color: white;
+  border: none;
+  border-radius: 16px; /* Réduit de 20px */
+  font-size: 13px; /* Réduit de 14px */
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Réduit de 8px */
+  box-shadow: 0px 3px 6px rgba(249, 115, 22, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.premium-upgrade-menu-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 10px rgba(249, 115, 22, 0.3);
+}
+
+.premium-icon {
+  color: #ffdd00;
+}
+
+/* ===============================================
+   NIVEAU ET PROGRESSION - VERSION COMPACTE
+   =============================================== */
+
+.modern-level-card {
+  background-color: rgba(30, 41, 59, 0.5);
+  border: 1px solid #334155;
+  border-radius: 16px; /* Réduit de 20px */
+  padding: 16px; /* Réduit de 24px */
+  margin-bottom: 20px; /* Réduit de 32px */
+  position: relative !important;
+  overflow: hidden;
+  box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.2); /* Réduit l'ombre */
+  backdrop-filter: blur(10px);
+  width: 100% !important;
+  transform: none !important;
+}
+
+.modern-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px; /* Réduit de 150px */
+  height: 120px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0) 70%);
+  border-radius: 50%;
+  transform: translate(30%, -30%);
+}
+
+.modern-level-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px; /* Réduit de 20px */
+}
+
+.modern-badge {
+  width: 48px; /* Réduit de 64px */
+  height: 48px;
+  background-color: #064e3b;
+  border: 2px solid #059669; /* Réduit de 3px */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px; /* Réduit de 30px */
+  margin-right: 12px; /* Réduit de 16px */
+  position: relative;
+  box-shadow: 0px 3px 6px rgba(6, 78, 59, 0.3);
+  z-index: 2;
+}
+
+.modern-badge::after {
+  content: "";
+  position: absolute;
+  top: -3px; /* Réduit de -4px */
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 50%;
+  border: 2px solid rgba(5, 150, 105, 0.3);
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.modern-level-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-level-title {
+  font-size: 20px; /* Réduit de 24px */
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 2px 0; /* Réduit de 4px */
+}
+
+.modern-level-description {
+  font-size: 14px; /* Réduit de 15px */
+  color: #94a3b8;
+  margin: 0;
+}
+
+.modern-progress-bar {
+  width: 100%;
+  height: 12px; /* Réduit de 16px */
+  background-color: #334155;
+  border-radius: 16px; /* Réduit de 20px */
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 8px; /* Réduit de 12px */
+  box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.modern-progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #22c55e, #10b981);
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0px 0px 8px rgba(34, 197, 94, 0.5);
+}
+
+.modern-progress-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+.modern-marker-line {
+  width: 2px;
+  height: 12px; /* Réduit de 16px */
+  background-color: rgba(255, 255, 255, 0.3);
+  opacity: 0.7;
+}
+
+.modern-progress-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px; /* Réduit de 16px */
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.modern-stat-badge {
+  padding: 4px 10px; /* Réduit le padding */
+  border-radius: 16px; /* Réduit de 20px */
+  font-size: 12px; /* Réduit de 14px */
+  font-weight: 500;
+}
+
+.modern-stat-badge-primary {
+  background-color: rgba(30, 58, 138, 0.5);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.modern-stat-badge-secondary {
+  background-color: rgba(120, 53, 15, 0.5);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Statistiques d'apprentissage compactes */
+.modern-learning-stats {
+  display: flex;
+  gap: 12px; /* Réduit de 16px */
+}
+
+.modern-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Réduit de 10px */
+  background-color: rgba(51, 65, 85, 0.5);
+  padding: 6px 10px; /* Réduit le padding */
+  border-radius: 10px; /* Réduit de 12px */
+  flex-grow: 1;
+}
+
+.modern-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px; /* Réduit de 32px */
+  height: 28px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 6px; /* Réduit de 8px */
+  color: #60a5fa;
+}
+
+.modern-stat-icon.review-icon {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.modern-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.modern-stat-value {
+  font-size: 16px; /* Réduit de 18px */
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.modern-stat-label {
+  font-size: 11px; /* Réduit de 12px */
+  color: #94a3b8;
+}
+
+/* ===============================================
+   ONGLETS DESKTOP - VERSION COMPACTE
+   =============================================== */
+
+.desktop-tabs {
+  display: none;
+  position: relative !important;
+  width: 100% !important;
+  transform: none !important;
+  margin-bottom: 16px; /* Réduit de 24px */
+}
+
+@media (min-width: 769px) {
+  .desktop-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 6px; /* Réduit de 8px */
+    padding: 6px; /* Réduit de 8px */
+    background-color: rgba(241, 245, 249, 0.5);
+    border-radius: 12px; /* Réduit de 16px */
+    backdrop-filter: blur(10px);
+  }
+  
+  .desktop-tab {
+    padding: 8px 16px; /* Réduit de 12px 24px */
+    border-radius: 8px; /* Réduit de 12px */
+    background: transparent;
+    border: 1px solid transparent;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 13px; /* Réduit de 14px */
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Réduit de 8px */
+  }
+  
+  .desktop-tab:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    transform: translateY(-1px);
+  }
+  
+  .desktop-tab.active {
+    background-color: #3b82f6;
+    border-color: #2563eb;
+    color: white;
+    box-shadow: 0px 3px 6px rgba(59, 130, 246, 0.3);
+  }
+  
+  .desktop-tab-icon {
+    font-size: 14px; /* Réduit de 16px */
+  }
+}
+
+/* ===============================================
+   TITRE DE SECTION - COMPACT
+   =============================================== */
+
+.modern-section-title {
+  font-size: 16px; /* Réduit de 18px */
+  font-weight: 600;
+  margin-bottom: 12px; /* Réduit de 20px */
+  color: #64748b;
+  position: relative !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center !important;
+  min-height: 24px; /* Réduit de 30px */
+  transform: none !important;
+}
+
+.modern-section-title span {
+  background-color: rgba(15, 23, 42, 0.7);
+  padding: 0 8px; /* Réduit de 10px */
+  z-index: 1;
+}
+
+.light .modern-section-title span {
+  background-color: rgba(241, 245, 249, 0.7);
+}
+
+.modern-section-title::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(100, 116, 139, 0.2);
+  z-index: 0;
+}
+
+/* ===============================================
+   CONTENEUR MENU - COMPACT
+   =============================================== */
+
+.modern-menu-container {
+  width: 100%;
+  max-width: 800px; /* Réduit de 900px */
+  position: relative !important;
+  transition: all 0.3s ease;
+  padding: 0 !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px; /* Réduit de 20px */
+  overflow: visible !important;
+  transform: none !important;
+}
+
+.menu-grid-wrapper {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+}
+
+/* ===============================================
+   GRILLE DE MENU - COMPACTE
+   =============================================== */
+
+.modern-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Réduit de 250px */
+  gap: 12px; /* Réduit de 16px */
+  margin-bottom: 16px; /* Réduit de 24px */
+  transition: opacity 0.3s ease;
+  position: relative !important;
+  transform: none !important;
+  width: 100%;
+}
+
+.fade-out {
+  opacity: 0.2;
+}
+
+.modern-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px; /* Réduit de 16px */
+  border-radius: 12px; /* Réduit de 16px */
+  border: 1px solid;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+  position: relative !important;
+  overflow: hidden;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1); /* Réduit l'ombre */
+  min-height: 64px; /* Réduit de 80px */
+  z-index: 1 !important;
+  transform: none !important;
+}
+
+.modern-menu-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px; /* Réduit de 4px */
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.5), transparent);
+  opacity: 0.5;
+}
+
+.modern-menu-item.active {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1);
+  border-width: 2px;
+}
+
+.dark .modern-menu-item.active {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modern-menu-item.active .modern-menu-label {
+  font-weight: 700;
+}
+
+.modern-menu-icon {
+  font-size: 20px; /* Réduit de 24px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px; /* Réduit de 12px */
+  width: 40px; /* Réduit de 48px */
+  height: 40px;
+  flex-shrink: 0;
+  margin-right: 12px; /* Réduit de 16px */
+}
+
+.modern-menu-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.modern-menu-label {
+  font-size: 14px; /* Réduit de 16px */
+  font-weight: 600;
+}
+
+.modern-menu-description {
+  font-size: 11px; /* Réduit de 12px */
+  opacity: 0.8;
+  margin-top: 1px; /* Réduit de 2px */
+}
+
+.modern-menu-badge {
+  position: absolute;
+  top: 10px; /* Réduit de 12px */
+  right: 10px;
+  width: 8px; /* Réduit de 10px */
+  height: 8px;
+  border-radius: 50%;
+}
+
+.modern-menu-badge.notification {
+  background-color: #ef4444;
+  box-shadow: 0px 0px 8px rgba(239, 68, 68, 0.5);
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.menu-item-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px; /* Réduit de 8px */
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.modern-menu-item:hover .menu-item-action {
+  opacity: 1;
+  transform: translateX(2px); /* Réduit de 3px */
+}
+
+/* ===============================================
+   FONCTIONNALITÉS PREMIUM
+   =============================================== */
+
+.premium-locked {
+  position: relative;
+}
+
+.premium-locked::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  border-radius: 12px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.premium-lock-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 28px; /* Réduit de 32px */
+  height: 28px;
+  background-color: rgba(245, 158, 11, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.premium-tooltip {
+  position: absolute;
+  bottom: -35px; /* Réduit de -40px */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1e293b;
+  color: white;
+  padding: 6px 10px; /* Réduit de 8px 12px */
+  border-radius: 6px; /* Réduit de 8px */
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Réduit de 6px */
+  font-size: 11px; /* Réduit de 12px */
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.premium-tooltip::before {
+  content: "";
+  position: absolute;
+  top: -5px; /* Réduit de -6px */
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #1e293b;
+}
+
+.premium-tooltip-icon {
+  color: #f59e0b;
+}
+
+.premium-upgrade-badge {
+  position: absolute;
+  top: 6px; /* Réduit de 8px */
+  right: 6px;
+  background: linear-gradient(45deg, #f59e0b, #f97316);
+  border-radius: 10px; /* Réduit de 12px */
+  padding: 2px 5px; /* Réduit de 3px 6px */
+  display: flex;
+  align-items: center;
+  gap: 2px; /* Réduit de 3px */
+  font-size: 9px; /* Réduit de 10px */
+  font-weight: 600;
+  color: white;
+  z-index: 3;
+}
+
+/* ===============================================
+   INDICATEURS DE QUOTA - VERSION COMPACTE
+   =============================================== */
+
+.quota-indicator {
+  position: absolute;
+  bottom: 6px; /* Réduit de 8px */
+  left: 12px; /* Réduit de 16px */
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px; /* Réduit de 2px */
+  z-index: 5;
+}
+
+.quota-bar {
+  height: 3px; /* Réduit de 4px */
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.quota-progress {
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.quota-text {
+  font-size: 8px; /* Réduit de 9px */
+  opacity: 0.7;
+}
+
+/* Section de quotas compacte */
+.quotas-section {
+  margin-bottom: 12px; /* Réduit de 20px */
+  width: 100%;
+}
+
+.quotas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Réduit de 12px */
+  margin-bottom: 12px; /* Réduit de 16px */
+}
+
+.quota-item {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Réduit de 12px */
+  background-color: rgba(51, 65, 85, 0.5);
+  padding: 8px; /* Réduit de 12px */
+  border-radius: 10px; /* Réduit de 12px */
+}
+
+.quota-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; /* Réduit de 40px */
+  height: 32px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 8px; /* Réduit de 10px */
+  color: #60a5fa;
+}
+
+.quota-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Réduit de 6px */
+}
+
+.quota-label {
+  font-size: 13px; /* Réduit de 14px */
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.quota-progress-bar {
+  height: 5px; /* Réduit de 6px */
+  background-color: rgba(226, 232, 240, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.quota-progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.quota-count {
+  font-size: 11px; /* Réduit de 12px */
+  color: #cbd5e1;
+}
+
+.reset-quotas-button {
+  width: 100%;
+  padding: 8px; /* Réduit de 12px */
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px; /* Réduit de 10px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Réduit de 8px */
+  font-size: 13px; /* Réduit de 14px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-quotas-button:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ===============================================
+   BOUTON RÉINITIALISATION COMPACT
+   =============================================== */
+
+.modern-reset-button {
+  width: 100%;
+  padding: 10px; /* Réduit de 14px */
+  border-radius: 12px; /* Réduit de 16px */
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* Réduit de 8px */
+  font-size: 13px; /* Réduit de 14px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-color: #dc2626;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px; /* Réduit de 20px */
+}
+
+.modern-reset-button:hover {
+  background-color: rgba(239, 68, 68, 0.25);
+  transform: translateY(-2px); /* Réduit de -3px */
+}
+
+/* ===============================================
+   NOTIFICATIONS COMPACTES
+   =============================================== */
+
+.modern-notification {
+  position: fixed;
+  bottom: 16px; /* Réduit de 20px */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #78350f;
+  color: #fcd34d;
+  padding: 8px 16px; /* Réduit de 12px 24px */
+  border-radius: 6px; /* Réduit de 8px */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: slide-up 0.4s ease-out;
+  font-size: 13px; /* Ajouté pour la taille de police */
+}
+
+@keyframes slide-up {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* ===============================================
+   FOOTER PREMIUM COMPACT
+   =============================================== */
+
+.premium-footer {
+  text-align: center;
+  margin-top: 12px; /* Réduit de 20px */
+  padding: 12px; /* Réduit de 16px */
+  font-size: 13px; /* Réduit de 14px */
+  color: #94a3b8;
+  width: 100%;
+}
+
+.premium-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px; /* Réduit de 4px */
+  background: none;
+  border: none;
+  color: #f59e0b;
+  font-weight: 600;
+  padding: 3px 6px; /* Réduit de 4px 8px */
+  margin-left: 4px; /* Réduit de 6px */
+  cursor: pointer;
+  border-radius: 8px; /* Réduit de 12px */
+  transition: all 0.2s ease;
+  font-size: 13px;
+}
+
+.premium-link:hover {
+  background-color: rgba(245, 158, 11, 0.1);
+  transform: scale(1.03); /* Réduit de 1.05 */
+}
+
+/* ===============================================
+   BOUTON PREMIUM FLOTTANT - VERSION COMPACTE
+   =============================================== */
+
+.floating-premium-button {
+  position: fixed !important;
+  bottom: 70px !important; /* Réduit de 90px */
+  right: 16px !important; /* Réduit de 24px */
+  background: linear-gradient(45deg, #f59e0b, #f97316) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 40px !important; /* Réduit de 50px */
+  padding: 8px 16px !important; /* Réduit de 10px 20px */
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important; /* Réduit de 8px */
+  font-weight: 600 !important;
+  font-size: 13px !important; /* Réduit de 15px */
+  box-shadow: 0 3px 10px rgba(249, 115, 22, 0.4) !important;
+  z-index: 100 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.floating-premium-button:hover {
+  transform: translateY(-2px) !important; /* Réduit de -3px */
+  box-shadow: 0 5px 14px rgba(249, 115, 22, 0.5) !important;
+}
+
+.floating-premium-button .premium-button-icon {
+  color: #ffdd00 !important;
+}
+
+/* ===============================================
+   NAVIGATION INFÉRIEURE - VERSION COMPACTE
+   =============================================== */
+
+.bottom-navigation {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background-color: #1e293b;
+  border-top: 1px solid #334155;
+  z-index: 1000 !important;
+  padding: 6px 0; /* Réduit de 8px */
+  box-shadow: 0px -3px 8px rgba(0, 0, 0, 0.1);
+  transform: none !important;
+  display: none;
+}
+
+.bottom-nav-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 800px; /* Réduit de 800px */
+  margin: 0 auto;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px; /* Réduit de 8px 16px */
+  border-radius: 8px; /* Réduit de 10px */
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.bottom-nav-item.active {
+  color: #3b82f6;
+  position: relative;
+}
+
+.bottom-nav-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px; /* Réduit de -8px */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px; /* Réduit de 24px */
+  height: 3px; /* Réduit de 4px */
+  background-color: #3b82f6;
+  border-radius: 2px;
+}
+
+.bottom-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bottom-nav-label {
+  font-size: 11px; /* Réduit de 12px */
+  margin-top: 2px; /* Réduit de 4px */
+  font-weight: 500;
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN - VERSION COMPACTE
+   =============================================== */
+
+/* Desktop - version compacte */
+@media (min-width: 769px) {
+  .modern-main-container {
+    padding: 24px 20px; /* Réduit de 30px */
+    margin: 8px auto; /* Réduit de 10px */
+    gap: 20px; /* Espacement légèrement plus grand sur desktop */
+  }
+  
+  .modern-logo-circle {
+    width: 80px; /* Légèrement plus grand sur desktop */
+    height: 80px;
+  }
+  
+  .modern-logo-image {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .modern-logo-title {
+    font-size: 26px; /* Légèrement plus grand sur desktop */
+  }
+  
+  .floating-premium-button {
+    bottom: 24px !important;
+    right: 24px !important;
+  }
+}
+
+/* Mobile - version très compacte */
+@media (max-width: 768px) {
+  .modern-main-container {
+    padding: 60px 12px 80px 12px !important; /* Padding compact */
+    gap: 12px;
+  }
+  
+  .bottom-navigation {
+    display: block !important;
+  }
+
+  .modern-logo-circle {
+    width: 60px; /* Encore plus petit sur mobile */
+    height: 60px;
+  }
+
+  .modern-logo-image {
+    width: 48px;
+    height: 48px;
+  }
+
+  .modern-logo-title {
+    font-size: 20px; /* Réduit de 24px */
+  }
+
+  .modern-level-card {
+    padding: 12px; /* Réduit de 16px */
+  }
+
+  .modern-badge {
+    width: 40px; /* Réduit de 48px */
+    height: 40px;
+    font-size: 18px; /* Réduit de 24px */
+    margin-right: 10px;
+  }
+
+  .modern-level-title {
+    font-size: 16px; /* Réduit de 20px */
+  }
+
+  .modern-level-description {
+    font-size: 12px;
+  }
+
+  .modern-menu-grid {
+    grid-template-columns: 1fr;
+    gap: 8px; /* Réduit de 12px */
+  }
+
+  .modern-menu-item {
+    padding: 10px; /* Réduit de 12px */
+    min-height: 56px; /* Réduit de 64px */
+  }
+  
+  .modern-menu-icon {
+    width: 32px; /* Réduit de 40px */
+    height: 32px;
+    font-size: 16px; /* Réduit de 20px */
+    margin-right: 10px;
+  }
+  
+  .modern-learning-stats {
+    flex-direction: column;
+    gap: 6px; /* Réduit de 8px */
+  }
+  
+  .modern-stat-badge {
+    font-size: 11px; /* Réduit de 12px */
+    padding: 3px 8px;
+  }
+  
+  .premium-upgrade-menu-button {
+    padding: 6px 12px; /* Réduit de 8px 14px */
+    font-size: 12px;
+  }
+  
+  .quota-item {
+    padding: 6px; /* Réduit de 8px */
+  }
+  
+  .quota-icon {
+    width: 28px; /* Réduit de 32px */
+    height: 28px;
+  }
+  
+  .quota-label {
+    font-size: 12px;
+  }
+  
+  .floating-premium-button {
+    bottom: 60px !important;
+    right: 12px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* Très petits écrans - ultra compact */
+@media (max-width: 480px) {
+  .modern-main-container {
+    padding: 50px 8px 70px 8px !important; /* Très compact */
+    gap: 10px;
+  }
+  
+  .modern-level-card {
+    padding: 8px; /* Très compact */
+  }
+  
+  .modern-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    margin-right: 8px;
+  }
+  
+  .modern-level-title {
+    font-size: 14px;
+  }
+  
+  .modern-level-description {
+    font-size: 11px;
+  }
+  
+  .modern-progress-stats {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .modern-menu-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    margin-right: 8px;
+  }
+  
+  .modern-menu-label {
+    font-size: 13px;
+  }
+  
+  .modern-menu-description {
+    font-size: 10px;
+  }
+  
+  .bottom-nav-item {
+    padding: 4px 6px;
+  }
+  
+  .bottom-nav-label {
+    font-size: 10px;
+  }
+  
+  .quota-item {
+    padding: 6px;
+  }
+  
+  .quota-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .floating-premium-button {
+    bottom: 50px !important;
+    right: 8px !important;
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* ===============================================
+   MASQUER SUR DESKTOP - NAVIGATION MOBILE
+   =============================================== */
+
+@media (min-width: 769px) {
+  .bottom-navigation {
+    display: none !important;
+  }
+}
+
+/* ===============================================
+   ANIMATIONS OPTIMISÉES
+   =============================================== */
+
+/* Suppression des animations lourdes pour plus de fluidité */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px); /* Réduit de -5px */
+  }
+}
+
+/* Animation subtile pour le badge */
+.modern-badge {
+  animation: float 4s ease-in-out infinite; /* Ralenti de 3s à 4s */
+}
+
+@keyframes shine {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.modern-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%, /* Réduit l'opacité */
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shine 3s infinite; /* Ralenti de 2s à 3s */
+}
+
+/* Animation pulsation réduite */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5); /* Réduit l'opacité */
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(249, 115, 22, 0); /* Réduit la taille */
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+  }
+}
+
+.floating-premium-button.with-pulse {
+  animation: pulse 3s infinite; /* Ralenti de 2s à 3s */
+}
+
+/* Transitions plus rapides pour une meilleure réactivité */
+.modern-menu-item,
+.desktop-tab,
+.bottom-nav-item,
+.modern-theme-button,
+.modern-logout-button,
+.premium-upgrade-menu-button,
+.modern-reset-button,
+.reset-quotas-button {
+  transition: all 0.15s ease !important; /* Réduit de 0.2s */
+}
+
+/* ===============================================
+   AMÉLIORATIONS FINALES
+   =============================================== */
+
+/* Améliorer les transitions entre onglets */
+.modern-menu-grid.fade-out {
+  opacity: 0.2 !important;
+  transform: scale(0.98) !important;
+  pointer-events: none !important;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modern-menu-grid {
+  animation: fadeInScale 0.25s ease-out !important; /* Accéléré */
+}
+
+/* Transitions de thème fluides */
+.theme-transition {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+}
+
+/* Performance - GPU acceleration pour les éléments animés */
+.modern-menu-item,
+.modern-badge,
+.modern-progress-fill,
+.floating-premium-button {
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+}
+
+/* Protection contre les modifications externes */
+.modern-main-container,
+.modern-main-container .modern-menu-container,
+.modern-main-container .modern-menu-grid,
+.modern-main-container .modern-level-card,
+.modern-main-container .modern-logo-container {
+  position: relative !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* Mode transition pour éviter les conflits visuels */
+.mode-transition {
+  opacity: 0.8 !important;
+  transition: opacity 0.15s ease !important;
+}
+
+/* Classe pour les transitions d'onglets */
+.tab-transition {
+  animation: fadeInOut 0.25s ease-out !important;
+}
+
+@keyframes fadeInOut {
+  0% { 
+    opacity: 0; 
+    transform: translateY(8px); /* Réduit de 10px */
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* ===============================================
+   ACCESSIBILITÉ
+   =============================================== */
+
+/* Réduction des animations si demandée */
+@media (prefers-reduced-motion: reduce) {
+  .modern-badge,
+  .modern-progress-fill::after,
+  .floating-premium-button.with-pulse {
+    animation: none !important;
+  }
+  
+  .modern-menu-item,
+  .desktop-tab,
+  .bottom-nav-item,
+  .modern-theme-button,
+  .modern-logout-button {
+    transition: none !important;
+  }
+  
+  .modern-menu-grid {
+    animation: none !important;
+  }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+  .modern-menu-item {
+    border-width: 2px !important;
+  }
+  
+  .modern-badge {
+    border-width: 3px !important;
+  }
+  
+  .premium-tooltip {
+    border: 2px solid currentColor !important;
+  }
+  
+  .modern-level-card {
+    border-width: 2px !important;
+  }
+}
+
+/* Focus visible pour l'accessibilité clavier */
+.modern-menu-item:focus-visible,
+.desktop-tab:focus-visible,
+.bottom-nav-item:focus-visible,
+.modern-theme-button:focus-visible,
+.modern-logout-button:focus-visible,
+.premium-upgrade-menu-button:focus-visible,
+.modern-reset-button:focus-visible,
+.reset-quotas-button:focus-visible {
+  outline: 2px solid #3b82f6 !important;
+  outline-offset: 2px !important;
+}
+
+/* ===============================================
+   PRINT STYLES
+   =============================================== */
+
+@media print {
+  .modern-main-container {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    padding: 20px !important;
+  }
+  
+  .floating-premium-button,
+  .bottom-navigation,
+  .modern-theme-button,
+  .modern-logout-button,
+  .premium-upgrade-menu-button {
+    display: none !important;
+  }
+  
+  .modern-menu-item {
+    border: 1px solid #ccc !important;
+    background: white !important;
+    color: black !important;
+    break-inside: avoid !important;
+  }
+  
+  .modern-level-card {
+    border: 1px solid #ccc !important;
+    background: white !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* ===============================================
+   CORRECTION ESPACE BLANC À DROITE
+   Ajoutez ces règles à votre MainMenu.css
+   =============================================== */
+
+/* CORRECTION PRINCIPALE - Supprimer l'espace blanc */
+body, html {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow-x: hidden !important;
+  background-color: transparent !important;
+}
+
+
+
+/* App container - Suppression complète de l'espace blanc */
+.App {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow-x: hidden !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  
+  /* Assurer que le background couvre tout */
+  position: relative !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+}
+
+/* MainMenu container - Ajustements pour éviter l'espace blanc */
+.modern-main-container {
+  width: 100% !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  padding: 16px !important;
+  background-color: transparent !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #f1f5f9;
+  
+  /* CORRECTIONS PRINCIPALES */
+  position: relative !important;
+  min-height: auto !important;
+  height: auto !important;
+  transform: none !important;
+  overflow-x: hidden !important;
+  
+  /* Assurer que le contenu ne déborde pas */
+  box-sizing: border-box !important;
+  
+  /* CENTRAGE SANS ÉTIREMENT */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+/* Correction spécifique pour les éléments qui pourraient créer de l'espace */
+.modern-main-container * {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Correction pour les pseudo-éléments */
+.modern-main-container::before,
+.modern-main-container::after,
+.App::before,
+.App::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Mobile - corrections spécifiques */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .App {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
+  
+  .modern-main-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 60px 12px 80px 12px !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Desktop - corrections spécifiques */
+@media (min-width: 769px) {
+  .App {
+    min-height: 100vh !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  
+  .modern-main-container {
+    padding: 24px 20px !important;
+    margin: 8px auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+/* Correction pour les éléments de grille qui pourraient déborder */
+.modern-menu-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.modern-menu-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* Correction pour les éléments fixes qui pourraient créer de l'espace */
+.floating-premium-button,
+.bottom-navigation {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Correction pour le header si présent */
+.modern-header {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+/* Force la suppression de tout margin/padding sur les éléments principaux */
+.modern-logo-container,
+.modern-level-card,
+.modern-menu-container,
+.quotas-section,
+.premium-footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Correction spéciale pour les onglets desktop */
+.desktop-tabs {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* S'assurer que rien ne déborde horizontalement */
+* {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Correction pour les éléments en position absolute/fixed */
+.premium-tooltip,
+.modern-notification {
+  max-width: calc(100vw - 40px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Correction pour les débordements de texte */
+.modern-menu-label,
+.modern-menu-description,
+.modern-level-title,
+.modern-level-description {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+/* Ajout d'une règle de sécurité globale */
+html {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+
+.App {
+  text-align: center !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  position: relative !important;
+}
+
+/* Correction pour Framer Motion si utilisé */
+.App > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  box-sizing: border-box !important;
+}
+
+
+/* ===============================================
+   RÉDUCTION DE LA CARTE DE NIVEAU
+   Ajoutez ces règles à votre MainMenu.css
+   =============================================== */
+
+/* CARTE DE NIVEAU - VERSION ENCORE PLUS COMPACTE */
+.modern-level-card {
+  background-color: rgba(30, 41, 59, 0.5);
+  border: 1px solid #334155;
+  border-radius: 12px; /* Réduit de 16px à 12px */
+  padding: 12px; /* Réduit de 16px à 12px */
+  margin-bottom: 16px; /* Réduit de 20px à 16px */
+  position: relative !important;
+  overflow: hidden;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Réduit l'ombre */
+  backdrop-filter: blur(10px);
+  width: 100% !important;
+  transform: none !important;
+  
+  /* RÉDUCTION PRINCIPALE - Hauteur compacte */
+  min-height: auto !important;
+  max-height: 200px !important; /* Limite la hauteur maximale */
+}
+
+/* Élément décoratif plus petit */
+.modern-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px; /* Réduit de 120px à 80px */
+  height: 80px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0) 70%); /* Opacité réduite */
+  border-radius: 50%;
+  transform: translate(25%, -25%); /* Ajusté */
+}
+
+/* Informations de niveau plus compactes */
+.modern-level-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px; /* Réduit de 12px à 8px */
+}
+
+/* Badge plus petit */
+.modern-badge {
+  width: 40px; /* Réduit de 48px à 40px */
+  height: 40px;
+  background-color: #064e3b;
+  border: 2px solid #059669;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* Réduit de 24px à 20px */
+  margin-right: 10px; /* Réduit de 12px à 10px */
+  position: relative;
+  box-shadow: 0px 2px 4px rgba(6, 78, 59, 0.3); /* Réduit l'ombre */
+  z-index: 2;
+}
+
+/* Titre et description plus compacts */
+.modern-level-title {
+  font-size: 18px; /* Réduit de 20px à 18px */
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0 0 1px 0; /* Réduit */
+  line-height: 1.2; /* Ajout pour réduire l'espacement */
+}
+
+.modern-level-description {
+  font-size: 12px; /* Réduit de 14px à 12px */
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Barre de progression plus fine */
+.modern-progress-bar {
+  width: 100%;
+  height: 8px; /* Réduit de 12px à 8px */
+  background-color: #334155;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 6px; /* Réduit de 8px à 6px */
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Marqueurs de progression plus petits */
+.modern-marker-line {
+  width: 1px; /* Réduit de 2px à 1px */
+  height: 8px; /* Ajusté à la nouvelle hauteur */
+  background-color: rgba(255, 255, 255, 0.3);
+  opacity: 0.7;
+}
+
+/* Statistiques de progression compactes */
+.modern-progress-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px; /* Réduit de 12px à 8px */
+  flex-wrap: wrap;
+  gap: 4px; /* Réduit de 8px à 4px */
+}
+
+.modern-stat-badge {
+  padding: 3px 8px; /* Réduit encore plus */
+  border-radius: 12px;
+  font-size: 11px; /* Réduit de 12px à 11px */
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Statistiques d'apprentissage très compactes */
+.modern-learning-stats {
+  display: flex;
+  gap: 8px; /* Réduit de 12px à 8px */
+}
+
+.modern-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Réduit de 8px à 6px */
+  background-color: rgba(51, 65, 85, 0.5);
+  padding: 4px 8px; /* Réduit encore plus */
+  border-radius: 8px; /* Réduit de 10px à 8px */
+  flex-grow: 1;
+}
+
+.modern-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; /* Réduit de 28px à 24px */
+  height: 24px;
+  background-color: rgba(59, 130, 246, 0.2);
+  border-radius: 4px; /* Réduit de 6px à 4px */
+  color: #60a5fa;
+}
+
+.modern-stat-value {
+  font-size: 14px; /* Réduit de 16px à 14px */
+  font-weight: 600;
+  color: #f1f5f9;
+  line-height: 1.2;
+}
+
+.modern-stat-label {
+  font-size: 10px; /* Réduit de 11px à 10px */
+  color: #94a3b8;
+  line-height: 1.1;
+}
+
+/* Animation du badge réduite */
+.modern-badge::after {
+  content: "";
+  position: absolute;
+  top: -2px; /* Ajusté */
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 1px solid rgba(5, 150, 105, 0.3); /* Bordure plus fine */
+  animation: pulse-badge 2s infinite;
+}
+
+/* LOGO également plus compact pour équilibrer */
+.modern-logo-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin-bottom: 16px; /* Réduit de 20px à 16px */
+  position: relative !important;
+  transform: none !important;
+}
+
+.modern-logo-circle {
+  width: 60px; /* Réduit de 70px à 60px */
+  height: 60px;
+  background-color: #1e40af;
+  border: 2px solid #3b82f6; /* Réduit de 3px à 2px */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px; /* Réduit de 8px à 6px */
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(30, 64, 175, 0.3);
+}
+
+.modern-logo-image {
+  width: 48px; /* Réduit de 56px à 48px */
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+}
+
+.modern-logo-title {
+  font-size: 22px; /* Réduit de 24px à 22px */
+  font-weight: 700;
+  color: #818cf8;
+  margin: 0;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+/* Bouton Premium encore plus compact */
+.premium-upgrade-menu-button {
+  margin-top: 6px; /* Réduit de 8px à 6px */
+  padding: 6px 12px; /* Réduit encore */
+  background: linear-gradient(45deg, #f59e0b, #f97316);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 12px; /* Réduit de 13px à 12px */
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px; /* Réduit de 6px à 4px */
+  box-shadow: 0px 2px 4px rgba(249, 115, 22, 0.3);
+  transition: transform 0.3s ease;
+  line-height: 1.2;
+}
+
+/* ESPACEMENT GLOBAL réduit */
+.modern-main-container {
+  gap: 12px !important; /* Réduit de 16px à 12px */
+}
+
+/* Section titre plus compact */
+.modern-section-title {
+  font-size: 15px; /* Réduit de 16px à 15px */
+  font-weight: 600;
+  margin-bottom: 10px; /* Réduit de 12px à 10px */
+  color: #64748b;
+  position: relative !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center !important;
+  min-height: 20px; /* Réduit de 24px à 20px */
+  transform: none !important;
+}
+
+/* RESPONSIVE - Mobile encore plus compact */
+@media (max-width: 768px) {
+  .modern-level-card {
+    padding: 10px; /* Très compact sur mobile */
+    margin-bottom: 12px;
+    max-height: 160px; /* Encore plus petit sur mobile */
+  }
+
+  .modern-badge {
+    width: 32px; /* Très petit sur mobile */
+    height: 32px;
+    font-size: 16px;
+    margin-right: 8px;
+  }
+
+  .modern-level-title {
+    font-size: 16px;
+  }
+
+  .modern-level-description {
+    font-size: 11px;
+  }
+
+  .modern-progress-bar {
+    height: 6px; /* Très fin sur mobile */
+  }
+
+  .modern-stat-badge {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .modern-stat-item {
+    padding: 3px 6px;
+  }
+
+  .modern-stat-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .modern-stat-value {
+    font-size: 12px;
+  }
+
+  .modern-stat-label {
+    font-size: 9px;
+  }
+
+  .modern-logo-circle {
+    width: 50px; /* Encore plus petit */
+    height: 50px;
+  }
+
+  .modern-logo-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .modern-logo-title {
+    font-size: 18px;
+  }
+
+  /* Espacement encore plus compact sur mobile */
+  .modern-main-container {
+    gap: 8px !important;
+    padding: 60px 12px 80px 12px !important;
+  }
+
+  .modern-logo-container {
+    margin-bottom: 12px;
+  }
+}
+
+/* Très petits écrans - ultra compact */
+@media (max-width: 480px) {
+  .modern-level-card {
+    padding: 8px;
+    margin-bottom: 10px;
+    max-height: 140px;
+  }
+
+  .modern-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    margin-right: 6px;
+  }
+
+  .modern-level-title {
+    font-size: 14px;
+  }
+
+  .modern-level-description {
+    font-size: 10px;
+  }
+
+  .modern-progress-bar {
+    height: 5px;
+  }
+
+  .modern-logo-circle {
+    width: 45px;
+    height: 45px;
+  }
+
+  .modern-logo-image {
+    width: 36px;
+    height: 36px;
+  }
+
+  .modern-logo-title {
+    font-size: 16px;
+  }
+}
+:root {
+  --color-bg: #f4e7c5;
+  --color-card: #fff6e0;
+  --color-primary: #b45309; /* ocre foncé */
+  --color-accent: #8a3d0b;  /* terre rouge */
+  --color-dark: #2d1d0e;
+  --color-soft: #5b3e1d;
+  --color-border: #c29452;
+  --color-btn-bg: #d9831f;
+  --color-btn-hover: #a65c0c;
+  --color-black: #1c120a;
+  --color-progress: #633311;
+  --radius: 14px;
+}
+
+/* === Reset de base === */
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg);
+  color: var(--color-dark);
+}
+
+/* === Conteneur principal === */
+.modern-main-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: var(--color-card);
+  border: 3px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* === Titre et logo === */
+.modern-logo-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  color: var(--color-primary);
+  text-align: center;
+}
+
+/* === Badge et niveau === */
+.modern-level-card {
+  background-color: #fae3b6;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-top: 1rem;
+  border: 2px solid var(--color-border);
+}
+
+.modern-level-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.modern-level-description {
+  font-size: 0.95rem;
+  color: var(--color-soft);
+}
+
+/* === Progress bar === */
+.modern-progress-bar {
+  background: #fef6e4;
+  border-radius: var(--radius);
+  height: 12px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.modern-progress-fill {
+  background-color: var(--color-progress);
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+}
+
+/* === Menu === */
+.modern-menu-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modern-menu-item {
+  background-color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.modern-menu-item:hover {
+  background-color: #fdf0dd;
+  transform: scale(1.02);
+}
+
+/* === Boutons === */
+button, .modern-theme-button, .premium-upgrade-menu-button {
+  background-color: var(--color-btn-bg);
+  color: white;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--color-btn-hover);
+}
+
+/* === Badge XP et niveau === */
+.modern-stat-badge {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  margin-top: 0.5rem;
+}
+
+.modern-stat-badge-primary {
+  background-color: var(--color-btn-bg);
+  color: white;
+}
+
+.modern-stat-badge-secondary {
+  background-color: #e6d3b3;
+  color: var(--color-dark);
+}
+
+/* === Onglets (desktop tabs) === */
+.desktop-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.desktop-tab {
+  background-color: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.desktop-tab.active {
+  border-bottom: 3px solid var(--color-accent);
+}
+
+/* === Responsive mobile === */
+@media (max-width: 600px) {
+  .modern-main-container {
+    padding: 1rem;
+  }
+
+  .desktop-tabs {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+
+
+/* === ARRIÈRE-PLAN PRINCIPAL === */
+.App {
+  background: linear-gradient(135deg, #cd853f 0%, #8b4513 50%, #a0522d 100%) !important;
+  /* Dégradé ocre vers terre cuite */
+}
+
+/* Alternative plus douce */
+.App.soft-gradient {
+  background: linear-gradient(135deg, #d2b48c 0%, #cd853f 40%, #8b4513 100%) !important;
+}
+
+/* === HEADER MOBILE === */
+.mobile-header {
+  background: linear-gradient(to right, #cd853f, #8b4513) !important;
+  color: white !important;
+}
+
+/* === CONTENEUR PRINCIPAL === */
+.modern-main-container {
+  background-color: rgba(244, 228, 188, 0.1) !important; /* Sable très transparent */
+  color: #8b4513 !important; /* Texte terre cuite */
+}
+
+/* === CARTE DE NIVEAU === */
+.modern-level-card {
+  background-color: rgba(205, 133, 63, 0.15) !important; /* Ocre transparent */
+  border: 1px solid #cd853f !important;
+  color: #8b4513 !important;
+}
+
+.modern-badge {
+  background-color: #8b4513 !important; /* Terre cuite */
+  border: 2px solid #cd853f !important; /* Border ocre */
+  color: white !important;
+}
+
+/* === BARRE DE PROGRESSION === */
+.modern-progress-bar {
+  background-color: rgba(139, 69, 19, 0.2) !important; /* Terre cuite clair */
+}
+
+.modern-progress-fill {
+  background: linear-gradient(to right, #cd853f, #8b4513) !important;
+}
+
+/* === ONGLETS DESKTOP === */
+.desktop-tabs {
+  background-color: rgba(244, 228, 188, 0.7) !important; /* Sable transparent */
+}
+
+.desktop-tab {
+  color: #8b4513 !important; /* Terre cuite */
+}
+
+.desktop-tab.active {
+  background-color: #cd853f !important; /* Ocre */
+  border-color: #8b4513 !important; /* Terre cuite */
+  color: white !important;
+}
+
+.desktop-tab:hover {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  border-color: rgba(139, 69, 19, 0.3) !important;
+  color: #8b4513 !important;
+}
+
+/* === ÉLÉMENTS DE MENU === */
+.modern-menu-item {
+  background-color: rgba(245, 245, 220, 0.8) !important; /* Beige transparent */
+  border-color: #cd853f !important; /* Border ocre */
+  color: #8b4513 !important;
+}
+
+.modern-menu-item:hover {
+  background-color: rgba(210, 180, 140, 0.6) !important; /* Ocre clair transparent */
+  transform: translateY(-2px) !important;
+}
+
+.modern-menu-item.active {
+  background-color: rgba(205, 133, 63, 0.3) !important;
+  border-color: #8b4513 !important;
+  border-width: 2px !important;
+}
+
+/* === ICÔNES DE MENU === */
+.modern-menu-icon {
+  background-color: rgba(139, 69, 19, 0.1) !important; /* Terre cuite très clair */
+  color: #8b4513 !important;
+}
+
+/* === BOUTONS === */
+.modern-theme-button,
+.modern-logout-button,
+.premium-upgrade-menu-button,
+.reset-quotas-button {
+  background: linear-gradient(45deg, #cd853f, #8b4513) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.modern-theme-button:hover,
+.modern-logout-button:hover {
+  background: linear-gradient(45deg, #8b4513, #a0522d) !important;
+}
+
+/* === BADGES ET STATISTIQUES === */
+.modern-stat-badge-primary {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: #8b4513 !important;
+  border: 1px solid #cd853f !important;
+}
+
+.modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.2) !important;
+  color: #cd853f !important;
+  border: 1px solid #8b4513 !important;
+}
+
+/* === ÉLÉMENTS STATISTIQUES === */
+.modern-stat-item {
+  background-color: rgba(244, 228, 188, 0.5) !important; /* Sable transparent */
+}
+
+.modern-stat-icon {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: #8b4513 !important;
+}
+
+/* === LOGO === */
+.modern-logo-circle {
+  background-color: #8b4513 !important; /* Terre cuite */
+  border: 3px solid #cd853f !important; /* Border ocre */
+}
+
+.modern-logo-title {
+  color: #cd853f !important;
+  background: linear-gradient(45deg, #cd853f, #8b4513) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* === NAVIGATION MOBILE === */
+.bottom-navigation {
+  background-color: rgba(139, 69, 19, 0.95) !important; /* Terre cuite */
+  border-top: 1px solid #cd853f !important;
+}
+
+.bottom-nav-item {
+  color: rgba(245, 245, 220, 0.8) !important; /* Beige transparent */
+}
+
+.bottom-nav-item.active {
+  color: #cd853f !important;
+}
+
+.bottom-nav-item.active::after {
+  background-color: #cd853f !important;
+}
+
+/* === QUOTAS === */
+.quota-item {
+  background-color: rgba(244, 228, 188, 0.6) !important;
+}
+
+.quota-icon {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: #8b4513 !important;
+}
+
+.quota-progress-fill {
+  background: linear-gradient(to right, #cd853f, #8b4513) !important;
+}
+
+/* === PREMIUM === */
+.premium-upgrade-menu-button {
+  background: linear-gradient(45deg, #cd853f, #8b4513) !important;
+}
+
+.floating-premium-button {
+  background: linear-gradient(45deg, #cd853f, #8b4513) !important;
+}
+
+/* === DÉCORATIONS === */
+.modern-decoration {
+  background: radial-gradient(circle, rgba(205, 133, 63, 0.3) 0%, rgba(205, 133, 63, 0) 70%) !important;
+}
+
+/* === TOOLTIPS === */
+.premium-tooltip {
+  background-color: #8b4513 !important;
+  color: white !important;
+}
+
+.premium-tooltip::before {
+  border-bottom-color: #8b4513 !important;
+}
+
+/* === NOTIFICATIONS === */
+.modern-notification {
+  background-color: #8b4513 !important;
+  color: #f4e4bc !important;
+}
+
+/* === MODE CLAIR (THÈME LIGHT) === */
+.light .modern-main-container {
+  background-color: rgba(245, 245, 220, 0.3) !important; /* Beige très clair */
+  color: #8b4513 !important;
+}
+
+.light .modern-level-card {
+  background-color: rgba(244, 228, 188, 0.8) !important; /* Sable */
+  border-color: #cd853f !important;
+}
+
+.light .modern-menu-item {
+  background-color: rgba(245, 245, 220, 0.9) !important; /* Beige */
+  border-color: #cd853f !important;
+}
+
+.light .modern-menu-item:hover {
+  background-color: rgba(210, 180, 140, 0.8) !important;
+}
+
+/* === ANIMATIONS PERSONNALISÉES === */
+@keyframes ocre-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(205, 133, 63, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(205, 133, 63, 0.8);
+  }
+}
+
+.modern-badge {
+  animation: ocre-glow 3s ease-in-out infinite !important;
+}
+
+/* === VARIANTES DE DÉGRADÉS === */
+.gradient-variant-1 {
+  background: linear-gradient(135deg, #daa520 0%, #cd853f 50%, #8b4513 100%) !important;
+  /* Or antique vers terre cuite */
+}
+
+.gradient-variant-2 {
+  background: linear-gradient(135deg, #f4e4bc 0%, #cd853f 30%, #8b4513 70%, #654321 100%) !important;
+  /* Sable vers brun foncé */
+}
+
+.gradient-variant-3 {
+  background: radial-gradient(circle at center, #cd853f 0%, #8b4513 50%, #654321 100%) !important;
+  /* Dégradé radial ocre */
+}
+
+/* ===============================================
+   MODIFICATIONS COULEURS - REMPLACER BLEU PAR SABLE/OCRE
+   Ajoutez ces règles à la fin de votre MainMenu.css existant
+   =============================================== */
+
+/* Couleurs principales - Mode sombre (ocre) */
+.App {
+  background: linear-gradient(135deg, #cd853f 0%, #daa520 50%, #b8860b 100%) !important;
+}
+
+.modern-logo-circle {
+  background-color: #cd853f !important;
+  border: 3px solid #daa520 !important;
+  box-shadow: 0px 6px 12px rgba(205, 133, 63, 0.3) !important;
+}
+
+.modern-logo-circle::after {
+  background: radial-gradient(
+    circle at center,
+    rgba(205, 133, 63, 0.3) 0%,
+    rgba(205, 133, 63, 0) 70%
+  ) !important;
+}
+
+.modern-logo-title {
+  background: linear-gradient(45deg, #cd853f, #daa520) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.modern-progress-fill {
+  background: linear-gradient(to right, #cd853f, #daa520) !important;
+}
+
+.desktop-tab.active {
+  background-color: #cd853f !important;
+  border-color: #daa520 !important;
+}
+
+.desktop-tab:hover {
+  background-color: rgba(205, 133, 63, 0.1) !important;
+  border-color: rgba(218, 165, 32, 0.3) !important;
+  color: #cd853f !important;
+}
+
+.bottom-nav-item.active {
+  color: #cd853f !important;
+}
+
+.bottom-nav-item.active::after {
+  background-color: #cd853f !important;
+}
+
+.quota-progress-fill {
+  background: linear-gradient(to right, #cd853f, #daa520) !important;
+}
+
+.premium-upgrade-menu-button {
+  background: linear-gradient(45deg, #cd853f, #daa520) !important;
+}
+
+.floating-premium-button {
+  background: linear-gradient(45deg, #cd853f, #daa520) !important;
+}
+
+/* Couleurs principales - Mode clair (sable) */
+.light .App {
+  background: linear-gradient(135deg, #f4e4bc 0%, #f5deb3 50%, #daa520 100%) !important;
+}
+
+.light .modern-logo-circle {
+  background-color: #f5deb3 !important;
+  border-color: #daa520 !important;
+  box-shadow: 0px 6px 12px rgba(245, 222, 179, 0.3) !important;
+}
+
+.light .modern-logo-title {
+  color: #cd853f !important;
+  background: linear-gradient(45deg, #cd853f, #daa520) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.light .modern-progress-fill {
+  background: linear-gradient(to right, #daa520, #cd853f) !important;
+}
+
+.light .desktop-tab.active {
+  background-color: #daa520 !important;
+  border-color: #cd853f !important;
+}
+
+.light .desktop-tab:hover {
+  background-color: rgba(245, 222, 179, 0.3) !important;
+  border-color: rgba(218, 165, 32, 0.5) !important;
+  color: #cd853f !important;
+}
+
+.light .bottom-nav-item.active {
+  color: #daa520 !important;
+}
+
+.light .bottom-nav-item.active::after {
+  background-color: #daa520 !important;
+}
+
+.light .quota-progress-fill {
+  background: linear-gradient(to right, #daa520, #cd853f) !important;
+}
+
+.light .premium-upgrade-menu-button {
+  background: linear-gradient(45deg, #daa520, #cd853f) !important;
+}
+
+.light .floating-premium-button {
+  background: linear-gradient(45deg, #daa520, #cd853f) !important;
+}
+
+/* Éléments avec couleurs bleues à remplacer */
+.modern-stat-icon {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: #cd853f !important;
+}
+
+.light .modern-stat-icon {
+  background-color: rgba(245, 222, 179, 0.4) !important;
+  color: #daa520 !important;
+}
+
+.modern-stat-badge-primary {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: #cd853f !important;
+  border: 1px solid rgba(205, 133, 63, 0.3) !important;
+}
+
+.light .modern-stat-badge-primary {
+  background-color: rgba(245, 222, 179, 0.4) !important;
+  color: #daa520 !important;
+  border-color: rgba(218, 165, 32, 0.5) !important;
+}
+
+.quota-progress {
+  background-color: #cd853f !important;
+}
+
+.quota-icon {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+  color: #cd853f !important;
+}
+
+.light .quota-icon {
+  background-color: rgba(245, 222, 179, 0.4) !important;
+  color: #daa520 !important;
+}
+
+.reset-quotas-button {
+  background-color: rgba(205, 133, 63, 0.1) !important;
+  color: #cd853f !important;
+  border: 1px solid rgba(205, 133, 63, 0.3) !important;
+}
+
+.light .reset-quotas-button {
+  background-color: rgba(245, 222, 179, 0.3) !important;
+  color: #daa520 !important;
+  border-color: rgba(218, 165, 32, 0.5) !important;
+}
+
+.reset-quotas-button:hover {
+  background-color: rgba(205, 133, 63, 0.2) !important;
+}
+
+.light .reset-quotas-button:hover {
+  background-color: rgba(245, 222, 179, 0.5) !important;
+}
+
+/* Focus states */
+.modern-menu-item:focus-visible,
+.desktop-tab:focus-visible,
+.bottom-nav-item:focus-visible,
+.modern-theme-button:focus-visible,
+.modern-logout-button:focus-visible,
+.premium-upgrade-menu-button:focus-visible,
+.modern-reset-button:focus-visible,
+.reset-quotas-button:focus-visible {
+  outline: 2px solid #cd853f !important;
+}
+
+.light .modern-menu-item:focus-visible,
+.light .desktop-tab:focus-visible,
+.light .bottom-nav-item:focus-visible,
+.light .modern-theme-button:focus-visible,
+.light .modern-logout-button:focus-visible,
+.light .premium-upgrade-menu-button:focus-visible,
+.light .modern-reset-button:focus-visible,
+.light .reset-quotas-button:focus-visible {
+  outline: 2px solid #daa520 !important;
+}
+
+/* Mode Sombre - Textes plus contrastés */
+.modern-main-container {
+  color: var(--dark-text-primary) !important;
+}
+
+.modern-level-title,
+.modern-menu-label,
+.modern-logo-title,
+.modern-section-title,
+.modern-stat-value {
+  color: var(--dark-text-primary) !important;
+  font-weight: 700 !important; /* Plus gras pour plus de lisibilité */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre subtile */
+}
+
+.modern-level-description,
+.modern-menu-description,
+.modern-stat-label {
+  color: var(--dark-text-secondary) !important;
+  font-weight: 500 !important; /* Légèrement plus gras */
+}
+
+/* Mode Clair - Textes plus contrastés */
+.light .modern-main-container {
+  color: var(--light-text-primary) !important;
+}
+
+.light .modern-level-title,
+.light .modern-menu-label,
+.light .modern-logo-title,
+.light .modern-section-title,
+.light .modern-stat-value {
+  color: var(--light-text-primary) !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important; /* Ombre claire */
+}
+
+.light .modern-level-description,
+.light .modern-menu-description,
+.light .modern-stat-label {
+  color: var(--light-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* ===============================================
+   ENCADRÉS - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Carte de niveau - Mode Sombre */
+.modern-level-card {
+  background-color: rgba(205, 133, 63, 0.25) !important; /* Plus opaque */
+  border: 2px solid rgba(205, 133, 63, 0.6) !important; /* Bordure plus visible */
+  box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.4) !important; /* Ombre plus marquée */
+  backdrop-filter: blur(15px) !important; /* Plus de flou */
+}
+
+/* Mode Clair */
+.light .modern-level-card {
+  background-color: rgba(255, 255, 255, 0.9) !important; /* Plus opaque */
+  border: 2px solid rgba(218, 165, 32, 0.7) !important; /* Bordure plus visible */
+  box-shadow: 0px 8px 20px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* Éléments de menu - Mode Sombre */
+.modern-menu-item {
+  background-color: rgba(245, 245, 220, 0.15) !important; /* Plus opaque */
+  border: 2px solid rgba(205, 133, 63, 0.5) !important; /* Bordure plus visible */
+  box-shadow: 0 4px 12px rgba(205, 133, 63, 0.3) !important; /* Ombre plus marquée */
+  backdrop-filter: blur(10px) !important;
+}
+
+.modern-menu-item:hover {
+  background-color: rgba(205, 133, 63, 0.3) !important; /* Plus visible au survol */
+  border-color: rgba(205, 133, 63, 0.8) !important;
+  box-shadow: 0 6px 16px rgba(205, 133, 63, 0.4) !important;
+}
+
+.modern-menu-item.active {
+  background-color: rgba(205, 133, 63, 0.4) !important; /* Plus visible quand actif */
+  border: 3px solid var(--dark-secondary) !important; /* Bordure plus épaisse */
+}
+
+/* Mode Clair */
+.light .modern-menu-item {
+  background-color: rgba(255, 255, 255, 0.95) !important; /* Très opaque */
+  border: 2px solid rgba(218, 165, 32, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.25) !important;
+}
+
+.light .modern-menu-item:hover {
+  background-color: rgba(218, 165, 32, 0.15) !important;
+  border-color: rgba(218, 165, 32, 0.8) !important;
+  box-shadow: 0 6px 16px rgba(218, 165, 32, 0.3) !important;
+}
+
+.light .modern-menu-item.active {
+  background-color: rgba(218, 165, 32, 0.25) !important;
+  border: 3px solid var(--light-text-secondary) !important;
+}
+
+/* ===============================================
+   BADGES ET ICÔNES - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Badge de niveau - Mode Sombre */
+.modern-badge {
+  background-color: var(--dark-secondary) !important;
+  border: 3px solid rgba(205, 133, 63, 0.8) !important; /* Bordure plus contrastée */
+  color: var(--dark-text-primary) !important;
+  box-shadow: 0px 4px 8px rgba(139, 69, 19, 0.5) !important; /* Ombre plus marquée */
+  font-weight: 700 !important; /* Plus gras */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Mode Clair */
+.light .modern-badge {
+  background-color: var(--light-secondary) !important;
+  border: 3px solid rgba(218, 165, 32, 0.8) !important;
+  color: var(--light-text-primary) !important;
+  box-shadow: 0px 4px 8px rgba(218, 165, 32, 0.4) !important;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Icônes de menu - Mode Sombre */
+.modern-menu-icon {
+  background-color: rgba(139, 69, 19, 0.2) !important; /* Plus opaque */
+  color: var(--dark-text-primary) !important; /* Couleur plus contrastée */
+  border: 1px solid rgba(205, 133, 63, 0.3) !important; /* Bordure subtile */
+  box-shadow: 0 2px 4px rgba(139, 69, 19, 0.3) !important; /* Ombre légère */
+}
+
+/* Mode Clair */
+.light .modern-menu-icon {
+  background-color: rgba(218, 165, 32, 0.15) !important;
+  color: var(--light-text-primary) !important;
+  border: 1px solid rgba(218, 165, 32, 0.4) !important;
+  box-shadow: 0 2px 4px rgba(218, 165, 32, 0.2) !important;
+}
+
+/* ===============================================
+   STATISTIQUES - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Badges de statistiques - Mode Sombre */
+.modern-stat-badge-primary {
+  background-color: rgba(205, 133, 63, 0.3) !important; /* Plus opaque */
+  color: var(--dark-text-primary) !important;
+  border: 2px solid rgba(205, 133, 63, 0.6) !important; /* Bordure plus visible */
+  font-weight: 600 !important;
+}
+
+.modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.3) !important;
+  color: var(--dark-text-secondary) !important;
+  border: 2px solid rgba(139, 69, 19, 0.6) !important;
+  font-weight: 600 !important;
+}
+
+/* Mode Clair */
+.light .modern-stat-badge-primary {
+  background-color: rgba(218, 165, 32, 0.25) !important;
+  color: var(--light-text-primary) !important;
+  border: 2px solid rgba(218, 165, 32, 0.6) !important;
+}
+
+.light .modern-stat-badge-secondary {
+  background-color: rgba(139, 69, 19, 0.25) !important;
+  color: var(--light-text-secondary) !important;
+  border: 2px solid rgba(139, 69, 19, 0.6) !important;
+}
+
+/* Éléments statistiques détaillés - Mode Sombre */
+.modern-stat-item {
+  background-color: rgba(244, 228, 188, 0.15) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.3) !important; /* Bordure subtile */
+  box-shadow: 0 2px 6px rgba(139, 69, 19, 0.2) !important; /* Ombre légère */
+}
+
+/* Mode Clair */
+.light .modern-stat-item {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(218, 165, 32, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(218, 165, 32, 0.15) !important;
+}
+
+/* ===============================================
+   QUOTAS - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Éléments de quota - Mode Sombre */
+.quota-item {
+  background-color: rgba(244, 228, 188, 0.2) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.4) !important; /* Bordure ajoutée */
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2) !important; /* Ombre */
+}
+
+.quota-label {
+  color: var(--dark-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.quota-count {
+  color: var(--dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* Mode Clair */
+.light .quota-item {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(218, 165, 32, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(218, 165, 32, 0.15) !important;
+}
+
+.light .quota-label {
+  color: var(--light-text-primary) !important;
+}
+
+.light .quota-count {
+  color: var(--light-text-secondary) !important;
+}
+
+/* ===============================================
+   ONGLETS DESKTOP - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Onglets desktop - Mode Sombre */
+.desktop-tabs {
+  background-color: rgba(244, 228, 188, 0.8) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.5) !important; /* Bordure ajoutée */
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2) !important; /* Ombre */
+}
+
+.desktop-tab {
+  color: var(--dark-text-primary) !important;
+  font-weight: 500 !important;
+}
+
+.desktop-tab.active {
+  background-color: var(--dark-primary) !important;
+  border-color: var(--dark-secondary) !important;
+  color: var(--dark-text-primary) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.3) !important;
+}
+
+/* Mode Clair */
+.light .desktop-tabs {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(218, 165, 32, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.15) !important;
+}
+
+.light .desktop-tab {
+  color: var(--light-text-primary) !important;
+}
+
+.light .desktop-tab.active {
+  background-color: var(--light-primary) !important;
+  border-color: var(--light-text-secondary) !important;
+  color: var(--light-text-primary) !important;
+}
+
+/* ===============================================
+   NAVIGATION MOBILE - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Navigation mobile - Mode Sombre */
+.bottom-navigation {
+  background-color: rgba(139, 69, 19, 0.98) !important; /* Plus opaque */
+  border-top: 2px solid rgba(205, 133, 63, 0.7) !important; /* Bordure plus visible */
+  box-shadow: 0px -4px 12px rgba(139, 69, 19, 0.3) !important; /* Ombre plus marquée */
+}
+
+.bottom-nav-item {
+  color: var(--dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.bottom-nav-item.active {
+  color: var(--dark-text-primary) !important;
+  font-weight: 700 !important;
+}
+
+.bottom-nav-item.active::after {
+  background-color: var(--dark-text-primary) !important;
+  height: 4px !important; /* Plus épais */
+}
+
+/* Mode Clair */
+.light .bottom-navigation {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-top: 2px solid rgba(218, 165, 32, 0.7) !important;
+  box-shadow: 0px -4px 12px rgba(218, 165, 32, 0.2) !important;
+}
+
+.light .bottom-nav-item {
+  color: var(--light-text-secondary) !important;
+}
+
+.light .bottom-nav-item.active {
+  color: var(--light-text-primary) !important;
+}
+
+.light .bottom-nav-item.active::after {
+  background-color: var(--light-text-primary) !important;
+}
+
+/* ===============================================
+   BOUTONS - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Boutons principaux - Mode Sombre */
+.premium-upgrade-menu-button,
+.reset-quotas-button,
+.modern-reset-button {
+  font-weight: 700 !important; /* Plus gras */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important; /* Ombre de texte */
+  border: 2px solid rgba(255, 255, 255, 0.2) !important; /* Bordure subtile */
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4) !important; /* Ombre plus marquée */
+}
+
+.premium-upgrade-menu-button:hover,
+.reset-quotas-button:hover,
+.modern-reset-button:hover {
+  box-shadow: 0 6px 16px rgba(139, 69, 19, 0.5) !important;
+  transform: translateY(-3px) !important; /* Effet de survol plus marqué */
+}
+
+/* Mode Clair */
+.light .premium-upgrade-menu-button,
+.light .reset-quotas-button,
+.light .modern-reset-button {
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(218, 165, 32, 0.3) !important;
+}
+
+/* ===============================================
+   BARRES DE PROGRESSION - CONTRASTE AMÉLIORÉ
+   =============================================== */
+
+/* Barre de progression - Mode Sombre */
+.modern-progress-bar {
+  background-color: rgba(139, 69, 19, 0.3) !important; /* Plus opaque */
+  border: 1px solid rgba(205, 133, 63, 0.4) !important; /* Bordure ajoutée */
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.3) !important; /* Ombre interne */
+}
+
+.modern-progress-fill {
+  box-shadow: 0px 0px 12px rgba(205, 133, 63, 0.6) !important; /* Lueur plus marquée */
+}
+
+/* Mode Clair */
+.light .modern-progress-bar {
+  background-color: rgba(218, 165, 32, 0.25) !important;
+  border: 1px solid rgba(218, 165, 32, 0.5) !important;
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.light .modern-progress-fill {
+  box-shadow: 0px 0px 12px rgba(139, 69, 19, 0.4) !important;
+}
+
+/* ===============================================
+   RESPONSIVE - AMÉLIORATIONS MOBILE
+   =============================================== */
+
+@media (max-width: 768px) {
+  /* Sur mobile, augmenter encore plus le contraste */
+  .modern-level-title,
+  .modern-menu-label {
+    font-weight: 800 !important; /* Encore plus gras sur mobile */
+    font-size: 1.1em !important; /* Légèrement plus grand */
+  }
+  
+  .modern-menu-item {
+    border-width: 2px !important; /* Bordures plus épaisses sur mobile */
+  }
+  
+  .modern-badge {
+    border-width: 3px !important; /* Badge plus visible sur mobile */
+    font-size: 1.1em !important; /* Légèrement plus grand */
+  }
+}
+
+/* ===============================================
+   ANIMATIONS AVEC CONTRASTE
+   =============================================== */
+
+/* Animation spécifique avec meilleur contraste - Mode Sombre */
+@keyframes ocre-glow-enhanced-dark {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(205, 133, 63, 0.6), 0 0 16px rgba(205, 133, 63, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(205, 133, 63, 0.8), 0 0 32px rgba(205, 133, 63, 0.5);
+  }
+}
+
+/* Animation spécifique avec meilleur contraste - Mode Clair */
+@keyframes ocre-glow-enhanced-light {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(218, 165, 32, 0.6), 0 0 16px rgba(218, 165, 32, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(218, 165, 32, 0.8), 0 0 32px rgba(218, 165, 32, 0.5);
+  }
+}
+
+/* Application des animations améliorées */
+.modern-badge:not(.light) {
+  animation: ocre-glow-enhanced-dark 3s ease-in-out infinite !important;
+}
+
+.light .modern-badge {
+  animation: ocre-glow-enhanced-light 3s ease-in-out infinite !important;
+}
+
+/* ===============================================
+   ACCESSIBILITÉ - CONTRASTE OPTIMAL
+   =============================================== */
+
+/* Contraste élevé pour l'accessibilité */
+@media (prefers-contrast: high) {
+  .modern-level-title,
+  .modern-menu-label,
+  .modern-logo-title {
+    color: #ffffff !important; /* Blanc pur en mode sombre */
+    font-weight: 900 !important; /* Très gras */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important; /* Ombre marquée */
+  }
+  
+  .light .modern-level-title,
+  .light .modern-menu-label,
+  .light .modern-logo-title {
+    color: #000000 !important; /* Noir pur en mode clair */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8) !important;
+  }
+  
+  .modern-menu-item {
+    border-width: 3px !important; /* Bordures très épaisses */
+  }
+  
+  .modern-badge {
+    border-width: 4px !important; /* Badge très visible */
+  }
+}
+
+
+/* ===============================================
+   CORRECTION HEADER LAYOUT - AJOUTEZ CECI À MainMenu.css
+   =============================================== */
+
+/* CORRECTION MAJEURE - Header Desktop Layout */
+.modern-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-bottom: 16px !important;
+  position: relative !important;
+  transform: none !important;
+  z-index: 10 !important;
+  padding: 0 !important;
+  /* Assurer que le header reste en haut */
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* Section gauche - Sélecteur de langue */
+.modern-header-left {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  position: relative !important; /* Pas absolute */
+}
+
+/* CORRECTION CLEF - Sélecteur de langue dans le header */
+.modern-header .modern-language-selector {
+  position: relative !important; /* PAS absolute */
+  z-index: 10 !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+}
+
+/* Section droite - Actions */
+.modern-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex: 0 0 auto !important;
+  position: relative !important; /* Pas absolute */
+}
+
+/* IMPORTANTE - Assurer que le sélecteur ne flotte pas */
+.modern-header .language-selector-container {
+  position: relative !important; /* Pas fixed ou absolute */
+  min-width: 140px !important;
+  height: 40px !important;
+  z-index: 50 !important;
+  /* Supprimer tout positionnement absolu */
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+
+/* Dropdown du sélecteur - Positionnement correct */
+.modern-header .language-dropdown {
+  position: absolute !important; /* Celui-ci PEUT être absolute */
+  top: calc(100% + 8px) !important;
+  left: 0 !important;
+  width: 100% !important;
+  min-width: 160px !important;
+  z-index: 100 !important; /* Au-dessus de tout */
+  transform: none !important;
+}
+
+/* ===============================================
+   CORRECTION MOBILE - NE PAS AFFECTER
+   =============================================== */
+
+/* S'assurer que ces corrections n'affectent QUE le desktop */
+@media (min-width: 769px) {
+  /* Header visible uniquement sur desktop */
+  .modern-header {
+    display: flex !important;
+  }
+  
+  /* Container principal - ajustement */
+  .modern-main-container {
+    position: relative !important;
+    padding-top: 20px !important; /* Espace pour le header */
+  }
+}
+
+@media (max-width: 768px) {
+  /* Header desktop masqué sur mobile */
+  .modern-header {
+    display: none !important;
+  }
+  
+  /* Mobile header continue de fonctionner */
+  .mobile-header {
+    display: flex !important;
+  }
+}
+
+/* ===============================================
+   STYLES SUPPLÉMENTAIRES POUR COHÉRENCE
+   =============================================== */
+
+/* Bouton du sélecteur - Style cohérent avec le thème */
+.modern-header .language-selector-button {
+  background: linear-gradient(to right, var(--dark-primary), var(--dark-secondary)) !important;
+  color: var(--dark-text) !important;
+  border: 1px solid rgba(245, 222, 179, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(205, 133, 63, 0.3) !important;
+  height: 40px !important;
+  padding: 8px 14px !important;
+  border-radius: 20px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.modern-header .language-selector-button:hover {
+  box-shadow: 0 4px 8px rgba(205, 133, 63, 0.4) !important;
+  transform: translateY(-1px) !important;
+  border-color: rgba(245, 222, 179, 0.5) !important;
+}
+
+/* Mode Clair */
+.light .modern-header .language-selector-button {
+  background: linear-gradient(to right, var(--light-primary), var(--light-secondary)) !important;
+  color: var(--light-text) !important;
+  border-color: rgba(139, 69, 19, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(218, 165, 32, 0.3) !important;
+}
+
+.light .modern-header .language-selector-button:hover {
+  box-shadow: 0 4px 8px rgba(218, 165, 32, 0.4) !important;
+  border-color: rgba(139, 69, 19, 0.5) !important;
+}
+
+/* ===============================================
+   CORRECTIONS POUR SUPPRIMER LE CURSEUR DESKTOP
+   À ajouter à la fin de MainMenu.css
+   =============================================== */
+
+/* 1. CORRECTION PRINCIPALE - Container principal sans débordement */
+.modern-main-container {
+  width: 100% !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  padding: 16px !important;
+  background-color: transparent !important;
+  
+  /* SUPPRESSION OVERFLOW */
+  overflow: visible !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+  
+  /* HAUTEUR OPTIMISÉE */
+  min-height: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  
+  /* POSITION CORRECTE */
+  position: relative !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+/* 2. CORRECTION BODY ET HTML - Desktop uniquement */
+@media (min-width: 769px) {
+  html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+  }
+  
+  #root {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+  }
+  
+  .App {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: relative !important;
+  }
+}
+
+/* 3. CORRECTION HEADER DESKTOP */
+@media (min-width: 769px) {
+  .modern-header {
+    width: 100% !important;
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    position: relative !important;
+    transform: none !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+  }
+  
+  /* Header actions - Correction taille */
+  .modern-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+    overflow: visible !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+  
+  /* Sélecteur de langue - Correction largeur */
+  .modern-header .language-selector-container {
+    min-width: 140px !important;
+    max-width: 180px !important;
+    flex-shrink: 0 !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 50 !important;
+  }
+}
+
+/* 4. CORRECTION ÉLÉMENTS QUI DÉPASSENT */
+.modern-logo-container,
+.modern-level-card,
+.modern-menu-container,
+.modern-menu-grid,
+.desktop-tabs,
+.quotas-section,
+.premium-footer {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* 5. CORRECTION SPÉCIFIQUE MENU GRID */
+.modern-menu-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.modern-menu-item {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  word-wrap: break-word !important;
+}
+
+/* 6. CORRECTION DESKTOP TABS */
+@media (min-width: 769px) {
+  .desktop-tabs {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto 16px auto !important;
+    padding: 6px !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+  
+  .desktop-tab {
+    flex: 0 1 auto !important;
+    min-width: 80px !important;
+    max-width: 120px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+/* 7. CORRECTION RESPONSIVE DESKTOP */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modern-main-container {
+    max-width: 95% !important;
+    padding: 20px 16px !important;
+  }
+  
+  .modern-header {
+    max-width: 95% !important;
+    padding: 0 16px !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .modern-main-container {
+    max-width: 900px !important;
+    padding: 24px 20px !important;
+  }
+  
+  .modern-header {
+    max-width: 900px !important;
+    padding: 0 20px !important;
+  }
+}
+
+/* 8. SUPPRESSION SCROLLBAR SI NÉCESSAIRE */
+@media (min-width: 769px) {
+  /* Masquer la scrollbar sur desktop si elle n'est pas nécessaire */
+  .modern-main-container::-webkit-scrollbar {
+    width: 0px !important;
+    background: transparent !important;
+  }
+  
+  .modern-main-container::-webkit-scrollbar-thumb {
+    background: transparent !important;
+  }
+  
+  /* Firefox */
+  .modern-main-container {
+    scrollbar-width: none !important;
+  }
+}
+
+/* 9. CORRECTION ÉLÉMENTS FLOTTANTS */
+.floating-premium-button {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 1000 !important;
+  max-width: 200px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* 10. CORRECTION FINALE - Container de l'application */
+@media (min-width: 769px) {
+  .App {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Wrapper pour le contenu principal */
+  .desktop-component-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+

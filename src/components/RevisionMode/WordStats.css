@@ -1,0 +1,44 @@
+.word-stats-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .word-stats-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .word-original {
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  
+  .word-translation {
+    color: #666;
+  }
+  
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    font-size: 0.95em;
+  }
+  
+  .mastery-level {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .mastery-level.excellent { background-color: #4ade80; }
+  .mastery-level.bon { background-color: #fbbf24; }
+  .mastery-level.moyen { background-color: #fb923c; }
+  .mastery-level.à-revoir { background-color: #f87171; }

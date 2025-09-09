@@ -1,0 +1,2135 @@
+/* ===============================================
+   PROGRESSSTATS.CSS - VERSION COMPLÈTE AVEC CONTRASTE AMÉLIORÉ
+   Thème Terre Cuite/Crème avec lisibilité optimisée
+   =============================================== */
+
+/* ===============================================
+   VARIABLES COULEURS - THÈME TERRE CUITE/CRÈME AMÉLIORÉ
+   =============================================== */
+:root {
+  /* Mode Sombre - Couleurs Terre Cuite et Crème avec contraste optimisé */
+  --progress-dark-primary: #8b4513;        /* Terre cuite principal */
+  --progress-dark-secondary: #5d3317;      /* Marron foncé */
+  --progress-dark-accent: #a0522d;         /* Terre rouge */
+  --progress-dark-bg: rgba(139, 69, 19, 0.1);     /* Terre cuite transparent */
+  --progress-dark-card: rgba(255, 255, 255, 0.95); /* ✅ Blanc opaque pour contraste */
+  --progress-dark-border: rgba(139, 69, 19, 0.4); /* Bordure terre cuite plus visible */
+  --progress-dark-text: #2c1810;           /* ✅ Marron très foncé pour excellent contraste */
+  --progress-dark-text-secondary: #4a2818; /* ✅ Marron foncé pour bon contraste */
+  
+  /* Mode Clair - Couleurs Sable/Beige avec contraste optimisé */
+  --progress-light-primary: #daa520;       /* Or antique */
+  --progress-light-secondary: #cd853f;     /* Ocre */
+  --progress-light-accent: #b8860b;        /* Ocre foncé */
+  --progress-light-bg: rgba(245, 222, 179, 0.3);  /* Beige transparent */
+  --progress-light-card: rgba(255, 255, 255, 0.98); /* ✅ Blanc très opaque */
+  --progress-light-border: rgba(218, 165, 32, 0.4); /* Bordure or */
+  --progress-light-text: #2c1810;          /* ✅ Marron très foncé pour excellent contraste */
+  --progress-light-text-secondary: #4a2818; /* ✅ Marron foncé pour bon contraste */
+
+  /* Espacement unifié */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Bordures et rayons */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 50%;
+  
+  /* Transitions harmonisées */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.25s ease-out;
+  --transition-slow: 0.35s ease-in-out;
+}
+
+/* ===============================================
+   CONTENEUR PRINCIPAL HARMONISÉ
+   =============================================== */
+.progress-stats-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-xl);
+  box-shadow: 0px 8px 24px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(15px);
+  border: 2px solid var(--progress-dark-border);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: var(--progress-dark-text);
+}
+
+.light .progress-stats-container,
+[data-theme="light"] .progress-stats-container {
+  background: var(--progress-light-card);
+  color: var(--progress-light-text);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 8px 24px rgba(218, 165, 32, 0.2);
+}
+
+/* ===============================================
+   HEADER HARMONISÉ
+   =============================================== */
+.progress-stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--progress-dark-border);
+  /* Inverser l'ordre pour mettre le bouton à gauche */
+  flex-direction: row-reverse;
+}
+
+.light .progress-stats-header,
+[data-theme="light"] .progress-stats-header {
+  border-color: var(--progress-light-border);
+}
+
+.progress-stats-title {
+  font-size: 28px;
+  font-weight: 800 !important; /* ✅ Extra gras pour visibilité */
+  color: var(--progress-dark-text) !important;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* ✅ Dégradé plus contrasté */
+  background: linear-gradient(45deg, #2c1810, #4a2818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.light .progress-stats-title,
+[data-theme="light"] .progress-stats-title {
+  color: var(--progress-light-text) !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  background: linear-gradient(45deg, #2c1810, #4a2818);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.progress-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  color: var(--progress-dark-text) !important;
+  font-weight: 600 !important;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.95) !important; /* ✅ Fond blanc opaque */
+  border: 2px solid var(--progress-dark-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+.progress-back-button:hover {
+  background: var(--progress-dark-primary) !important;
+  color: #ffffff !important; /* ✅ Blanc pur au survol */
+  border-color: var(--progress-dark-accent);
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.light .progress-back-button,
+[data-theme="light"] .progress-back-button {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: var(--progress-light-text) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .progress-back-button:hover,
+[data-theme="light"] .progress-back-button:hover {
+  background: var(--progress-light-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--progress-light-secondary);
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.3);
+}
+
+/* ===============================================
+   NAVIGATION TABS HARMONISÉE
+   =============================================== */
+.progress-stats-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-xl);
+  border-bottom: 2px solid var(--progress-dark-border);
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 0 var(--spacing-lg);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-stats-tabs,
+[data-theme="light"] .progress-stats-tabs {
+  border-color: var(--progress-light-border);
+  background: var(--progress-light-card);
+}
+
+.progress-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.progress-tab:hover {
+  color: var(--progress-dark-text) !important; /* ✅ Plus foncé au survol */
+  background: rgba(139, 69, 19, 0.1);
+}
+
+.progress-tab.active {
+  color: var(--progress-dark-text) !important; /* ✅ Plus foncé quand actif */
+  font-weight: 700 !important;
+  border-bottom: 3px solid var(--progress-dark-primary);
+  background: rgba(139, 69, 19, 0.15);
+}
+
+.light .progress-tab,
+[data-theme="light"] .progress-tab {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.light .progress-tab:hover,
+[data-theme="light"] .progress-tab:hover {
+  color: var(--progress-light-text) !important;
+  background: rgba(218, 165, 32, 0.1);
+}
+
+.light .progress-tab.active,
+[data-theme="light"] .progress-tab.active {
+  color: var(--progress-light-text) !important;
+  font-weight: 700 !important;
+  border-bottom-color: var(--progress-light-primary);
+  background: rgba(218, 165, 32, 0.15);
+}
+
+/* ===============================================
+   CONTENU AVEC ANIMATIONS
+   =============================================== */
+.progress-stats-content {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* ===============================================
+   OVERVIEW TAB HARMONISÉ
+   =============================================== */
+.progress-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.progress-level-card {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.progress-level-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 8px 20px rgba(139, 69, 19, 0.4);
+}
+
+.light .progress-level-card,
+[data-theme="light"] .progress-level-card {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.light .progress-level-card:hover,
+[data-theme="light"] .progress-level-card:hover {
+  box-shadow: 0px 8px 20px rgba(218, 165, 32, 0.3);
+}
+
+.progress-level-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.progress-level-badge {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--progress-dark-primary) !important;
+  border-radius: var(--radius-full);
+  font-size: 32px;
+  color: #ffffff !important; /* ✅ Blanc pur pour contraste */
+  font-weight: 900 !important;
+  border: 3px solid var(--progress-dark-accent);
+  box-shadow: 0px 4px 8px rgba(139, 69, 19, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.light .progress-level-badge,
+[data-theme="light"] .progress-level-badge {
+  background: var(--progress-light-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--progress-light-secondary);
+  box-shadow: 0px 4px 8px rgba(218, 165, 32, 0.3);
+}
+
+.progress-level-info h2 {
+  font-size: 26px !important; /* ✅ Plus gros */
+  font-weight: 800 !important; /* ✅ Extra gras */
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.progress-level-info p {
+  font-size: 18px !important; /* ✅ Plus gros */
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important; /* ✅ Plus gras */
+  margin: 0;
+}
+
+.light .progress-level-info h2,
+[data-theme="light"] .progress-level-info h2 {
+  color: var(--progress-light-text) !important;
+}
+
+.light .progress-level-info p,
+[data-theme="light"] .progress-level-info p {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.progress-bar-container {
+  width: 100%;
+}
+
+.progress-bar {
+  height: 16px;
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+  border: 1px solid var(--progress-dark-border);
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.light .progress-bar,
+[data-theme="light"] .progress-bar {
+  background: rgba(218, 165, 32, 0.2);
+  border-color: var(--progress-light-border);
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--progress-dark-primary), var(--progress-dark-accent));
+  border-radius: var(--radius-sm);
+  transition: width 0.8s ease-out;
+  box-shadow: 0px 0px 12px rgba(139, 69, 19, 0.6);
+}
+
+.light .progress-fill,
+[data-theme="light"] .progress-fill {
+  background: linear-gradient(90deg, var(--progress-light-primary), var(--progress-light-secondary));
+  box-shadow: 0px 0px 12px rgba(218, 165, 32, 0.4);
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px !important; /* ✅ Légèrement plus gros */
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important; /* ✅ Plus gras */
+  margin-bottom: var(--spacing-sm);
+}
+
+.light .progress-stats,
+[data-theme="light"] .progress-stats {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.progress-next-level {
+  font-size: 15px !important; /* ✅ Légèrement plus gros */
+  color: var(--progress-dark-primary);
+  text-align: center;
+  margin: 0;
+  font-weight: 600 !important;
+}
+
+.light .progress-next-level,
+[data-theme="light"] .progress-next-level {
+  color: var(--progress-light-primary);
+}
+
+/* ===============================================
+   GRILLE DE STATISTIQUES HARMONISÉE
+   =============================================== */
+.progress-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.progress-stat-card {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.progress-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.4);
+}
+
+.light .progress-stat-card,
+[data-theme="light"] .progress-stat-card {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.light .progress-stat-card:hover,
+[data-theme="light"] .progress-stat-card:hover {
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.3);
+}
+
+.progress-stat-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--progress-dark-primary) !important;
+  border-radius: var(--radius-md);
+  color: #ffffff !important; /* ✅ Blanc pur pour contraste */
+  border: 2px solid var(--progress-dark-accent);
+  box-shadow: 0px 2px 6px rgba(139, 69, 19, 0.3);
+}
+
+.light .progress-stat-icon,
+[data-theme="light"] .progress-stat-icon {
+  background: var(--progress-light-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--progress-light-secondary);
+  box-shadow: 0px 2px 6px rgba(218, 165, 32, 0.3);
+}
+
+.progress-stat-content h3 {
+  font-size: 28px !important; /* ✅ Plus gros */
+  font-weight: 800 !important; /* ✅ Extra gras */
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.progress-stat-content p {
+  font-size: 16px !important; /* ✅ Légèrement plus gros */
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important; /* ✅ Plus gras */
+  margin: 0;
+}
+
+.light .progress-stat-content h3,
+[data-theme="light"] .progress-stat-content h3 {
+  color: var(--progress-light-text) !important;
+}
+
+.light .progress-stat-content p,
+[data-theme="light"] .progress-stat-content p {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* ===============================================
+   GRAPHIQUE DE COMPLÉTION HARMONISÉ
+   =============================================== */
+.progress-completion-chart {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-completion-chart,
+[data-theme="light"] .progress-completion-chart {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-completion-chart h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+  text-align: center;
+}
+
+.light .progress-completion-chart h3,
+[data-theme="light"] .progress-completion-chart h3 {
+  color: var(--progress-light-text) !important;
+}
+
+.progress-completion-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl);
+}
+
+.progress-completion-info {
+  text-align: center;
+}
+
+.progress-completion-percentage {
+  font-size: 36px !important; /* ✅ Plus gros */
+  font-weight: 900 !important; /* ✅ Ultra gras */
+  color: var(--progress-dark-text) !important;
+  margin: 0 0 var(--spacing-xs) 0;
+  text-shadow: 0 2px 4px rgba(44, 24, 16, 0.3);
+}
+
+.progress-completion-text {
+  font-size: 18px !important; /* ✅ Plus gros */
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important; /* ✅ Plus gras */
+  margin: 0;
+}
+
+.light .progress-completion-percentage,
+[data-theme="light"] .progress-completion-percentage {
+  color: var(--progress-light-text) !important;
+  text-shadow: 0 2px 4px rgba(44, 24, 16, 0.3);
+}
+
+.light .progress-completion-text,
+[data-theme="light"] .progress-completion-text {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* ===============================================
+   DÉTAILS TAB HARMONISÉ
+   =============================================== */
+.progress-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.progress-category-completion,
+.progress-recent-activity,
+.progress-revision-status {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-category-completion,
+.light .progress-recent-activity,
+.light .progress-revision-status,
+[data-theme="light"] .progress-category-completion,
+[data-theme="light"] .progress-recent-activity,
+[data-theme="light"] .progress-revision-status {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-category-completion h3,
+.progress-recent-activity h3,
+.progress-revision-status h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.light .progress-category-completion h3,
+.light .progress-recent-activity h3,
+.light .progress-revision-status h3,
+[data-theme="light"] .progress-category-completion h3,
+[data-theme="light"] .progress-recent-activity h3,
+[data-theme="light"] .progress-revision-status h3 {
+  color: var(--progress-light-text) !important;
+}
+
+/* ===============================================
+   LISTE DE PROGRESSION DES CATÉGORIES HARMONISÉE
+   =============================================== */
+.category-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.category-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important; /* ✅ Fond blanc pour contraste */
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.category-progress-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.category-progress-item.completed {
+  border-left: 6px solid var(--progress-dark-primary);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.light .category-progress-item,
+[data-theme="light"] .category-progress-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .category-progress-item:hover,
+[data-theme="light"] .category-progress-item:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.light .category-progress-item.completed,
+[data-theme="light"] .category-progress-item.completed {
+  border-left-color: var(--progress-light-primary);
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+.category-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-name {
+  font-weight: 700 !important; /* ✅ Plus gras */
+  color: var(--progress-dark-text) !important;
+  font-size: 17px !important; /* ✅ Légèrement plus gros */
+}
+
+.category-stats {
+  font-size: 15px !important; /* ✅ Légèrement plus gros */
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important; /* ✅ Plus gras */
+}
+
+.light .category-name,
+[data-theme="light"] .category-name {
+  color: var(--progress-light-text) !important;
+}
+
+.light .category-stats,
+[data-theme="light"] .category-stats {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.category-progress-bar {
+  height: 8px;
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--progress-dark-border);
+}
+
+.light .category-progress-bar,
+[data-theme="light"] .category-progress-bar {
+  background: rgba(218, 165, 32, 0.2);
+  border-color: var(--progress-light-border);
+}
+
+.category-progress-fill {
+  height: 100%;
+  background: var(--progress-dark-primary);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s ease-out;
+}
+
+.light .category-progress-fill,
+[data-theme="light"] .category-progress-fill {
+  background: var(--progress-light-primary);
+}
+
+.category-completed-badge {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  color: var(--progress-dark-primary);
+}
+
+.light .category-completed-badge,
+[data-theme="light"] .category-completed-badge {
+  color: var(--progress-light-primary);
+}
+
+/* ===============================================
+   ACTIVITÉ RÉCENTE HARMONISÉE
+   =============================================== */
+.recent-activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.recent-activity-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.recent-activity-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.light .recent-activity-item,
+[data-theme="light"] .recent-activity-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .recent-activity-item:hover,
+[data-theme="light"] .recent-activity-item:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.recent-word {
+  font-weight: 700 !important;
+  color: var(--progress-dark-text) !important;
+  font-size: 17px !important;
+}
+
+.light .recent-word,
+[data-theme="light"] .recent-word {
+  color: var(--progress-light-text) !important;
+}
+
+.recent-word-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.light .recent-word-details,
+[data-theme="light"] .recent-word-details {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.no-recent-activity {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--progress-dark-text-secondary) !important;
+  font-style: italic;
+  font-weight: 500 !important;
+}
+
+.light .no-recent-activity,
+[data-theme="light"] .no-recent-activity {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* ===============================================
+   STATUT DE RÉVISION HARMONISÉ
+   =============================================== */
+.revision-status-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.revision-status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xl);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.revision-status-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.light .revision-status-item,
+[data-theme="light"] .revision-status-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .revision-status-item:hover,
+[data-theme="light"] .revision-status-item:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.revision-label {
+  font-size: 15px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.revision-value {
+  font-size: 28px !important;
+  font-weight: 800 !important;
+  color: var(--progress-dark-text) !important;
+  text-shadow: 0 1px 2px rgba(44, 24, 16, 0.3);
+}
+
+.light .revision-label,
+[data-theme="light"] .revision-label {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.light .revision-value,
+[data-theme="light"] .revision-value {
+  color: var(--progress-light-text) !important;
+  text-shadow: 0 1px 2px rgba(44, 24, 16, 0.3);
+}
+
+/* ===============================================
+   ACHIEVEMENTS TAB HARMONISÉ
+   =============================================== */
+.progress-achievements {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-achievements,
+[data-theme="light"] .progress-achievements {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-achievements h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+  text-align: center;
+}
+
+.light .progress-achievements h3,
+[data-theme="light"] .progress-achievements h3 {
+  color: var(--progress-light-text) !important;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.achievement-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.achievement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.achievement-card.unlocked {
+  border-left: 6px solid var(--progress-dark-primary);
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.achievement-card.locked {
+  opacity: 0.6;
+}
+
+.light .achievement-card,
+[data-theme="light"] .achievement-card {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .achievement-card:hover,
+[data-theme="light"] .achievement-card:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.light .achievement-card.unlocked,
+[data-theme="light"] .achievement-card.unlocked {
+  border-left-color: var(--progress-light-primary);
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+.achievement-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--progress-dark-text-secondary);
+  border: 2px solid var(--progress-dark-border);
+}
+
+.achievement-card.unlocked .achievement-icon {
+  background: var(--progress-dark-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--progress-dark-accent);
+  box-shadow: 0px 2px 6px rgba(139, 69, 19, 0.4);
+}
+
+.light .achievement-icon,
+[data-theme="light"] .achievement-icon {
+  background: rgba(218, 165, 32, 0.2);
+  color: var(--progress-light-text-secondary);
+  border-color: var(--progress-light-border);
+}
+
+.light .achievement-card.unlocked .achievement-icon,
+[data-theme="light"] .achievement-card.unlocked .achievement-icon {
+  background: var(--progress-light-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--progress-light-secondary);
+  box-shadow: 0px 2px 6px rgba(218, 165, 32, 0.3);
+}
+
+.achievement-info {
+  flex: 1;
+}
+
+.achievement-info h4 {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xs) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.achievement-info p {
+  font-size: 15px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important;
+  margin: 0;
+}
+
+.light .achievement-info h4,
+[data-theme="light"] .achievement-info h4 {
+  color: var(--progress-light-text) !important;
+}
+
+.light .achievement-info p,
+[data-theme="light"] .achievement-info p {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.achievement-badge {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  color: var(--progress-dark-primary);
+}
+
+.light .achievement-badge,
+[data-theme="light"] .achievement-badge {
+  color: var(--progress-light-primary);
+}
+
+/* ===============================================
+   REVISION TAB HARMONISÉ
+   =============================================== */
+.progress-revision {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.progress-revision-overview,
+.progress-revision-by-category,
+.progress-recent-revisions {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-revision-overview,
+.light .progress-revision-by-category,
+.light .progress-recent-revisions,
+[data-theme="light"] .progress-revision-overview,
+[data-theme="light"] .progress-revision-by-category,
+[data-theme="light"] .progress-recent-revisions {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-revision-overview h3,
+.progress-revision-by-category h3,
+.progress-recent-revisions h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.light .progress-revision-overview h3,
+.light .progress-revision-by-category h3,
+.light .progress-recent-revisions h3,
+[data-theme="light"] .progress-revision-overview h3,
+[data-theme="light"] .progress-revision-by-category h3,
+[data-theme="light"] .progress-recent-revisions h3 {
+  color: var(--progress-light-text) !important;
+}
+
+/* Liste des catégories de révision */
+.revision-category-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.revision-category-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.revision-category-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.light .revision-category-item,
+[data-theme="light"] .revision-category-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .revision-category-item:hover,
+[data-theme="light"] .revision-category-item:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.revision-category-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.revision-category-name {
+  font-weight: 700 !important;
+  color: var(--progress-dark-text) !important;
+  font-size: 17px !important;
+}
+
+.revision-category-stats {
+  font-size: 15px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.light .revision-category-name,
+[data-theme="light"] .revision-category-name {
+  color: var(--progress-light-text) !important;
+}
+
+.light .revision-category-stats,
+[data-theme="light"] .revision-category-stats {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.revision-category-progress-bar {
+  height: 8px;
+  background: rgba(139, 69, 19, 0.2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--progress-dark-border);
+}
+
+.light .revision-category-progress-bar,
+[data-theme="light"] .revision-category-progress-bar {
+  background: rgba(218, 165, 32, 0.2);
+  border-color: var(--progress-light-border);
+}
+
+.revision-category-progress-fill {
+  height: 100%;
+  background: var(--progress-dark-primary);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s ease-out;
+}
+
+.light .revision-category-progress-fill,
+[data-theme="light"] .revision-category-progress-fill {
+  background: var(--progress-light-primary);
+}
+
+/* Liste des révisions récentes */
+.recent-revisions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.recent-revision-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.recent-revision-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.light .recent-revision-item,
+[data-theme="light"] .recent-revision-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .recent-revision-item:hover,
+[data-theme="light"] .recent-revision-item:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.revision-word-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.revision-word {
+  font-weight: 700 !important;
+  color: var(--progress-dark-text) !important;
+  font-size: 17px !important;
+}
+
+.revision-category-tag {
+  font-size: 12px;
+  color: var(--progress-dark-text-secondary) !important;
+  background: rgba(139, 69, 19, 0.2);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  width: fit-content;
+  font-weight: 500 !important;
+}
+
+.light .revision-word,
+[data-theme="light"] .revision-word {
+  color: var(--progress-light-text) !important;
+}
+
+.light .revision-category-tag,
+[data-theme="light"] .revision-category-tag {
+  color: var(--progress-light-text-secondary) !important;
+  background: rgba(218, 165, 32, 0.2);
+}
+
+.revision-result {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.revision-result-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+}
+
+.revision-result-icon.correct {
+  background: #10b981;
+  color: white;
+}
+
+.revision-result-icon.incorrect {
+  background: #ef4444;
+  color: white;
+}
+
+.revision-time {
+  font-size: 12px;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.light .revision-time,
+[data-theme="light"] .revision-time {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* ===============================================
+   SECTIONS DÉTAILLÉES ADDITIONNELLES
+   =============================================== */
+
+/* Détail des phrases apprises */
+.progress-sentences-detail,
+.progress-sentences-learning {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-sentences-detail,
+.light .progress-sentences-learning,
+[data-theme="light"] .progress-sentences-detail,
+[data-theme="light"] .progress-sentences-learning {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-sentences-detail h3,
+.progress-sentences-learning h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.light .progress-sentences-detail h3,
+.light .progress-sentences-learning h3,
+[data-theme="light"] .progress-sentences-detail h3,
+[data-theme="light"] .progress-sentences-learning h3 {
+  color: var(--progress-light-text) !important;
+}
+
+.sentences-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.sentence-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+  transition: all var(--transition-normal);
+}
+
+.sentence-detail-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.3);
+}
+
+.sentence-detail-item.learning {
+  border-left: 4px solid #f59e0b;
+}
+
+.light .sentence-detail-item,
+[data-theme="light"] .sentence-detail-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.light .sentence-detail-item:hover,
+[data-theme="light"] .sentence-detail-item:hover {
+  box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.25);
+}
+
+.sentence-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.sentence-french {
+  font-weight: 700 !important;
+  color: var(--progress-dark-text) !important;
+  font-size: 16px !important;
+}
+
+.sentence-original {
+  font-size: 14px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.light .sentence-french,
+[data-theme="light"] .sentence-french {
+  color: var(--progress-light-text) !important;
+}
+
+.light .sentence-original,
+[data-theme="light"] .sentence-original {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.sentence-category {
+  font-size: 12px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  background: rgba(139, 69, 19, 0.2);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 500 !important;
+}
+
+.light .sentence-category,
+[data-theme="light"] .sentence-category {
+  color: var(--progress-light-text-secondary) !important;
+  background: rgba(218, 165, 32, 0.2);
+}
+
+.sentence-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.sentence-status.mastered {
+  color: #10b981;
+}
+
+.sentence-status.learning {
+  color: #f59e0b;
+}
+
+.sentences-more,
+.vocabulary-more,
+.grammar-words-more {
+  text-align: center;
+  padding: var(--spacing-lg);
+  color: var(--progress-dark-text-secondary) !important;
+  font-style: italic;
+  font-weight: 500 !important;
+}
+
+.light .sentences-more,
+.light .vocabulary-more,
+.light .grammar-words-more,
+[data-theme="light"] .sentences-more,
+[data-theme="light"] .vocabulary-more,
+[data-theme="light"] .grammar-words-more {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* Détail du vocabulaire */
+.progress-vocabulary-detail {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-vocabulary-detail,
+[data-theme="light"] .progress-vocabulary-detail {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-vocabulary-detail h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.light .progress-vocabulary-detail h3,
+[data-theme="light"] .progress-vocabulary-detail h3 {
+  color: var(--progress-light-text) !important;
+}
+
+.vocabulary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.vocabulary-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--progress-dark-border);
+  text-align: center;
+}
+
+.light .vocabulary-item,
+[data-theme="light"] .vocabulary-item {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--progress-light-border);
+}
+
+.vocabulary-word {
+  font-weight: 600 !important;
+  color: var(--progress-dark-text) !important;
+  font-size: 14px !important;
+}
+
+.light .vocabulary-word,
+[data-theme="light"] .vocabulary-word {
+  color: var(--progress-light-text) !important;
+}
+
+/* Détail de la grammaire */
+.progress-grammar-detail {
+  background: var(--progress-dark-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 2px solid var(--progress-dark-border);
+  box-shadow: 0px 6px 16px rgba(139, 69, 19, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.light .progress-grammar-detail,
+[data-theme="light"] .progress-grammar-detail {
+  background: var(--progress-light-card);
+  border-color: var(--progress-light-border);
+  box-shadow: 0px 6px 16px rgba(218, 165, 32, 0.25);
+}
+
+.progress-grammar-detail h3 {
+  font-size: 20px;
+  font-weight: 700 !important;
+  margin: 0 0 var(--spacing-xl) 0;
+  color: var(--progress-dark-text) !important;
+}
+
+.light .progress-grammar-detail h3,
+[data-theme="light"] .progress-grammar-detail h3 {
+  color: var(--progress-light-text) !important;
+}
+
+.grammar-sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.grammar-session-item {
+  padding: var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--progress-dark-border);
+}
+
+.light .grammar-session-item,
+[data-theme="light"] .grammar-session-item {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: var(--progress-light-border);
+}
+
+.grammar-session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.grammar-session-header h4 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--progress-dark-text) !important;
+  margin: 0;
+}
+
+.light .grammar-session-header h4,
+[data-theme="light"] .grammar-session-header h4 {
+  color: var(--progress-light-text) !important;
+}
+
+.grammar-session-count {
+  font-size: 14px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.light .grammar-session-count,
+[data-theme="light"] .grammar-session-count {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+.grammar-words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.grammar-word-item {
+  padding: var(--spacing-sm);
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--progress-dark-border);
+}
+
+.light .grammar-word-item,
+[data-theme="light"] .grammar-word-item {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: var(--progress-light-border);
+}
+
+.grammar-word {
+  font-weight: 700 !important;
+  color: var(--progress-dark-text) !important;
+  font-size: 14px !important;
+  display: block;
+}
+
+.grammar-translation {
+  font-size: 12px !important;
+  color: var(--progress-dark-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+.light .grammar-word,
+[data-theme="light"] .grammar-word {
+  color: var(--progress-light-text) !important;
+}
+
+.light .grammar-translation,
+[data-theme="light"] .grammar-translation {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN HARMONISÉ
+   =============================================== */
+@media (max-width: 768px) {
+  .progress-stats-container {
+    padding: var(--spacing-lg);
+    border-radius: 0;
+    box-shadow: none;
+    margin: 0;
+  }
+  
+  .progress-stats-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+  }
+  
+  .progress-stats-title {
+    font-size: 24px !important;
+    font-weight: 800 !important;
+  }
+  
+  .progress-stats-tabs {
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 var(--spacing-md);
+  }
+  
+  .progress-tab {
+    padding: var(--spacing-md) var(--spacing-sm);
+    flex: 1;
+    justify-content: center;
+    font-size: 14px;
+  }
+  
+  .progress-completion-container {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .progress-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .progress-stat-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .progress-stat-content h3 {
+    font-size: 24px !important;
+  }
+  
+  .progress-level-header {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-lg);
+  }
+  
+  .progress-level-badge {
+    width: 80px;
+    height: 80px;
+    font-size: 40px;
+  }
+  
+  .progress-level-info h2 {
+    font-size: 22px !important;
+  }
+  
+  .progress-level-info p {
+    font-size: 16px !important;
+  }
+  
+  .progress-completion-percentage {
+    font-size: 32px !important;
+  }
+  
+  .revision-status-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .achievement-card {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--spacing-lg);
+  }
+  
+  .category-progress-item {
+    padding: var(--spacing-lg);
+  }
+  
+  .recent-activity-item {
+    padding: var(--spacing-lg);
+  }
+  
+  .revision-status-item {
+    padding: var(--spacing-lg);
+  }
+  
+  .vocabulary-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+  
+  .grammar-words-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sentence-detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-stats-container {
+    padding: var(--spacing-md);
+  }
+  
+  .progress-stats-header {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .progress-stats-title {
+    font-size: 20px !important;
+    font-weight: 800 !important;
+  }
+  
+  .progress-tab {
+    padding: var(--spacing-sm);
+    font-size: 12px;
+  }
+  
+  .progress-level-card,
+  .progress-stat-card,
+  .progress-completion-chart,
+  .progress-category-completion,
+  .progress-recent-activity,
+  .progress-revision-status,
+  .progress-achievements {
+    padding: var(--spacing-lg);
+  }
+  
+  .progress-level-badge {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  .progress-stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .progress-stat-content h3 {
+    font-size: 22px !important;
+  }
+  
+  .progress-completion-percentage {
+    font-size: 28px !important;
+  }
+  
+  .achievement-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .vocabulary-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+}
+
+/* ===============================================
+   BOUTONS MOBILES SPÉCIFIQUES
+   =============================================== */
+
+/* Bouton mobile header */
+.mobile-header-back-button {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: var(--progress-dark-text) !important;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  font-weight: 600 !important;
+  transition: all var(--transition-fast);
+}
+
+.mobile-header-back-button:hover {
+  background: var(--progress-dark-primary) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.4);
+}
+
+.light .mobile-header-back-button,
+[data-theme="light"] .mobile-header-back-button {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: var(--progress-light-text) !important;
+}
+
+.light .mobile-header-back-button:hover,
+[data-theme="light"] .mobile-header-back-button:hover {
+  background: var(--progress-light-primary) !important;
+  color: #ffffff !important;
+}
+
+.progress-mobile-title {
+  color: var(--progress-dark-text) !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  margin: 0;
+}
+
+.light .progress-mobile-title,
+[data-theme="light"] .progress-mobile-title {
+  color: var(--progress-light-text) !important;
+}
+
+.progress-header.mobile-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: var(--spacing-lg);
+}
+
+.progress-header-spacer {
+  width: 48px; /* Même largeur que le bouton pour centrer le titre */
+}
+
+/* ===============================================
+   ANIMATIONS ET MICRO-INTERACTIONS
+   =============================================== */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.progress-level-card,
+.progress-stat-card,
+.category-progress-item,
+.recent-activity-item,
+.achievement-card,
+.sentence-detail-item,
+.revision-category-item,
+.recent-revision-item {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.progress-level-card:nth-child(1) { animation-delay: 0.1s; }
+.progress-stat-card:nth-child(1) { animation-delay: 0.2s; }
+.progress-stat-card:nth-child(2) { animation-delay: 0.3s; }
+.progress-stat-card:nth-child(3) { animation-delay: 0.4s; }
+.progress-stat-card:nth-child(4) { animation-delay: 0.5s; }
+
+/* Animation pour les barres de progression */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: var(--target-width);
+  }
+}
+
+.progress-fill[data-animate="true"],
+.category-progress-fill[data-animate="true"],
+.revision-category-progress-fill[data-animate="true"] {
+  animation: progressFill 1s ease-out;
+}
+
+/* ===============================================
+   OPTIMISATIONS PERFORMANCES
+   =============================================== */
+.progress-level-card,
+.progress-stat-card,
+.achievement-card,
+.category-progress-item,
+.recent-activity-item,
+.revision-status-item,
+.sentence-detail-item,
+.revision-category-item,
+.recent-revision-item,
+.grammar-session-item {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ===============================================
+   ACCESSIBILITÉ RENFORCÉE
+   =============================================== */
+.progress-tab:focus-visible,
+.progress-back-button:focus-visible,
+.mobile-header-back-button:focus-visible {
+  outline: 3px solid var(--progress-dark-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.3);
+}
+
+.light .progress-tab:focus-visible,
+.light .progress-back-button:focus-visible,
+.light .mobile-header-back-button:focus-visible,
+[data-theme="light"] .progress-tab:focus-visible,
+[data-theme="light"] .progress-back-button:focus-visible,
+[data-theme="light"] .mobile-header-back-button:focus-visible {
+  outline-color: var(--progress-light-primary);
+  box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.3);
+}
+
+/* Réduction des animations pour l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .progress-stats-content,
+  .progress-level-card,
+  .progress-stat-card,
+  .category-progress-item,
+  .recent-activity-item,
+  .achievement-card,
+  .sentence-detail-item,
+  .revision-category-item,
+  .recent-revision-item,
+  .grammar-session-item,
+  .progress-fill,
+  .category-progress-fill,
+  .revision-category-progress-fill {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Contraste élevé pour l'accessibilité */
+@media (prefers-contrast: high) {
+  :root {
+    --progress-dark-text: #000000 !important;
+    --progress-dark-text-secondary: #333333 !important;
+    --progress-light-text: #000000 !important;
+    --progress-light-text-secondary: #333333 !important;
+  }
+  
+  .progress-level-card,
+  .progress-stat-card,
+  .progress-completion-chart,
+  .progress-category-completion,
+  .progress-recent-activity,
+  .progress-revision-status,
+  .progress-achievements,
+  .category-progress-item,
+  .recent-activity-item,
+  .achievement-card,
+  .revision-status-item,
+  .sentence-detail-item,
+  .revision-category-item,
+  .recent-revision-item,
+  .grammar-session-item {
+    border-width: 3px !important;
+    font-weight: 700 !important;
+  }
+  
+  .progress-bar,
+  .category-progress-bar,
+  .revision-category-progress-bar {
+    border-width: 2px !important;
+  }
+  
+  .progress-stats-container * {
+    font-weight: 700 !important;
+  }
+}
+
+/* ===============================================
+   CLASSES D'AIDE ET UTILITAIRES
+   =============================================== */
+
+/* Classes d'aide pour l'espacement */
+.progress-spacing-xs { margin: var(--spacing-xs) !important; }
+.progress-spacing-sm { margin: var(--spacing-sm) !important; }
+.progress-spacing-md { margin: var(--spacing-md) !important; }
+.progress-spacing-lg { margin: var(--spacing-lg) !important; }
+.progress-spacing-xl { margin: var(--spacing-xl) !important; }
+
+/* Classes d'aide pour le texte */
+.progress-text-primary { 
+  color: var(--progress-dark-text) !important; 
+  font-weight: 700 !important;
+}
+.progress-text-secondary { 
+  color: var(--progress-dark-text-secondary) !important; 
+  font-weight: 600 !important;
+}
+
+.light .progress-text-primary,
+[data-theme="light"] .progress-text-primary {
+  color: var(--progress-light-text) !important;
+}
+
+.light .progress-text-secondary,
+[data-theme="light"] .progress-text-secondary {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* Classes d'aide pour les arrière-plans */
+.progress-bg-card { 
+  background: var(--progress-dark-card) !important; 
+  border: 2px solid var(--progress-dark-border) !important;
+}
+.progress-bg-primary { 
+  background: var(--progress-dark-primary) !important; 
+  color: #ffffff !important;
+}
+
+.light .progress-bg-card,
+[data-theme="light"] .progress-bg-card {
+  background: var(--progress-light-card) !important;
+  border-color: var(--progress-light-border) !important;
+}
+
+.light .progress-bg-primary,
+[data-theme="light"] .progress-bg-primary {
+  background: var(--progress-light-primary) !important;
+  color: #ffffff !important;
+}
+
+/* ===============================================
+   CORRECTIONS FINALES POUR TOUS LES TEXTES
+   =============================================== */
+
+/* S'assurer que TOUS les textes ont le bon contraste */
+.progress-stats-container * {
+  color: var(--progress-dark-text) !important;
+}
+
+.progress-stats-container p,
+.progress-stats-container span:not(.progress-stats-title *) {
+  color: var(--progress-dark-text-secondary) !important;
+}
+
+.light .progress-stats-container *,
+[data-theme="light"] .progress-stats-container * {
+  color: var(--progress-light-text) !important;
+}
+
+.light .progress-stats-container p,
+.light .progress-stats-container span:not(.progress-stats-title *),
+[data-theme="light"] .progress-stats-container p,
+[data-theme="light"] .progress-stats-container span:not(.progress-stats-title *) {
+  color: var(--progress-light-text-secondary) !important;
+}
+
+/* Exceptions pour les éléments avec couleurs spéciales */
+.revision-result-icon,
+.sentence-status,
+.progress-level-badge,
+.progress-stat-icon,
+.achievement-icon {
+  color: inherit !important; /* Garder leurs couleurs spéciales */
+}
+
+/* Support du mode sombre système */
+@media (prefers-color-scheme: dark) {
+  .progress-stats-container:not(.light):not([data-theme="light"]) {
+    background: var(--progress-dark-card);
+    color: var(--progress-dark-text);
+    border-color: var(--progress-dark-border);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .progress-stats-container:not(.dark):not([data-theme="dark"]) {
+    background: var(--progress-light-card);
+    color: var(--progress-light-text);
+    border-color: var(--progress-light-border);
+  }
+}
+
+/* ===============================================
+   STATES HOVER AMÉLIORÉS
+   =============================================== */
+
+/* Amélioration des effets hover pour tous les éléments interactifs */
+.progress-level-card:hover,
+.progress-stat-card:hover,
+.category-progress-item:hover,
+.recent-activity-item:hover,
+.achievement-card:hover,
+.revision-status-item:hover,
+.sentence-detail-item:hover,
+.revision-category-item:hover,
+.recent-revision-item:hover,
+.grammar-session-item:hover {
+  box-shadow: 0px 8px 24px rgba(139, 69, 19, 0.4) !important;
+  border-color: var(--progress-dark-primary) !important;
+}
+
+.light .progress-level-card:hover,
+.light .progress-stat-card:hover,
+.light .category-progress-item:hover,
+.light .recent-activity-item:hover,
+.light .achievement-card:hover,
+.light .revision-status-item:hover,
+.light .sentence-detail-item:hover,
+.light .revision-category-item:hover,
+.light .recent-revision-item:hover,
+.light .grammar-session-item:hover,
+[data-theme="light"] .progress-level-card:hover,
+[data-theme="light"] .progress-stat-card:hover,
+[data-theme="light"] .category-progress-item:hover,
+[data-theme="light"] .recent-activity-item:hover,
+[data-theme="light"] .achievement-card:hover,
+[data-theme="light"] .revision-status-item:hover,
+[data-theme="light"] .sentence-detail-item:hover,
+[data-theme="light"] .revision-category-item:hover,
+[data-theme="light"] .recent-revision-item:hover,
+[data-theme="light"] .grammar-session-item:hover {
+  box-shadow: 0px 8px 24px rgba(218, 165, 32, 0.35) !important;
+  border-color: var(--progress-light-primary) !important;
+}
+
+/* ===============================================
+   PRINT STYLES (pour impression)
+   =============================================== */
+@media print {
+  .progress-stats-container {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .progress-stats-container * {
+    color: black !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  .progress-back-button,
+  .mobile-header-back-button {
+    display: none !important;
+  }
+  
+  .progress-stats-tabs {
+    display: none !important;
+  }
+}
+
+/* Fin du fichier ProgressStats.css complet avec contraste amélioré */
