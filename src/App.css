@@ -2302,21 +2302,22 @@ body {
 }
 
 @media (max-width: 768px) {
-    .App {
+    html body.mobile-view .App,
+    html body .mobile-app-container .App {
         height: auto !important;
         min-height: 100vh !important;
         max-height: none !important;
     }
     
-    .mobile-app-container,
-    .mobile-main-content,
-    .modern-main-container {
+    html body.mobile-view .mobile-app-container,
+    html body.mobile-view .mobile-main-content,
+    html body.mobile-view .modern-main-container {
         height: auto !important;
         min-height: calc(100vh - 70px) !important;
         max-height: none !important;
     }
     
-    body {
+    html body.mobile-view {
         height: auto !important;
         min-height: 100vh !important;
     }
