@@ -2301,4 +2301,23 @@ body {
   }
 }
 
-
+@media (max-width: 768px) {
+    .App {
+        height: auto !important;
+        min-height: 100vh !important;
+        max-height: none !important;
+    }
+    
+    .mobile-app-container,
+    .mobile-main-content,
+    .modern-main-container {
+        height: auto !important;
+        min-height: calc(100vh - 70px) !important;
+        max-height: none !important;
+    }
+    
+    body {
+        height: auto !important;
+        min-height: 100vh !important;
+    }
+}
