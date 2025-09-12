@@ -207,15 +207,18 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       }
 
       // 4. Test de l'API backend avant authentification
-      try {
-        const healthResponse = await fetch('http://localhost:3001/api/health');
-        if (!healthResponse.ok) {
-          throw new Error(`Backend inaccessible: ${healthResponse.status}`);
-        }
-      } catch (backendError) {
-        setError('Le serveur backend n\'est pas accessible. Vérifiez qu\'il est démarré sur le port 3001.');
-        return;
-      }
+   // 4. Test de l'API backend avant authentification
+try {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  const healthResponse = await fetch(`${apiUrl}/api/health`);
+  if (!healthResponse.ok) {
+    throw new Error(`Backend inaccessible: ${healthResponse.status}`);
+  }
+} catch (backendError) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'localhost:3001';
+  setError(`Le serveur backend n'est pas accessible (${apiUrl}). Vérifiez qu'il est démarré.`);
+  return;
+}
 
       // 5. Authentifier via notre backend sécurisé
       const backendUser = await secureAuthService.authenticateWithGoogle(googleToken);
