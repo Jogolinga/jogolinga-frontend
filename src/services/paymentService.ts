@@ -1,5 +1,4 @@
-// paymentService.ts - Version complète avec distinction mensuel/annuel
-import { loadStripe } from '@stripe/stripe-js';
+// paymentService.ts - Version intégrée avec backend Railway
 import subscriptionService, { SubscriptionTier } from './subscriptionService';
 
 // Interface pour les plans d'abonnement
@@ -12,11 +11,11 @@ export interface SubscriptionPlan {
   billingPeriod: 'monthly' | 'yearly';
   features: string[];
   tier: SubscriptionTier;
-  savings?: number; // Économies en euros pour l'offre annuelle
-  stripePriceId?: string; // ID Stripe pour le plan
+  savings?: number;
+  stripePriceId?: string;
 }
 
-// Plans disponibles avec nouveaux prix
+// Plans disponibles avec vos tarifs finaux
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
   {
     id: 'free_plan',
@@ -26,12 +25,11 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     currency: 'EUR',
     billingPeriod: 'monthly',
     features: [
-      // ✅ CORRECTION: Fonctionnalités gratuites (sans exercices)
-      '✅ Apprentissage de vocabulaire illimité',
-      '✅ Quiz illimitées',
-      '✅ Révision illimitée du vocabulaire',
-      '✅ Statistiques détaillées',
-      '✅ Accès aux catégories de base'
+      'Apprentissage de vocabulaire illimité',
+      'Quiz illimitées',
+      'Révision illimitée du vocabulaire',
+      'Statistiques détaillées',
+      'Accès aux catégories de base'
     ],
     tier: SubscriptionTier.FREE
   },
@@ -39,146 +37,140 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: 'premium_monthly',
     name: 'Premium Mensuel',
     description: 'Accès aux fonctionnalités avancées avec facturation mensuelle',
-    price: 3,
+    price: 4,
     currency: 'EUR',
     billingPeriod: 'monthly',
     features: [
-      '✅ Toutes les fonctionnalités gratuites',
-      '✨ Exercices interactifs avancés',
-      '✨ Grammaire complète avancée',
-      '✨ Construction de phrases interactive',
-      '✨ Phrases à trous avancées',
-      '✨ Analytics avancés et insights',
-      '✨ Mode hors-ligne complet',
-      '✨ Synchronisation Google Drive',
-      '✨ Accès à toutes les catégories premium'
+      'Toutes les fonctionnalités gratuites',
+      'Exercices interactifs avancés',
+      'Grammaire complète avancée',
+      'Construction de phrases interactive',
+      'Phrases à trous avancées',
+      'Analytics avancés et insights',
+      'Mode hors-ligne complet',
+      'Synchronisation Google Drive',
+      'Accès à toutes les catégories premium'
     ],
     tier: SubscriptionTier.PREMIUM,
-    stripePriceId: process.env.REACT_APP_STRIPE_MONTHLY_PRICE_ID || 'price_monthly_3eur'
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY
   },
   {
     id: 'premium_yearly',
     name: 'Premium Annuel',
-    description: 'Accès aux fonctionnalités avancées avec facturation annuelle - Économisez 20% !',
-    price: 30,
+    description: 'Accès aux fonctionnalités avancées avec facturation annuelle - Économisez 16% !',
+    price: 40,
     currency: 'EUR',
     billingPeriod: 'yearly',
     features: [
-      '✅ Toutes les fonctionnalités gratuites',
-      '✨ Exercices interactifs avancés',
-      '✨ Grammaire complète avancée',
-      '✨ Construction de phrases interactive', 
-      '✨ Phrases à trous avancées',
-      '✨ Analytics avancés et insights',
-      '✨ Mode hors-ligne complet',
-      '✨ Synchronisation Google Drive',
-      '✨ Accès à toutes les catégories premium',
-      '🎉 Économisez 20% sur l\'année'
+      'Toutes les fonctionnalités gratuites',
+      'Exercices interactifs avancés',
+      'Grammaire complète avancée',
+      'Construction de phrases interactive', 
+      'Phrases à trous avancées',
+      'Analytics avancés et insights',
+      'Mode hors-ligne complet',
+      'Synchronisation Google Drive',
+      'Accès à toutes les catégories premium',
+      'Économisez 8€ sur l\'année'
     ],
     tier: SubscriptionTier.PREMIUM,
-    savings: 6,
-    stripePriceId: process.env.REACT_APP_STRIPE_YEARLY_PRICE_ID || 'price_yearly_30eur'
+    savings: 8,
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
   }
 ];
 
 class PaymentService {
-  // URL de l'API de paiement
-  private apiUrl = process.env.REACT_APP_PAYMENT_API_URL || 'http://localhost:3001/api/payments';
+  // URL de l'API backend
+  private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   
-  // Clé publique Stripe
-  private stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY;
+  // Mode simulation pour développement local sans backend
+  private simulatePayments = process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_API_URL;
   
-  // Flag pour simuler des paiements en dev
-  private simulatePayments = process.env.NODE_ENV === 'development' && !process.env.REACT_APP_USE_STRIPE_TEST;
-  
-  // Promesse Stripe pour l'initialisation
-  private stripePromise: Promise<any> | null = null;
+  // Token JWT pour l'authentification
+  private authToken: string | null = null;
 
-  // Initialisation de la connexion à la plateforme de paiement
+  constructor() {
+    console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
+    console.log('[PaymentService] Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
+  }
+
+  // Définir le token d'authentification
+  public setAuthToken(token: string): void {
+    this.authToken = token;
+    console.log('[PaymentService] Token d\'authentification défini');
+  }
+
+  // Obtenir les headers d'authentification
+  private getAuthHeaders(): HeadersInit {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (this.authToken) {
+      headers['Authorization'] = `Bearer ${this.authToken}`;
+    }
+
+    return headers;
+  }
+
+  // Initialisation du service (plus besoin de Stripe côté frontend)
   public async initialize(): Promise<boolean> {
     try {
-      console.log('Initialisation du service de paiement...');
-      console.log('URL API:', this.apiUrl);
-      console.log('Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
+      console.log('[PaymentService] Initialisation du service...');
       
-      // En mode simulation, pas besoin d'initialiser Stripe
       if (this.simulatePayments) {
-        console.log('Mode simulation activé - pas de connexion Stripe nécessaire');
+        console.log('[PaymentService] Mode simulation activé');
         return true;
       }
       
-      // Initialiser Stripe avec la clé publique
-      if (!this.stripePublicKey) {
-        console.error('ERREUR: Clé publique Stripe non définie!');
-        console.error('Vérifiez que REACT_APP_STRIPE_PUBLIC_KEY est définie dans votre .env');
-        return false;
+      // Tester la connexion au backend
+      const response = await fetch(`${this.apiUrl}/api/health`);
+      if (!response.ok) {
+        throw new Error(`Backend inaccessible: ${response.status}`);
       }
       
-      console.log('Clé publique Stripe trouvée:', this.stripePublicKey.substring(0, 10) + '...');
-      this.stripePromise = loadStripe(this.stripePublicKey);
-      
-      // Vérifier que l'initialisation a réussi
-      const stripe = await this.stripePromise;
-      if (!stripe) {
-        throw new Error('Impossible d\'initialiser Stripe');
-      }
-      
-      console.log('Service de paiement Stripe initialisé avec succès');
+      console.log('[PaymentService] Service initialisé avec succès');
       return true;
     } catch (error) {
-      console.error('Erreur lors de l\'initialisation du service de paiement:', error);
+      console.error('[PaymentService] Erreur d\'initialisation:', error);
       return false;
     }
   }
 
-  // Créer une session de paiement
+  // Créer une session de paiement via le backend
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
     if (this.simulatePayments) {
-      // En développement, on simule une session
-      console.log(`Simulation de création de session pour le plan ${plan.name} (${plan.price}€)`);
+      console.log(`[PaymentService] Simulation de création de session pour le plan ${plan.name} (${plan.price}€)`);
       return `sim_checkout_${Date.now()}`;
     }
 
     try {
-      console.log(`Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
-      console.log(`Envoi de la requête à: ${this.apiUrl}/create-checkout-session`);
-      console.log('Données envoyées:', {
-        planId: plan.id,
-        priceId: plan.stripePriceId,
-        userEmail,
-        successUrl: `${window.location.origin}/payment-success`,
-        cancelUrl: `${window.location.origin}/payment-cancel`,
-      });
+      console.log(`[PaymentService] Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
       
-      const response = await fetch(`${this.apiUrl}/create-checkout-session`, {
+      const response = await fetch(`${this.apiUrl}/api/payments/create-checkout-session`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           planId: plan.id,
           priceId: plan.stripePriceId,
           userEmail,
-          successUrl: `${window.location.origin}/payment-success`,
-          cancelUrl: `${window.location.origin}/payment-cancel`,
           metadata: {
             planName: plan.name,
             planPrice: plan.price,
             billingPeriod: plan.billingPeriod,
-            planId: plan.id  // 🆕 AJOUT: Inclure l'ID du plan dans les métadonnées
+            planId: plan.id
           }
         }),
       });
 
-      // Vérification de la réponse HTTP
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('Erreur API:', response.status, errorData);
-        throw new Error(errorData.message || `Erreur ${response.status} lors de la création de la session`);
+        console.error('[PaymentService] Erreur API:', response.status, errorData);
+        throw new Error(errorData.error || `Erreur ${response.status} lors de la création de la session`);
       }
 
       const data = await response.json();
-      console.log('Réponse de l\'API:', data);
+      console.log('[PaymentService] Réponse de l\'API:', data);
       
       if (!data.sessionId) {
         throw new Error('Session ID manquant dans la réponse');
@@ -186,171 +178,231 @@ class PaymentService {
       
       return data.sessionId;
     } catch (error) {
-      console.error('Erreur détaillée lors de la création de session:', error);
+      console.error('[PaymentService] Erreur détaillée lors de la création de session:', error);
       throw error;
     }
   }
 
-  // Rediriger vers la page de paiement
+  // Rediriger vers la page de paiement Stripe
   public async redirectToCheckout(sessionId: string): Promise<void> {
     if (this.simulatePayments) {
-      // En dev, simuler le processus avec une redirection vers une page locale
-      console.log(`Simulation de redirection vers la page de paiement pour la session ${sessionId}`);
+      console.log(`[PaymentService] Simulation de redirection vers la page de paiement pour la session ${sessionId}`);
       
-      // Simuler un délai pour l'expérience utilisateur
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Rediriger vers une page de succès simulée
       window.location.href = `${window.location.origin}/payment-success?session_id=${sessionId}&simulated=true`;
       return;
     }
 
     try {
-      // En mode réel, utiliser l'API Stripe pour la redirection
-      console.log('Initialisation de la redirection Stripe...');
+      console.log('[PaymentService] Redirection vers Stripe Checkout...');
       
-      // Attendre que Stripe soit chargé
-      const stripe = await this.stripePromise;
+      // Redirection directe vers Stripe Checkout avec l'ID de session
+      window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
       
-      if (!stripe) {
-        throw new Error('Stripe n\'est pas initialisé');
-      }
-      
-      console.log(`Redirection Stripe pour la session: ${sessionId}`);
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-      
-      if (error) {
-        throw new Error(`Erreur Stripe: ${error.message}`);
-      }
     } catch (error) {
-      console.error('Erreur lors de la redirection vers la plateforme de paiement:', error);
-      
-      // En cas d'erreur, essayer une redirection directe
-      console.log('Tentative de redirection directe vers Stripe...');
-      try {
-        window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
-      } catch (redirectError) {
-        console.error('Échec de la redirection directe:', redirectError);
-        throw error;
-      }
+      console.error('[PaymentService] Erreur lors de la redirection:', error);
+      throw error;
     }
   }
 
-  // Vérifier l'état d'un paiement
+  // Vérifier l'état d'un paiement via le backend
   public async verifyPayment(sessionId: string): Promise<boolean> {
     if (this.simulatePayments && sessionId.startsWith('sim_checkout_')) {
-      // En dev, simuler un paiement réussi après une période d'attente
-      console.log(`Simulation de vérification pour la session ${sessionId}`);
+      console.log(`[PaymentService] Simulation de vérification pour la session ${sessionId}`);
       
-      // Attendre un moment pour simuler le traitement en arrière-plan
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // 🔧 SIMULATION : Déterminer le plan basé sur un plan par défaut (annuel)
+      // Simuler la mise à jour d'abonnement
       const defaultPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly');
       const expiresAt = Date.now() + (365 * 24 * 60 * 60 * 1000);
       
-      console.log("Mise à jour de l'abonnement vers PREMIUM:", SubscriptionTier.PREMIUM);
-      
-      // 🆕 MODIFICATION: Inclure la période de facturation et l'ID du plan
       subscriptionService.updateSubscription(
         SubscriptionTier.PREMIUM, 
         expiresAt, 
         sessionId,
-        defaultPlan?.billingPeriod || 'yearly', // 🆕 AJOUT: Période de facturation
-        defaultPlan?.id || 'premium_yearly' // 🆕 AJOUT: ID du plan
+        defaultPlan?.billingPeriod || 'yearly',
+        defaultPlan?.id || 'premium_yearly'
       );
       
       // Déclencher un événement pour notifier les composants
-      try {
-        window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-          detail: { tier: SubscriptionTier.PREMIUM }
-        }));
-        console.log('[PaymentService] Événement subscriptionUpdated émis avec succès');
-      } catch (error) {
-        console.error('[PaymentService] Erreur lors de l\'émission de l\'événement:', error);
-      }
+      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+        detail: { tier: SubscriptionTier.PREMIUM }
+      }));
       
       return true;
     }
 
     try {
-      console.log(`Vérification du paiement pour la session ${sessionId}`);
+      console.log(`[PaymentService] Vérification du paiement pour la session ${sessionId}`);
       
-      const response = await fetch(`${this.apiUrl}/verify-payment?sessionId=${sessionId}`);
+      const response = await fetch(
+        `${this.apiUrl}/api/payments/verify-payment?sessionId=${sessionId}`,
+        {
+          method: 'GET',
+          headers: this.getAuthHeaders()
+        }
+      );
       
-      // Vérifier la réponse HTTP
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('Erreur API:', response.status, errorData);
-        throw new Error(errorData.message || `Erreur ${response.status} lors de la vérification du paiement`);
+        console.error('[PaymentService] Erreur API:', response.status, errorData);
+        throw new Error(errorData.error || `Erreur ${response.status} lors de la vérification du paiement`);
       }
 
       const data = await response.json();
-      console.log('Réponse de vérification du paiement:', data);
+      console.log('[PaymentService] Réponse de vérification du paiement:', data);
       
       if (data.status === 'completed') {
-        // Calculer la date d'expiration basée sur le type d'abonnement
-        const plan = SUBSCRIPTION_PLANS.find(p => p.id === data.planId);
-        let expiresAt = Date.now();
+        // Le backend a déjà mis à jour l'abonnement en base
+        console.log('[PaymentService] Paiement vérifié et abonnement mis à jour');
         
-        if (plan?.billingPeriod === 'monthly') {
-          expiresAt += 30 * 24 * 60 * 60 * 1000; // 30 jours
-        } else if (plan?.billingPeriod === 'yearly') {
-          expiresAt += 365 * 24 * 60 * 60 * 1000; // 365 jours
-        } else {
-          expiresAt += 365 * 24 * 60 * 60 * 1000; // 365 jours par défaut
-        }
-
-        // 🔧 MODIFICATION: Inclure la période de facturation et l'ID du plan
-        subscriptionService.updateSubscription(
-          SubscriptionTier.PREMIUM, 
-          expiresAt, 
-          data.subscriptionId,
-          plan?.billingPeriod || 'monthly', // 🆕 AJOUT: Période de facturation
-          plan?.id || 'premium_monthly' // 🆕 AJOUT: ID du plan
-        );
-        
-        // Déclencher un événement pour notifier les composants
-        try {
-          window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-            detail: { tier: SubscriptionTier.PREMIUM }
-          }));
-          console.log('[PaymentService] Événement subscriptionUpdated émis avec succès');
-        } catch (error) {
-          console.error('[PaymentService] Erreur lors de l\'émission de l\'événement:', error);
-        }
-        
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      console.error('Erreur de vérification de paiement:', error);
-      
-      // En mode développement, considérer le paiement comme réussi même en cas d'erreur
-      if (this.simulatePayments) {
-        console.log('Mode simulation: considérer le paiement comme réussi malgré l\'erreur');
-        
-        const expiresAt = Date.now() + (365 * 24 * 60 * 60 * 1000);
-        
-        // 🆕 MODIFICATION: Inclure la période de facturation et l'ID du plan
-        subscriptionService.updateSubscription(
-          SubscriptionTier.PREMIUM, 
-          expiresAt, 
-          sessionId,
-          'yearly', // Mode simulation par défaut : annuel
-          'premium_yearly' // Mode simulation par défaut : plan annuel
-        );
-        
-        // Déclencher un événement
+        // Déclencher un événement pour notifier les composants frontend
         window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
           detail: { tier: SubscriptionTier.PREMIUM }
         }));
         
         return true;
       }
+
+      return false;
+    } catch (error) {
+      console.error('[PaymentService] Erreur de vérification de paiement:', error);
+      
+      if (this.simulatePayments) {
+        console.log('[PaymentService] Mode simulation: considérer le paiement comme réussi malgré l\'erreur');
+        return true;
+      }
       
       return false;
+    }
+  }
+
+  // Vérifier l'abonnement actuel via le backend
+  public async verifySubscription(): Promise<any> {
+    if (this.simulatePayments) {
+      return {
+        isPremium: true,
+        tier: 'premium',
+        status: 'active'
+      };
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[PaymentService] Erreur vérification abonnement:', error);
+      throw error;
+    }
+  }
+
+  // Vérifier l'accès à une fonctionnalité via le backend
+  public async checkFeatureAccess(feature: string): Promise<any> {
+    if (this.simulatePayments) {
+      return {
+        hasAccess: true,
+        isPremium: true
+      };
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ feature })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[PaymentService] Erreur vérification accès:', error);
+      throw error;
+    }
+  }
+
+  // Annuler un abonnement via le backend
+  public async cancelSubscription(): Promise<boolean> {
+    if (this.simulatePayments) {
+      console.log('[PaymentService] Simulation d\'annulation d\'abonnement');
+      
+      subscriptionService.updateSubscription(
+        SubscriptionTier.FREE,
+        null,
+        'cancelled',
+        'monthly',
+        'free_plan'
+      );
+      
+      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+        detail: { tier: SubscriptionTier.FREE }
+      }));
+      
+      return true;
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/cancel`, {
+        method: 'POST',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Erreur lors de l\'annulation');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Déclencher un événement pour notifier les composants
+        window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+          detail: { tier: SubscriptionTier.FREE }
+        }));
+      }
+      
+      return data.success;
+    } catch (error) {
+      console.error('[PaymentService] Erreur d\'annulation d\'abonnement:', error);
+      return false;
+    }
+  }
+
+  // Créer une session du portail client Stripe
+  public async createCustomerPortalSession(): Promise<string> {
+    if (this.simulatePayments) {
+      return `${window.location.origin}/subscription`;
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/payments/customer-portal`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          returnUrl: `${window.location.origin}/subscription`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error('[PaymentService] Erreur portail client:', error);
+      throw error;
     }
   }
 
@@ -373,117 +425,12 @@ class PaymentService {
       return { amount: 0, percentage: 0 };
     }
 
-    const monthlyYearlyEquivalent = monthlyPlan.price * 12; // 3€ x 12 = 36€
-    const savings = monthlyYearlyEquivalent - yearlyPlan.price; 
-    const percentage = Math.round((savings / monthlyYearlyEquivalent) * 100); 
+    const monthlyYearlyEquivalent = monthlyPlan.price * 12; // 4€ x 12 = 48€
+    const savings = monthlyYearlyEquivalent - yearlyPlan.price; // 48€ - 40€ = 8€
+    const percentage = Math.round((savings / monthlyYearlyEquivalent) * 100); // ~16%
 
-    console.log(`Économies calculées: ${savings}€ (${percentage}%)`);
+    console.log(`[PaymentService] Économies calculées: ${savings}€ (${percentage}%)`);
     return { amount: savings, percentage };
-  }
-
-  // Annuler un abonnement
-  public async cancelSubscription(): Promise<boolean> {
-    const currentSubscription = subscriptionService.getCurrentSubscription();
-    
-    if (!currentSubscription || !currentSubscription.paymentId) {
-      console.error('Aucun abonnement actif à annuler');
-      return false;
-    }
-
-    if (this.simulatePayments) {
-      console.log(`Simulation d'annulation pour l'abonnement ${currentSubscription.paymentId}`);
-      
-      // Rétrograder l'utilisateur au niveau gratuit
-      subscriptionService.updateSubscription(
-        SubscriptionTier.FREE,
-        null,
-        'cancelled',
-        'monthly',
-        'free_plan'
-      );
-      
-      // Déclencher un événement pour notifier les composants
-      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-        detail: { tier: SubscriptionTier.FREE }
-      }));
-      
-      return true;
-    }
-
-    try {
-      console.log(`Annulation de l'abonnement ${currentSubscription.paymentId}`);
-      
-      const response = await fetch(`${this.apiUrl}/cancel-subscription`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          subscriptionId: currentSubscription.paymentId,
-        }),
-      });
-
-      // Vérifier la réponse HTTP
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('Erreur API:', response.status, errorData);
-        throw new Error(errorData.message || `Erreur ${response.status} lors de l'annulation de l'abonnement`);
-      }
-
-      const data = await response.json();
-      console.log('Réponse d\'annulation:', data);
-      
-      // Rétrograder l'utilisateur au niveau gratuit
-      subscriptionService.updateSubscription(
-        SubscriptionTier.FREE,
-        null,
-        'cancelled',
-        'monthly',
-        'free_plan'
-      );
-      
-      // Déclencher un événement pour notifier les composants
-      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-        detail: { tier: SubscriptionTier.FREE }
-      }));
-      
-      return true;
-    } catch (error) {
-      console.error('Erreur d\'annulation d\'abonnement:', error);
-      return false;
-    }
-  }
-  
-  // 🔧 MODIFICATION: Nouvelle méthode pour forcer l'activation avec choix de période
-  public forceActivatePremium(duration: number = 365, billingPeriod: 'monthly' | 'yearly' = 'yearly'): void {
-    console.log('[PaymentService] Activation forcée de l\'abonnement Premium');
-    
-    const expiresAt = Date.now() + (duration * 24 * 60 * 60 * 1000);
-    const dummyPaymentId = `force_premium_${Date.now()}`;
-    const planId = billingPeriod === 'monthly' ? 'premium_monthly' : 'premium_yearly';
-    
-    // 🔧 MODIFICATION: Inclure la période de facturation
-    subscriptionService.updateSubscription(
-      SubscriptionTier.PREMIUM, 
-      expiresAt, 
-      dummyPaymentId,
-      billingPeriod, // 🆕 AJOUT: Période de facturation
-      planId // 🆕 AJOUT: ID du plan
-    );
-    
-    // Déclencher un événement pour notifier les composants
-    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-      detail: { tier: SubscriptionTier.PREMIUM }
-    }));
-    
-    console.log('[PaymentService] Abonnement Premium activé jusqu\'au', new Date(expiresAt).toLocaleDateString());
-    console.log('[PaymentService] Période de facturation:', billingPeriod);
-    console.log('[PaymentService] Plan ID:', planId);
-  }
-
-  // Vérifier si on est en mode simulation
-  public isSimulationMode(): boolean {
-    return this.simulatePayments;
   }
 
   // Obtenir le plan correspondant à un tier et période de facturation
@@ -493,15 +440,62 @@ class PaymentService {
     ) || null;
   }
 
-  // Vérifier si Stripe est disponible
-  public async isStripeAvailable(): Promise<boolean> {
+  // Vérifier si le service est disponible
+  public async isServiceAvailable(): Promise<boolean> {
     if (this.simulatePayments) return true;
     
     try {
-      const stripe = await this.stripePromise;
-      return stripe !== null;
+      const response = await fetch(`${this.apiUrl}/api/health`);
+      return response.ok;
     } catch {
       return false;
+    }
+  }
+
+  // Activation forcée de Premium pour les tests
+  public forceActivatePremium(duration: number = 365, billingPeriod: 'monthly' | 'yearly' = 'yearly'): void {
+    console.log('[PaymentService] Activation forcée de l\'abonnement Premium');
+    
+    const expiresAt = Date.now() + (duration * 24 * 60 * 60 * 1000);
+    const dummyPaymentId = `force_premium_${Date.now()}`;
+    const planId = billingPeriod === 'monthly' ? 'premium_monthly' : 'premium_yearly';
+    
+    subscriptionService.updateSubscription(
+      SubscriptionTier.PREMIUM, 
+      expiresAt, 
+      dummyPaymentId,
+      billingPeriod,
+      planId
+    );
+    
+    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+      detail: { tier: SubscriptionTier.PREMIUM }
+    }));
+    
+    console.log('[PaymentService] Abonnement Premium activé jusqu\'au', new Date(expiresAt).toLocaleDateString());
+  }
+
+  // Vérifier si on est en mode simulation
+  public isSimulationMode(): boolean {
+    return this.simulatePayments;
+  }
+
+  // Obtenir des statistiques d'abonnement (admin)
+  public async getSubscriptionStats(): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/admin/subscription-stats`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[PaymentService] Erreur récupération statistiques:', error);
+      return null;
     }
   }
 }
@@ -509,5 +503,3 @@ class PaymentService {
 // Singleton pattern pour le service de paiement
 const paymentService = new PaymentService();
 export default paymentService;
-
-export {};
