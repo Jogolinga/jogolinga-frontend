@@ -1,12 +1,13 @@
 // ===================================================================
-// GoogleAuth.tsx - VERSION PRODUCTION SANS DEBUG
+// GoogleAuth.tsx - VERSION PRODUCTION AVEC INTÉGRATION PAYMENTSERVICE
 // ===================================================================
 import React, { useState, useEffect } from 'react';
 import { gapi } from 'gapi-script';
 import './GoogleAuth.css';
 
-// Import du service sécurisé
+// Import du service sécurisé et du service de paiement
 import secureAuthService from '../services/secureAuthService';
+import paymentService from '../services/paymentService';
 
 const clientId = '623022530041-selrf11milvgptfjvtnarvc6dnnn0bar.apps.googleusercontent.com';
 const scopes = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.metadata.readonly';
@@ -76,6 +77,13 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       if (secureAuthService.isAuthenticated()) {
         const currentUser = secureAuthService.getCurrentUser();
         if (currentUser) {
+          // NOUVEAU: Restaurer le token pour les paiements si disponible
+          const token = secureAuthService.getToken();
+          if (token) {
+            console.log('[GoogleAuth] Restauration du token pour PaymentService');
+            paymentService.setAuthToken(token);
+          }
+          
           setUser({
             id: currentUser.id,
             name: currentUser.name,
@@ -206,26 +214,34 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         throw new Error('Impossible d\'obtenir un token Google valide');
       }
 
-      // 4. Test de l'API backend avant authentification
-   // 4. Test de l'API backend avant authentification
-
+      // 4. Test de l'API backend avant authentification (commenté temporairement)
       /*
-try {
- console.log('API URL from env:', process.env.NEXT_PUBLIC_API_URL);
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-console.log('Using API URL:', apiUrl);
-  const healthResponse = await fetch(`${apiUrl}/api/health`);
-  if (!healthResponse.ok) {
-    throw new Error(`Backend inaccessible: ${healthResponse.status}`);
-  }
-} catch (backendError) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'localhost:3001';
-  setError(`Le serveur backend n'est pas accessible (${apiUrl}). Vérifiez qu'il est démarré.`);
-  return;
-} */
+      try {
+        console.log('API URL from env:', process.env.NEXT_PUBLIC_API_URL);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        console.log('Using API URL:', apiUrl);
+        const healthResponse = await fetch(`${apiUrl}/api/health`);
+        if (!healthResponse.ok) {
+          throw new Error(`Backend inaccessible: ${healthResponse.status}`);
+        }
+      } catch (backendError) {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'localhost:3001';
+        setError(`Le serveur backend n'est pas accessible (${apiUrl}). Vérifiez qu'il est démarré.`);
+        return;
+      }
+      */
 
       // 5. Authentifier via notre backend sécurisé
       const backendUser = await secureAuthService.authenticateWithGoogle(googleToken);
+
+      // NOUVEAU: Configurer le token pour les paiements
+      if (backendUser.jwtToken || backendUser.token) {
+        const token = backendUser.jwtToken || backendUser.token;
+        console.log('[GoogleAuth] Configuration du token pour PaymentService');
+        paymentService.setAuthToken(token);
+      } else {
+        console.warn('[GoogleAuth] Aucun token JWT trouvé dans la réponse backend');
+      }
 
       // 6. Mettre à jour l'état local
       const userData = {
@@ -296,6 +312,10 @@ console.log('Using API URL:', apiUrl);
     try {
       // 1. Déconnecter du backend sécurisé
       secureAuthService.logout();
+
+      // NOUVEAU: Nettoyer le token du PaymentService
+      console.log('[GoogleAuth] Nettoyage du token PaymentService lors de la déconnexion');
+      // Note: PaymentService n'a pas de méthode clearToken, mais setAuthToken(null) peut être ajouté si nécessaire
 
       // 2. Déconnecter de Google
       try {
