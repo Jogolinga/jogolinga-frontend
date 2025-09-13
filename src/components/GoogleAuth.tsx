@@ -209,7 +209,9 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       // 4. Test de l'API backend avant authentification
    // 4. Test de l'API backend avant authentification
 try {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+ console.log('API URL from env:', process.env.NEXT_PUBLIC_API_URL);
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+console.log('Using API URL:', apiUrl);
   const healthResponse = await fetch(`${apiUrl}/api/health`);
   if (!healthResponse.ok) {
     throw new Error(`Backend inaccessible: ${healthResponse.status}`);
