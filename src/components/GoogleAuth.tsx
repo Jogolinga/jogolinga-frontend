@@ -208,6 +208,8 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
 
       // 4. Test de l'API backend avant authentification
    // 4. Test de l'API backend avant authentification
+
+      /*
 try {
  console.log('API URL from env:', process.env.NEXT_PUBLIC_API_URL);
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -220,7 +222,7 @@ console.log('Using API URL:', apiUrl);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'localhost:3001';
   setError(`Le serveur backend n'est pas accessible (${apiUrl}). Vérifiez qu'il est démarré.`);
   return;
-}
+} */
 
       // 5. Authentifier via notre backend sécurisé
       const backendUser = await secureAuthService.authenticateWithGoogle(googleToken);
