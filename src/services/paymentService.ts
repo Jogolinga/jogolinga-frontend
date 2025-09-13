@@ -81,7 +81,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 
 class PaymentService {
   // URL de l'API backend
-  private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+ private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://jogolinga-backend-production.up.railway.app';
   
   // Mode simulation pour développement local sans backend
   private simulatePayments = process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_API_URL;
