@@ -292,6 +292,164 @@ class SecureAuthService {
   }
 
   // ===================================================================
+  // VÉRIFICATION D'ACCÈS AUX FONCTIONNALITÉS
+  // ===================================================================
+
+  /**
+   * Vérifier l'accès à une fonctionnalité spécifique
+   */
+  async checkAccess(feature: string): Promise<AccessCheck> {
+    if (!this.token) {
+      return {
+        hasAccess: false,
+        isPremium: false,
+        tier: 'free',
+        feature,
+        reason: 'Authentification requise'
+      };
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${this.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ feature }),
+        mode: 'cors'
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          this.logout();
+          throw new Error('Session expirée');
+        }
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      const access = await response.json();
+      console.log(`🔑 Accès ${feature}:`, access.hasAccess ? '✅' : '❌');
+
+      return access;
+    } catch (error) {
+      console.error('❌ Erreur vérification accès:', error);
+      return {
+        hasAccess: false,
+        isPremium: false,
+        tier: 'free',
+        feature,
+        reason: 'Erreur de vérification'
+      };
+    }
+  }
+
+  /**
+   * Créer une session de paiement Stripe
+   */
+  async createCheckoutSession(planId: string, priceId: string): Promise<string> {
+    if (!this.token) {
+      throw new Error('Authentification requise pour effectuer un paiement');
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/payments/create-checkout-session`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${this.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ planId, priceId }),
+        mode: 'cors'
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Erreur création session de paiement');
+      }
+
+      const data = await response.json();
+      console.log('✅ Session de paiement créée');
+
+      return data.sessionId;
+    } catch (error) {
+      console.error('❌ Erreur création session paiement:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Vérifier un paiement après succès
+   */
+  async verifyPayment(sessionId: string): Promise<any> {
+    if (!this.token) {
+      throw new Error('Authentification requise');
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/payments/verify-payment?sessionId=${sessionId}`, {
+        headers: { 
+          'Authorization': `Bearer ${this.token}`
+        },
+        mode: 'cors'
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur vérification paiement');
+      }
+
+      const result = await response.json();
+      console.log('✅ Paiement vérifié:', result.status);
+
+      if (result.status === 'completed') {
+        window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+          detail: { tier: 'premium' }
+        }));
+      }
+
+      return result;
+    } catch (error) {
+      console.error('❌ Erreur vérification paiement:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Charger la progression utilisateur
+   */
+  async loadUserProgress(languageCode: string): Promise<any> {
+    if (!this.token) {
+      console.warn('⚠️ Chargement impossible sans authentification');
+      return null;
+    }
+
+    try {
+      const response = await fetch(`${this.apiUrl}/api/progress/${languageCode}`, {
+        headers: { 
+          'Authorization': `Bearer ${this.token}`
+        },
+        mode: 'cors'
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          console.log('📝 Aucune progression trouvée pour', languageCode);
+          return null;
+        }
+        throw new Error('Erreur chargement progression');
+      }
+
+      const progress = await response.json();
+      console.log('✅ Progression chargée pour', languageCode);
+
+      return progress;
+    } catch (error) {
+      console.error('❌ Erreur chargement progression:', error);
+      return null;
+    }
+  }
+
+  // ===================================================================
   // GETTERS ET MÉTHODES UTILITAIRES
   // ===================================================================
 
