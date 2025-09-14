@@ -75,7 +75,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     ],
     tier: SubscriptionTier.PREMIUM,
     savings: 8,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
+    stripePriceId: process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL
   }
 ];
 
