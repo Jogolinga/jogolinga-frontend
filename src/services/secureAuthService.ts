@@ -43,7 +43,7 @@ interface AccessCheck {
 }
 
 class SecureAuthService {
-  private apiUrl = 'https://jogolinga-backend-production.up.railway.app/auth/google' ;
+  private apiUrl = process.env.REACT_APP_API_URL ;
   private token: string | null = null;
   private user: User | null = null;
 
