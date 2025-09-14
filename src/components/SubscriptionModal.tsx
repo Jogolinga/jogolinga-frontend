@@ -1,3 +1,4 @@
+// SubscriptionModal.tsx - Version Production corrigée
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -23,7 +24,6 @@ interface SubscriptionModalProps {
   blockedFeature?: string | null;
 }
 
-// Variants optimisés pour éviter les conflits
 const modalVariants = {
   hidden: { 
     opacity: 0, 
@@ -72,14 +72,11 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
   const [featureTitle, setFeatureTitle] = useState<string>("");
   
-  // Ref pour forcer l'affichage
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  
-  // État pour détecter si on est sur mobile
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  // Validation complète des variables d'environnement
+  // Validation des variables d'environnement
   const validateEnvironmentVariables = useCallback(() => {
     console.log('=== DIAGNOSTIC VARIABLES D\'ENVIRONNEMENT PRODUCTION ===');
     console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -115,7 +112,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     return true;
   }, []);
 
-  // Validation spécifique d'un plan avec messages d'erreur détaillés
+  // Validation spécifique d'un plan
   const validatePriceId = useCallback((plan: SubscriptionPlan): string => {
     let priceId: string | undefined;
     
@@ -137,9 +134,7 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
 1. Créez le produit dans votre dashboard Stripe (${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'})
 2. Copiez le Price ID (commence par "price_")
 3. Ajoutez-le dans vos variables d'environnement Vercel
-4. Redéployez votre application
-
-Si le problème persiste, vérifiez que les variables sont bien synchronisées entre Vercel et votre code.`;
+4. Redéployez votre application`;
       
       throw new Error(errorMessage);
     }
@@ -162,104 +157,9 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Fonction pour forcer l'affichage du modal
-  const forceModalDisplay = useCallback(() => {
-    if (overlayRef.current && modalRef.current) {
-      // Ajouter les classes de force
-      overlayRef.current.classList.add('force-display', 'modal-force-front');
-      modalRef.current.classList.add('force-display');
-      
-      // Ajouter classe au body pour désactiver les interactions en arrière-plan
-      document.body.classList.add('modal-open');
-      
-      // Styles inline pour garantir l'affichage
-      overlayRef.current.style.cssText = `
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        z-index: 2147483647 !important;
-        display: flex !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-        background: rgba(0, 0, 0, 0.95) !important;
-        backdrop-filter: blur(20px) !important;
-        align-items: flex-start !important;
-        justify-content: center !important;
-        padding: ${isMobile ? '70px 8px 15px 8px' : '80px 20px 20px 20px'} !important;
-        overflow-y: auto !important;
-        box-sizing: border-box !important;
-      `;
-      
-      modalRef.current.style.cssText = `
-        position: relative !important;
-        z-index: 2147483646 !important;
-        display: block !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: none !important;
-        width: ${isMobile ? 'calc(100% - 16px)' : '100%'} !important;
-        max-width: ${isMobile ? 'calc(100% - 16px)' : '1000px'} !important;
-        margin: 0 auto !important;
-        padding: ${isMobile ? '16px' : '48px'} !important;
-        border-radius: ${isMobile ? '12px' : '20px'} !important;
-        max-height: ${isMobile ? 'calc(100vh - 85px)' : 'calc(100vh - 100px)'} !important;
-        overflow-y: auto !important;
-        box-sizing: border-box !important;
-        background: ${theme === 'dark' ? 'rgba(30, 41, 59, 0.98)' : 'rgba(255, 255, 255, 0.98)'} !important;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8) !important;
-        border: 2px solid ${theme === 'dark' ? 'rgba(139, 69, 19, 0.4)' : 'rgba(218, 165, 32, 0.4)'} !important;
-        backdrop-filter: blur(15px) !important;
-        color: ${theme === 'dark' ? '#f1f5f9' : '#2d1810'} !important;
-      `;
-    }
-  }, [isMobile, theme]);
-
-  // Forcer l'affichage correct du modal
+  // Chargement des données avec validation
   useEffect(() => {
     if (isOpen) {
-      // Désactiver le scroll du body
-      document.body.style.overflow = 'hidden';
-      
-      // Applications multiples pour contrer les re-renders
-      forceModalDisplay();
-      setTimeout(forceModalDisplay, 50);
-      setTimeout(forceModalDisplay, 100);
-      setTimeout(forceModalDisplay, 200);
-      setTimeout(forceModalDisplay, 500);
-      
-      // Observer pour détecter les changements
-      const observer = new MutationObserver(() => {
-        if (overlayRef.current && !overlayRef.current.classList.contains('force-display')) {
-          forceModalDisplay();
-        }
-      });
-      
-      if (overlayRef.current) {
-        observer.observe(overlayRef.current, {
-          attributes: true,
-          attributeFilter: ['class', 'style']
-        });
-      }
-      
-      return () => {
-        observer.disconnect();
-        document.body.style.overflow = 'unset';
-        document.body.classList.remove('modal-open');
-      };
-    } else {
-      // Nettoyage quand le modal se ferme
-      document.body.style.overflow = 'unset';
-      document.body.classList.remove('modal-open');
-    }
-  }, [isOpen, forceModalDisplay]);
-
-  // Chargement des données avec validation complète
-  useEffect(() => {
-    if (isOpen) {
-      // Validation des variables d'environnement au démarrage
       const envValid = validateEnvironmentVariables();
       if (!envValid) {
         setError('Configuration incomplète. Vérifiez vos variables d\'environnement Vercel.');
@@ -271,17 +171,12 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
       setCurrentTier(tier);
       setCurrentPlanId(planId);
       
-      console.log('[SubscriptionModal] État actuel:', { tier, planId });
-      
       if (tier === SubscriptionTier.FREE) {
-        // Si gratuit, sélectionner le plan mensuel par défaut
         const premiumMonthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
         setSelectedPlan(premiumMonthly || null);
       } else if (tier === SubscriptionTier.PREMIUM && planId) {
-        // Si Premium, sélectionner le plan actuel
         const currentPlan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
         setSelectedPlan(currentPlan || null);
-        console.log('[SubscriptionModal] Plan actuel sélectionné:', currentPlan?.name);
       }
 
       if (blockedFeature) {
@@ -341,13 +236,11 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
         return;
       }
 
-      // Vérification de l'API backend
       if (!process.env.NEXT_PUBLIC_API_URL) {
         throw new Error('URL de l\'API backend manquante (NEXT_PUBLIC_API_URL)');
       }
 
       console.log('🚀 Création de session de paiement Stripe via Railway...');
-      console.log('📡 URL de l\'API:', process.env.NEXT_PUBLIC_API_URL);
       
       const sessionId = await paymentService.createCheckoutSession(selectedPlan, userEmail);
       console.log('✅ Session Stripe créée avec succès:', sessionId);
@@ -358,7 +251,6 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
     } catch (error) {
       console.error('❌ Erreur lors de l\'abonnement:', error);
       
-      // Messages d'erreur spécifiques selon le type d'erreur
       if (error.message.includes('Price ID manquant') || error.message.includes('Configuration manquante')) {
         setError(`Erreur de configuration Stripe : ${error.message}`);
       } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
@@ -385,12 +277,10 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
     }
   };
 
-  // Vérifier si un plan est le plan actuel
   const isPlanCurrent = (plan: SubscriptionPlan): boolean => {
     return currentTier === plan.tier && currentPlanId === plan.id;
   };
 
-  // Obtenir le texte du bouton selon l'état
   const getButtonText = (plan: SubscriptionPlan): string => {
     if (isPlanCurrent(plan)) {
       return '✅ Votre plan actuel';
@@ -403,7 +293,6 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
     return 'Sélectionner';
   };
 
-  // Obtenir la classe CSS du bouton
   const getButtonClass = (plan: SubscriptionPlan): string => {
     if (isPlanCurrent(plan)) {
       return 'current-plan-button';
@@ -412,24 +301,18 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
     return `select-plan-button ${plan.tier === SubscriptionTier.PREMIUM ? 'premium' : ''}`;
   };
 
-  // Gérer la résiliation d'abonnement
   const handleCancelSubscription = async () => {
-    if (window.confirm('Êtes-vous sûr de vouloir résilier votre abonnement Premium ? Vous perdrez immédiatement l\'accès à toutes les fonctionnalités Premium.')) {
+    if (window.confirm('Êtes-vous sûr de vouloir résilier votre abonnement Premium ?')) {
       try {
         setIsLoading(true);
         setError(null);
 
-        console.log('[SubscriptionModal] Résiliation d\'abonnement via Railway...');
-
         const success = await paymentService.cancelSubscription();
         
         if (success) {
-          console.log('[SubscriptionModal] Résiliation réussie');
-          
           setCurrentTier(SubscriptionTier.FREE);
           setCurrentPlanId('free_plan');
           
-          // Sélectionner automatiquement le plan mensuel
           const premiumMonthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
           setSelectedPlan(premiumMonthly || null);
           
@@ -437,8 +320,7 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
             onSuccess();
           }
           
-          // Afficher un message de confirmation
-          alert('Votre abonnement a été résilié avec succès. Vous êtes maintenant sur le plan gratuit.');
+          alert('Votre abonnement a été résilié avec succès.');
           
           setTimeout(() => {
             onClose();
@@ -449,7 +331,7 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
         
       } catch (error) {
         console.error('Erreur lors de la résiliation:', error);
-        setError('Une erreur est survenue lors de la résiliation. Veuillez réessayer ou contacter le support.');
+        setError('Une erreur est survenue lors de la résiliation. Veuillez contacter le support.');
       } finally {
         setIsLoading(false);
       }
@@ -462,7 +344,7 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
     <AnimatePresence>
       <motion.div 
         ref={overlayRef}
-        className={`subscription-modal-overlay force-display modal-force-front ${theme === 'dark' ? 'dark-mode' : ''}`}
+        className={`subscription-modal-overlay ${theme === 'dark' ? 'dark-mode' : ''}`}
         variants={overlayVariants}
         initial="hidden"
         animate="visible"
@@ -471,7 +353,7 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
       >
         <motion.div 
           ref={modalRef}
-          className="subscription-modal force-display"
+          className="subscription-modal"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
@@ -481,14 +363,6 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
           <button 
             className="modal-close-button" 
             onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: isMobile ? '12px' : '16px',
-              right: isMobile ? '12px' : '16px',
-              zIndex: 2147483645,
-              width: isMobile ? '40px' : '44px',
-              height: isMobile ? '40px' : '44px'
-            }}
           >
             <X size={isMobile ? 20 : 24} />
           </button>
@@ -506,21 +380,9 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
               <>
                 <h2>Choisissez votre plan</h2>
                 <p>Débloquez toutes les fonctionnalités pour un apprentissage optimal</p>
-                {/* Affichage du plan actuel */}
                 {currentTier === SubscriptionTier.PREMIUM && currentPlanId && (
-                  <div style={{ 
-                    marginTop: '16px', 
-                    padding: '12px', 
-                    background: 'rgba(16, 185, 129, 0.1)', 
-                    borderRadius: '8px',
-                    border: '1px solid rgba(16, 185, 129, 0.3)'
-                  }}>
-                    <p style={{ 
-                      color: '#10b981', 
-                      fontSize: '14px', 
-                      fontWeight: '600',
-                      margin: 0
-                    }}>
+                  <div className="current-plan-notice">
+                    <p>
                       🎉 Vous êtes actuellement abonné au {
                         currentPlanId === 'premium_monthly' ? 'Premium Mensuel' : 'Premium Annuel'
                       }
@@ -530,23 +392,8 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
               </>
             )}
             
-            {/* Indicateur de mode production */}
-            <div style={{
-              marginTop: '12px',
-              padding: '8px 12px',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              borderRadius: '6px',
-              textAlign: 'center'
-            }}>
-              <p style={{
-                color: '#10b981',
-                fontSize: '12px',
-                fontWeight: '600',
-                margin: 0
-              }}>
-                🔒 Paiements sécurisés via Stripe
-              </p>
+            <div className="production-notice">
+              <p>🔒 Paiements sécurisés via Stripe</p>
             </div>
           </div>
           
@@ -561,12 +408,6 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * SUBSCRIPTION_PLANS.indexOf(plan) }}
-                style={{
-                  ...(isPlanCurrent(plan) ? {
-                    borderColor: '#10b981',
-                    boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.3), 0 15px 30px rgba(16, 185, 129, 0.2)'
-                  } : {})
-                }}
               >
                 {plan.tier === SubscriptionTier.PREMIUM && (
                   <div className="premium-badge">
@@ -624,11 +465,6 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
                     whileTap={isMobile ? {} : { scale: 0.97 }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    style={{
-                      background: '#ef4444',
-                      borderColor: '#ef4444',
-                      color: 'white'
-                    }}
                   >
                     🚫 Résilier l'abonnement
                   </motion.button>
@@ -654,18 +490,8 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
               className="error-message"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              style={{
-                background: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '8px',
-                padding: '16px',
-                marginTop: '20px',
-                whiteSpace: 'pre-line'
-              }}
             >
-              <p style={{ color: '#ef4444', margin: 0, fontSize: '14px' }}>
-                {error}
-              </p>
+              <p>{error}</p>
             </motion.div>
           )}
           
@@ -681,28 +507,13 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
                 <span>Paiement sécurisé via Stripe</span>
               </div>
               
-              {/* Résumé du plan sélectionné */}
-              <div style={{
-                background: 'rgba(210, 105, 30, 0.1)',
-                border: '1px solid rgba(210, 105, 30, 0.3)',
-                borderRadius: '8px',
-                padding: '16px',
-                marginBottom: '24px',
-                textAlign: 'center'
-              }}>
-                <h4 style={{ 
-                  margin: '0 0 8px 0', 
-                  color: theme === 'dark' ? '#f1f5f9' : '#2d1810'
-                }}>
+              <div className="plan-summary">
+                <h4>{selectedPlan.name}</h4>
+                <p className="plan-price">
                   {selectedPlan.price}€/{selectedPlan.billingPeriod === 'monthly' ? 'mois' : 'an'}
                 </p>
                 {selectedPlan.billingPeriod === 'yearly' && selectedPlan.savings && (
-                  <p style={{ 
-                    margin: 0, 
-                    fontSize: '14px', 
-                    color: '#10b981',
-                    fontWeight: '600'
-                  }}>
+                  <p className="savings-notice">
                     💰 Vous économisez {selectedPlan.savings}€ par rapport au plan mensuel !
                   </p>
                 )}
@@ -714,34 +525,9 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
                 disabled={isLoading}
                 whileHover={isMobile ? {} : { scale: 1.05 }}
                 whileTap={isMobile ? {} : { scale: 0.95 }}
-                style={{
-                  width: '100%',
-                  padding: '16px 24px',
-                  background: 'linear-gradient(135deg, #d2691e 0%, #8b4513 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '12px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  opacity: isLoading ? 0.7 : 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 12px rgba(210, 105, 30, 0.3)'
-                }}
               >
                 {isLoading ? (
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    borderTop: '2px solid white',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite'
-                  }} />
+                  <div className="loading-spinner" />
                 ) : (
                   <>
                     <CreditCard size={20} />
@@ -751,38 +537,17 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
                 )}
               </motion.button>
               
-              <p style={{
-                textAlign: 'center',
-                fontSize: '12px',
-                color: theme === 'dark' ? '#94a3b8' : '#64748b',
-                marginTop: '16px',
-                lineHeight: '1.5'
-              }}>
+              <p className="terms-text">
                 En vous abonnant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité. 
                 Vous pouvez annuler votre abonnement à tout moment via votre compte.
               </p>
               
-              {/* Informations supplémentaires pour rassurer */}
-              <div style={{
-                marginTop: '16px',
-                padding: '12px',
-                background: theme === 'dark' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
-                borderRadius: '8px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '14px' }}>🔒</span>
-                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#3b82f6' }}>
-                    Paiement 100% sécurisé
-                  </span>
+              <div className="security-info">
+                <div className="security-header">
+                  <span>🔒</span>
+                  <span>Paiement 100% sécurisé</span>
                 </div>
-                <ul style={{ 
-                  margin: 0, 
-                  paddingLeft: '20px', 
-                  fontSize: '12px', 
-                  color: theme === 'dark' ? '#94a3b8' : '#64748b',
-                  lineHeight: '1.4'
-                }}>
+                <ul className="security-list">
                   <li>Traitement sécurisé par Stripe</li>
                   <li>Aucune donnée bancaire stockée</li>
                   <li>Annulation possible à tout moment</li>
@@ -793,14 +558,6 @@ Si le problème persiste, vérifiez que les variables sont bien synchronisées e
           )}
         </motion.div>
       </motion.div>
-      
-      {/* Ajout du CSS pour l'animation de rotation */}
-      <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </AnimatePresence>
   );
 };
