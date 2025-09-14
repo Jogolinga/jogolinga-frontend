@@ -331,8 +331,9 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
           throw new Error('La résiliation a échoué');
         }
         
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Erreur lors de la résiliation:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
         setError('Une erreur est survenue lors de la résiliation. Veuillez contacter le support.');
       } finally {
         setIsLoading(false);
