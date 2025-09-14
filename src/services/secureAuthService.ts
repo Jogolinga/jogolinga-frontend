@@ -1,5 +1,5 @@
 // ===================================================================
-// services/secureAuthService.ts - VERSION CORRIGÉE POUR PRODUCTION
+// services/secureAuthService.ts - VERSION FINALE SANS DUPLICATION
 // ===================================================================
 
 interface User {
@@ -42,14 +42,13 @@ interface AccessCheck {
 }
 
 class SecureAuthService {
-  // CORRECTION: Configuration d'URL plus robuste
   private apiUrl: string;
   private token: string | null = null;
   private user: User | null = null;
 
   constructor() {
-    // Configuration de l'URL API avec fallbacks
-    this.apiUrl = this.getApiUrl();
+    // Configuration de l'URL API
+    this.apiUrl = this.determineApiUrl();
     
     console.log('🔐 SecureAuthService initialisé avec API:', this.apiUrl);
     
@@ -73,8 +72,11 @@ class SecureAuthService {
     }
   }
 
-  // NOUVEAU: Méthode pour déterminer l'URL API
-  private getApiUrl(): string {
+  // ===================================================================
+  // CONFIGURATION D'URL
+  // ===================================================================
+
+  private determineApiUrl(): string {
     // En production (Vercel)
     if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
       return 'https://jogolinga-backend-production.up.railway.app';
@@ -94,7 +96,7 @@ class SecureAuthService {
   }
 
   // ===================================================================
-  // AUTHENTIFICATION GOOGLE SÉCURISÉE - VERSION CORRIGÉE
+  // AUTHENTIFICATION GOOGLE SÉCURISÉE
   // ===================================================================
 
   async authenticateWithGoogle(googleToken: string): Promise<UserWithToken> {
@@ -102,17 +104,16 @@ class SecureAuthService {
       console.log('🔐 Authentification avec Google via backend...');
       console.log('🔗 URL API utilisée:', this.apiUrl);
       
-      // NOUVEAU: Test de connectivité avant authentification
+      // Test de connectivité avant authentification
       await this.testBackendConnectivity();
       
-      const response = await fetch(`${this.apiUrl}/auth/google`, {
+      const response = await fetch(`${this.apiUrl}/api/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
         body: JSON.stringify({ googleToken }),
-        // NOUVEAU: Configuration pour CORS
         mode: 'cors',
         credentials: 'include'
       });
@@ -169,14 +170,17 @@ class SecureAuthService {
     }
   }
 
-  // NOUVEAU: Test de connectivité backend
+  // ===================================================================
+  // TEST DE CONNECTIVITÉ
+  // ===================================================================
+
   private async testBackendConnectivity(): Promise<void> {
     try {
       console.log('🔍 Test de connectivité backend...');
       
       const healthEndpoints = [
-        `${this.apiUrl}/health`,
         `${this.apiUrl}/api/health`,
+        `${this.apiUrl}/health`,
         `${this.apiUrl}/`
       ];
 
@@ -207,14 +211,14 @@ class SecureAuthService {
   }
 
   // ===================================================================
-  // MÉTHODES EXISTANTES AVEC CORRECTIONS
+  // GESTION DES TOKENS ET SESSIONS
   // ===================================================================
 
   async verifyStoredToken(): Promise<boolean> {
     if (!this.token) return false;
 
     try {
-      const response = await fetch(`${this.apiUrl}/auth/verify`, {
+      const response = await fetch(`${this.apiUrl}/api/auth/verify`, {
         headers: {
           'Authorization': `Bearer ${this.token}`,
           'Accept': 'application/json'
@@ -263,41 +267,31 @@ class SecureAuthService {
   }
 
   // ===================================================================
-  // MÉTHODES DE REQUÊTE SÉCURISÉES
+  // VÉRIFICATIONS D'ABONNEMENT
   // ===================================================================
 
-  async authenticatedFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
-    const url = endpoint.startsWith('http') ? endpoint : `${this.apiUrl}${endpoint}`;
-    
-    const authHeaders = this.getAuthHeaders();
-    const headers = {
-      ...authHeaders,
-      'Accept': 'application/json',
-      ...(options.headers as Record<string, string> || {})
-    };
-
-    const response = await fetch(url, {
-      ...options,
-      headers,
-      mode: 'cors',
-      credentials: 'include'
-    });
-
-    if (response.status === 401) {
-      console.log('🔓 Session expirée, déconnexion automatique');
-      this.logout();
+  async verifySubscription(): Promise<SubscriptionStatus> {
+    if (!this.token) {
+      return { isPremium: false, tier: 'free', status: 'unauthenticated' };
     }
 
-    return response;
+    try {
+      const response = await this.authenticatedFetch('/api/subscription/verify');
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      const subscription = await response.json();
+      console.log('✅ Statut abonnement vérifié:', subscription.tier);
+
+      return subscription;
+    } catch (error) {
+      console.error('❌ Erreur vérification abonnement:', error);
+      return { isPremium: false, tier: 'free', status: 'error' };
+    }
   }
 
-  // ===================================================================
-  // VÉRIFICATION D'ACCÈS AUX FONCTIONNALITÉS
-  // ===================================================================
-
-  /**
-   * Vérifier l'accès à une fonctionnalité spécifique
-   */
   async checkAccess(feature: string): Promise<AccessCheck> {
     if (!this.token) {
       return {
@@ -344,9 +338,10 @@ class SecureAuthService {
     }
   }
 
-  /**
-   * Créer une session de paiement Stripe
-   */
+  // ===================================================================
+  // GESTION DES PAIEMENTS
+  // ===================================================================
+
   async createCheckoutSession(planId: string, priceId: string): Promise<string> {
     if (!this.token) {
       throw new Error('Authentification requise pour effectuer un paiement');
@@ -378,9 +373,6 @@ class SecureAuthService {
     }
   }
 
-  /**
-   * Vérifier un paiement après succès
-   */
   async verifyPayment(sessionId: string): Promise<any> {
     if (!this.token) {
       throw new Error('Authentification requise');
@@ -414,9 +406,41 @@ class SecureAuthService {
     }
   }
 
-  /**
-   * Charger la progression utilisateur
-   */
+  // ===================================================================
+  // GESTION DE LA PROGRESSION
+  // ===================================================================
+
+  async saveUserProgress(languageCode: string, progressData: any, totalXP: number = 0, completedCategories: string[] = []): Promise<boolean> {
+    if (!this.token) {
+      console.warn('⚠️ Sauvegarde impossible sans authentification');
+      return false;
+    }
+
+    try {
+      const response = await this.authenticatedFetch('/api/progress/save', {
+        method: 'POST',
+        body: JSON.stringify({
+          languageCode,
+          progressData,
+          totalXP,
+          completedCategories
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur sauvegarde progression');
+      }
+
+      const result = await response.json();
+      console.log('✅ Progression sauvegardée');
+
+      return result.success;
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde progression:', error);
+      return false;
+    }
+  }
+
   async loadUserProgress(languageCode: string): Promise<any> {
     if (!this.token) {
       console.warn('⚠️ Chargement impossible sans authentification');
@@ -477,7 +501,7 @@ class SecureAuthService {
     return headers;
   }
 
-  getApiUrl(): string {
+  getCurrentApiUrl(): string {
     return this.apiUrl;
   }
 
@@ -493,60 +517,32 @@ class SecureAuthService {
   }
 
   // ===================================================================
-  // MÉTHODES POUR ABONNEMENTS ET PAIEMENTS (simplifiées)
+  // REQUÊTES AUTHENTIFIÉES
   // ===================================================================
 
-  async verifySubscription(): Promise<SubscriptionStatus> {
-    if (!this.token) {
-      return { isPremium: false, tier: 'free', status: 'unauthenticated' };
+  async authenticatedFetch(endpoint: string, options: RequestInit = {}): Promise<Response> {
+    const url = endpoint.startsWith('http') ? endpoint : `${this.apiUrl}${endpoint}`;
+    
+    const authHeaders = this.getAuthHeaders();
+    const headers = {
+      ...authHeaders,
+      'Accept': 'application/json',
+      ...(options.headers as Record<string, string> || {})
+    };
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      mode: 'cors',
+      credentials: 'include'
+    });
+
+    if (response.status === 401) {
+      console.log('🔓 Session expirée, déconnexion automatique');
+      this.logout();
     }
 
-    try {
-      const response = await this.authenticatedFetch('/subscription/verify');
-
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}`);
-      }
-
-      const subscription = await response.json();
-      console.log('✅ Statut abonnement vérifié:', subscription.tier);
-
-      return subscription;
-    } catch (error) {
-      console.error('❌ Erreur vérification abonnement:', error);
-      return { isPremium: false, tier: 'free', status: 'error' };
-    }
-  }
-
-  async saveUserProgress(languageCode: string, progressData: any, totalXP: number = 0, completedCategories: string[] = []): Promise<boolean> {
-    if (!this.token) {
-      console.warn('⚠️ Sauvegarde impossible sans authentification');
-      return false;
-    }
-
-    try {
-      const response = await this.authenticatedFetch('/api/progress/save', {
-        method: 'POST',
-        body: JSON.stringify({
-          languageCode,
-          progressData,
-          totalXP,
-          completedCategories
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur sauvegarde progression');
-      }
-
-      const result = await response.json();
-      console.log('✅ Progression sauvegardée');
-
-      return result.success;
-    } catch (error) {
-      console.error('❌ Erreur sauvegarde progression:', error);
-      return false;
-    }
+    return response;
   }
 }
 
