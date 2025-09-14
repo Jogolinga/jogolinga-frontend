@@ -1,4 +1,4 @@
-voici le fichier paymentservice // paymentService.ts - Version intégrée avec backend Railway
+// paymentService.ts - Version intégrée avec backend Railway
 import subscriptionService, { SubscriptionTier } from './subscriptionService';
 
 // Interface pour les plans d'abonnement
@@ -90,15 +90,8 @@ class PaymentService {
   private authToken: string | null = null;
 
   constructor() {
-    console.log('[PaymentService] Variables d\'environnement:');
-    console.log('- NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
-    console.log('- NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
-    console.log('- NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
-    console.log('- NODE_ENV:', process.env.NODE_ENV);
-    
-    console.log('[PaymentService] URL calculée:', this.apiUrl);
-    console.log('[PaymentService] Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
     console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
+    console.log('[PaymentService] Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
   }
 
   // Définir le token d'authentification
