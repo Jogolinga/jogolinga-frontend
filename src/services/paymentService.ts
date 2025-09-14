@@ -146,7 +146,11 @@ class PaymentService {
 
     try {
       console.log(`[PaymentService] Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
-      
+      console.log('DEBUG - Plan data:', {
+  planId: plan.id,
+  priceId: plan.stripePriceId,
+  name: plan.name
+});
       const response = await fetch(`${this.apiUrl}/api/payments/create-checkout-session`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
@@ -161,11 +165,7 @@ class PaymentService {
             planId: plan.id
           }
 
-          console.log('DEBUG - Plan data:', {
-  planId: plan.id,
-  priceId: plan.stripePriceId,
-  name: plan.name
-});
+          
         }),
       });
 
