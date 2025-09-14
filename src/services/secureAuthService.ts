@@ -43,7 +43,7 @@ interface AccessCheck {
 }
 
 class SecureAuthService {
-  private apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+  private apiUrl = process.env.REACT_APP_API_URL ;
   private token: string | null = null;
   private user: User | null = null;
 
