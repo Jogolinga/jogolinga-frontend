@@ -160,6 +160,12 @@ class PaymentService {
             billingPeriod: plan.billingPeriod,
             planId: plan.id
           }
+
+          console.log('DEBUG - Plan data:', {
+  planId: plan.id,
+  priceId: plan.stripePriceId,
+  name: plan.name
+});
         }),
       });
 
