@@ -17,6 +17,14 @@ interface AuthResponse {
   user: User;
 }
 
+// Interface pour l'utilisateur avec token (utilisée dans GoogleAuth)
+interface UserWithToken extends User {
+  jwtToken?: string;
+  token?: string;
+  accessToken?: string;
+  access_token?: string;
+}
+
 interface SubscriptionStatus {
   isPremium: boolean;
   tier: 'free' | 'premium';
@@ -70,7 +78,7 @@ class SecureAuthService {
    * Authentifier avec Google via le backend sécurisé
    * @param googleToken - Token ID de Google
    */
-  async authenticateWithGoogle(googleToken: string): Promise<User> {
+  async authenticateWithGoogle(googleToken: string): Promise<UserWithToken> {
     try {
       console.log('🔐 Authentification avec Google via backend...');
       
@@ -107,7 +115,14 @@ class SecureAuthService {
         detail: { isAuthenticated: true, user: data.user }
       }));
 
-      return data.user;
+      // MODIFICATION: Retourner l'utilisateur avec le token inclus
+      const userWithToken: UserWithToken = {
+        ...data.user,
+        jwtToken: data.token,  // Ajouter le token pour GoogleAuth
+        token: data.token      // Alternative pour compatibilité
+      };
+
+      return userWithToken;
     } catch (error) {
       console.error('❌ Erreur authentification:', error);
       
