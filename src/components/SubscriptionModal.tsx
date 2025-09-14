@@ -76,13 +76,30 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  // Validation simplifiée sans messages complexes
+  // Validation avec logs détaillés
   const validatePriceId = useCallback((plan: SubscriptionPlan): boolean => {
+    console.log('=== VALIDATION PRICE ID ===');
+    console.log('Plan à valider:', plan.id, plan.name);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('Toutes les variables env disponibles:', Object.keys(process.env));
+    
     if (plan.id === 'premium_monthly') {
-      return !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+      const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+      console.log('NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', monthlyPriceId);
+      console.log('Type:', typeof monthlyPriceId);
+      console.log('Longueur:', monthlyPriceId?.length);
+      console.log('Commence par price_:', monthlyPriceId?.startsWith('price_'));
+      return !!monthlyPriceId;
     } else if (plan.id === 'premium_yearly') {
-      return !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+      const annualPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+      console.log('NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', annualPriceId);
+      console.log('Type:', typeof annualPriceId);
+      console.log('Longueur:', annualPriceId?.length);
+      console.log('Commence par price_:', annualPriceId?.startsWith('price_'));
+      return !!annualPriceId;
     }
+    
+    console.log('Plan stripePriceId:', plan.stripePriceId);
     return !!plan.stripePriceId;
   }, []);
 
