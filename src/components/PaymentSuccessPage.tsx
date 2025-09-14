@@ -109,7 +109,6 @@ const PaymentSuccessPage: React.FC = () => {
         // Extraire le sessionId des paramètres d'URL
         const params = new URLSearchParams(location.search);
         const sessionId = params.get('session_id');
-        const simulated = params.get('simulated');
         
         if (!sessionId) {
           console.log("Aucun session_id trouvé dans l'URL");
@@ -118,7 +117,7 @@ const PaymentSuccessPage: React.FC = () => {
           return;
         }
         
-        console.log(`Vérification de la session: ${sessionId}, simulée: ${simulated}`);
+        console.log(`Vérification de la session: ${sessionId}`);
         
         // Lancer le compteur pour simuler le traitement
         const interval = setInterval(() => {
@@ -136,25 +135,6 @@ const PaymentSuccessPage: React.FC = () => {
         
         // Première tentative de vérification du paiement
         success = await paymentService.verifyPayment(sessionId);
-        
-        // Si on est en mode simulation, considérer que c'est un succès
-        if (simulated === 'true') {
-          console.log("Mode simulé détecté, forçage du statut en succès");
-          success = true;
-          
-          // En mode simulé, forcer l'activation de l'abonnement Premium
-          try {
-            const expiresAt = Date.now() + (365 * 24 * 60 * 60 * 1000); // 1 an
-            subscriptionService.updateSubscription(SubscriptionTier.PREMIUM, expiresAt, sessionId);
-            
-            // Déclencher l'événement
-            window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-              detail: { tier: SubscriptionTier.PREMIUM }
-            }));
-          } catch (error) {
-            console.error("Erreur lors de l'activation forcée:", error);
-          }
-        }
         
         // Si la première vérification échoue, programmer des vérifications répétées
         if (!success) {
@@ -300,15 +280,6 @@ const PaymentSuccessPage: React.FC = () => {
       } catch (error) {
         console.error('[PaymentSuccessPage] Erreur lors de l\'émission de l\'événement:', error);
       }
-    } else {
-      // Si l'abonnement n'est pas en premium, forcer l'activation
-      console.log("[PaymentSuccessPage] Forçage de l'activation Premium");
-      try {
-        // Utiliser la nouvelle méthode forceActivatePremium
-        paymentService.forceActivatePremium(365); // Activer pour 1 an
-      } catch (error) {
-        console.error("[PaymentSuccessPage] Erreur lors de l'activation forcée:", error);
-      }
     }
     
     // Redirection après un court délai pour montrer l'animation
@@ -321,6 +292,7 @@ const PaymentSuccessPage: React.FC = () => {
     // Réinitialiser l'état pour recommencer la vérification
     setIsVerifying(true);
     setProcessingTime(0);
+    setVerificationAttempts(0);
     
     // Extraire le sessionId des paramètres d'URL
     const params = new URLSearchParams(location.search);
@@ -370,24 +342,6 @@ const PaymentSuccessPage: React.FC = () => {
         setIsVerifying(false);
       }, 500);
     }
-  };
-  
-  // Fonction pour forcer l'activation de Premium (pour le débogage)
-  const handleForcePremium = () => {
-    console.log("Activation forcée de l'abonnement Premium");
-    
-    // Utiliser la méthode forceActivatePremium
-    paymentService.forceActivatePremium(365);
-    
-    // Mettre à jour l'interface
-    setIsSuccess(true);
-    setIsVerifying(false);
-    setCurrentTier(SubscriptionTier.PREMIUM);
-    
-    // Définir une date d'expiration fictive
-    const expiryDateObj = new Date();
-    expiryDateObj.setFullYear(expiryDateObj.getFullYear() + 1);
-    setExpiryDate(expiryDateObj.toLocaleDateString());
   };
 
   return (
@@ -561,15 +515,6 @@ const PaymentSuccessPage: React.FC = () => {
               </motion.button>
               
               <motion.button
-                className="force-premium-button"
-                onClick={handleForcePremium}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Activer Premium manuellement
-              </motion.button>
-              
-              <motion.button
                 className="back-to-home-button"
                 onClick={() => navigate('/')}
                 whileHover={{ scale: 1.05 }}
@@ -586,5 +531,3 @@ const PaymentSuccessPage: React.FC = () => {
 };
 
 export default PaymentSuccessPage;
-
-export {};
