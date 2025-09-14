@@ -52,9 +52,8 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Accès à toutes les catégories premium'
     ],
     tier: SubscriptionTier.PREMIUM,
-    get stripePriceId() {
-      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
-    }
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY
+  },
   {
     id: 'premium_yearly',
     name: 'Premium Annuel',
@@ -75,9 +74,9 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Économisez 8€ sur l\'année'
     ],
     tier: SubscriptionTier.PREMIUM,
-    savings: 8,get stripePriceId() {
-      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
-    }
+    savings: 8,
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
+  }
 ];
 
 class PaymentService {
