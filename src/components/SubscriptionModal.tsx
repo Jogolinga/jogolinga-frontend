@@ -1,4 +1,4 @@
-// SubscriptionModal.tsx - Version Production corrigée
+// SubscriptionModal.tsx - Version minimale sans erreurs TypeScript
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -76,71 +76,14 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  // Validation des variables d'environnement
-  const validateEnvironmentVariables = useCallback(() => {
-    console.log('=== DIAGNOSTIC VARIABLES D\'ENVIRONNEMENT PRODUCTION ===');
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
-    console.log('MONTHLY Price ID présent:', !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
-    console.log('ANNUAL Price ID présent:', !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
-    
-    const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
-    const annualPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    
-    const issues = [];
-    
-    if (!monthlyPriceId) {
-      issues.push('❌ NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY manquant');
-    }
-    
-    if (!annualPriceId) {
-      issues.push('❌ NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL manquant');
-    }
-    
-    if (!apiUrl) {
-      issues.push('❌ NEXT_PUBLIC_API_URL manquant');
-    }
-    
-    if (issues.length > 0) {
-      console.error('Variables d\'environnement manquantes:', issues);
-      return false;
-    }
-    
-    console.log('✅ Toutes les variables d\'environnement sont présentes');
-    console.log('=======================================================');
-    return true;
-  }, []);
-
-  // Validation spécifique d'un plan
-  const validatePriceId = useCallback((plan: SubscriptionPlan): string => {
-    let priceId: string | undefined;
-    
+  // Validation simplifiée sans messages complexes
+  const validatePriceId = useCallback((plan: SubscriptionPlan): boolean => {
     if (plan.id === 'premium_monthly') {
-      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+      return !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
     } else if (plan.id === 'premium_yearly') {
-      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
-    } else {
-      priceId = plan.stripePriceId;
+      return !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
     }
-    
-    if (!priceId) {
-      const errorMessage = `Configuration manquante pour ${plan.name}
-
-Variables d'environnement requises :
-${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '• NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL'} (actuellement: ${priceId || 'NON DÉFINIE'})
-
-Étapes pour corriger :
-1. Créez le produit dans votre dashboard Stripe (${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'})
-2. Copiez le Price ID (commence par "price_")
-3. Ajoutez-le dans vos variables d'environnement Vercel
-4. Redéployez votre application`;
-      
-      throw new Error(errorMessage);
-    }
-    
-    console.log(`✅ Price ID validé pour ${plan.name}: ${priceId.substring(0, 12)}...`);
-    return priceId;
+    return !!plan.stripePriceId;
   }, []);
 
   // Détecter le mobile
@@ -157,14 +100,9 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Chargement des données avec validation
+  // Chargement des données
   useEffect(() => {
     if (isOpen) {
-      const envValid = validateEnvironmentVariables();
-      if (!envValid) {
-        setError('Configuration incomplète. Vérifiez vos variables d\'environnement Vercel.');
-      }
-      
       const tier = subscriptionService.getCurrentTier();
       const planId = subscriptionService.getCurrentPlanId();
       
@@ -185,7 +123,7 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
         setFeatureTitle("");
       }
     }
-  }, [isOpen, blockedFeature, validateEnvironmentVariables]);
+  }, [isOpen, blockedFeature]);
 
   const getFeatureTitle = (feature: string): string => {
     switch(feature) {
@@ -206,7 +144,6 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
 
   const handleSelectPlan = (plan: SubscriptionPlan) => {
     setSelectedPlan(plan);
-    console.log('[SubscriptionModal] Plan sélectionné:', plan.name, plan.id);
   };
 
   const handleSubscribe = async () => {
@@ -218,56 +155,22 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
       setIsLoading(true);
       setError(null);
 
-      console.log('[SubscriptionModal] Début du processus d\'abonnement PRODUCTION:', {
-        plan: selectedPlan.name,
-        planId: selectedPlan.id,
-        billingPeriod: selectedPlan.billingPeriod,
-        price: selectedPlan.price,
-        apiUrl: process.env.NEXT_PUBLIC_API_URL
-      });
-
-      // Validation du Price ID AVANT de continuer
-      try {
-        const validatedPriceId = validatePriceId(selectedPlan);
-        console.log('✅ Price ID validé pour la requête:', validatedPriceId.substring(0, 12) + '...');
-      } catch (validationError) {
-        console.error('❌ Erreur de validation Price ID:', validationError);
-        setError(validationError.message);
+      // Validation simplifiée
+      if (!validatePriceId(selectedPlan)) {
+        setError('Configuration Stripe manquante. Vérifiez vos variables d\'environnement.');
         return;
       }
 
       if (!process.env.NEXT_PUBLIC_API_URL) {
-        throw new Error('URL de l\'API backend manquante (NEXT_PUBLIC_API_URL)');
+        setError('URL de l\'API backend manquante.');
+        return;
       }
 
-      console.log('🚀 Création de session de paiement Stripe via Railway...');
-      
       const sessionId = await paymentService.createCheckoutSession(selectedPlan, userEmail);
-      console.log('✅ Session Stripe créée avec succès:', sessionId);
-      
-      console.log('🔗 Redirection vers Stripe Checkout...');
       await paymentService.redirectToCheckout(sessionId);
       
-    } catch (error) {
-      console.error('❌ Erreur lors de l\'abonnement:', error);
-      
-      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-      
-      if (errorMessage.includes('Price ID manquant') || errorMessage.includes('Configuration manquante')) {
-        setError(`Erreur de configuration Stripe : ${errorMessage}`);
-      } else if (errorMessage.includes('fetch') || errorMessage.includes('NetworkError')) {
-        setError('Erreur de connexion au serveur. Vérifiez que votre backend Railway est actif et accessible.');
-      } else if (errorMessage.includes('Backend inaccessible')) {
-        setError('Le serveur de paiement est temporairement indisponible. Veuillez réessayer dans quelques instants.');
-      } else if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
-        setError('Erreur d\'authentification. Veuillez vous reconnecter.');
-      } else if (errorMessage.includes('400') || errorMessage.includes('Bad Request')) {
-        setError('Données de requête invalides. Veuillez réessayer.');
-      } else if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
-        setError('Erreur interne du serveur. Notre équipe a été notifiée.');
-      } else {
-        setError(`Erreur inattendue : ${errorMessage}`);
-      }
+    } catch {
+      setError('Une erreur est survenue lors du traitement de votre demande. Veuillez réessayer.');
     } finally {
       setIsLoading(false);
     }
@@ -328,12 +231,11 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
             onClose();
           }, 1500);
         } else {
-          throw new Error('La résiliation a échoué');
+          setError('La résiliation a échoué');
         }
         
-      } catch (error) {
-        console.error('Erreur lors de la résiliation:', error);
-        setError('Une erreur est survenue lors de la résiliation. Veuillez contacter le support.');
+      } catch {
+        setError('Une erreur est survenue lors de la résiliation.');
       } finally {
         setIsLoading(false);
       }
@@ -541,7 +443,7 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
               
               <p className="terms-text">
                 En vous abonnant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité. 
-                Vous pouvez annuler votre abonnement à tout moment via votre compte.
+                Vous pouvez annuler votre abonnement à tout moment.
               </p>
               
               <div className="security-info">
