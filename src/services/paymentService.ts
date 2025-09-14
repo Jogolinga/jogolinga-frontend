@@ -1,4 +1,4 @@
-// paymentService.ts - Version intégrée avec backend Railway
+// paymentService.ts - Version Production Simplifiée
 import subscriptionService, { SubscriptionTier } from './subscriptionService';
 
 // Interface pour les plans d'abonnement
@@ -12,7 +12,6 @@ export interface SubscriptionPlan {
   features: string[];
   tier: SubscriptionTier;
   savings?: number;
-  stripePriceId?: string;
 }
 
 // Plans disponibles avec vos tarifs finaux
@@ -51,8 +50,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Synchronisation Google Drive',
       'Accès à toutes les catégories premium'
     ],
-    tier: SubscriptionTier.PREMIUM,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY
+    tier: SubscriptionTier.PREMIUM
   },
   {
     id: 'premium_yearly',
@@ -74,29 +72,25 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Économisez 8€ sur l\'année'
     ],
     tier: SubscriptionTier.PREMIUM,
-    savings: 8,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
+    savings: 8
   }
 ];
 
 class PaymentService {
-  // URL de l'API backend
-private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
-
-
-   
+  // URL de l'API backend - Production uniquement
+  private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
+  
   // Token JWT pour l'authentification
   private authToken: string | null = null;
 
   constructor() {
-    console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
-   
+    console.log('[PaymentService] Mode production - Backend:', this.apiUrl);
   }
 
   // Définir le token d'authentification
   public setAuthToken(token: string): void {
     this.authToken = token;
-    console.log('[PaymentService] Token d\'authentification défini');
+    console.log('[PaymentService] Token d\'authentification configuré');
   }
 
   // Obtenir les headers d'authentification
@@ -112,65 +106,52 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     return headers;
   }
 
-  // Initialisation du service (plus besoin de Stripe côté frontend)
+  // Récupérer le price ID Stripe correct
+  private getPriceId(plan: SubscriptionPlan): string {
+    if (plan.id === 'premium_monthly') {
+      return 'price_1S6fiUQuDKrWMtCMYNGdkPM2';
+    } else if (plan.id === 'premium_yearly') {
+      return 'price_1S6fosQuDKrWMtCMyhsJdSgV';
+    }
+    throw new Error(`Price ID non défini pour le plan: ${plan.id}`);
+  }
+
+  // Initialisation du service
   public async initialize(): Promise<boolean> {
     try {
-      console.log('[PaymentService] Initialisation du service...');
+      console.log('[PaymentService] Test de connexion au backend...');
       
-    
-      
-      // Tester la connexion au backend
       const response = await fetch(`${this.apiUrl}/api/health`);
       if (!response.ok) {
         throw new Error(`Backend inaccessible: ${response.status}`);
       }
       
-      console.log('[PaymentService] Service initialisé avec succès');
+      console.log('[PaymentService] Backend accessible - Service prêt');
       return true;
     } catch (error) {
-      console.error('[PaymentService] Erreur d\'initialisation:', error);
+      console.error('[PaymentService] Erreur de connexion backend:', error);
       return false;
     }
   }
 
-  // Récupérer dynamiquement le price ID correct
-  private getActualPriceId(plan: SubscriptionPlan): string | undefined {
-    if (plan.id === 'premium_monthly') {
-      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
-    } else if (plan.id === 'premium_yearly') {
-      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
-    }
-    return plan.stripePriceId;
-  }
-
-  // Créer une session de paiement via le backend
+  // Créer une session de paiement
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
-   
-    try {
-      const actualPriceId = this.getActualPriceId(plan);
-      
-      console.log(`[PaymentService] Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
-      
-      console.log('DEBUG - Plan data:', {
-        planId: plan.id,
-        priceId: actualPriceId,
-        name: plan.name,
-        envVars: {
-          monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY,
-          annual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
-        }
-      });
+    if (plan.tier === SubscriptionTier.FREE) {
+      throw new Error('Impossible de créer une session pour un plan gratuit');
+    }
 
-      if (!actualPriceId) {
-        throw new Error(`Price ID manquant pour le plan ${plan.name}. Vérifiez vos variables d'environnement.`);
-      }
+    try {
+      const priceId = this.getPriceId(plan);
       
+      console.log(`[PaymentService] Création session: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
+      console.log(`[PaymentService] Price ID: ${priceId}`);
+
       const response = await fetch(`${this.apiUrl}/api/payments/create-checkout-session`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({
           planId: plan.id,
-          priceId: actualPriceId,
+          priceId: priceId,
           userEmail,
           metadata: {
             planName: plan.name,
@@ -188,7 +169,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
       }
 
       const data = await response.json();
-      console.log('[PaymentService] Réponse de l\'API:', data);
+      console.log('[PaymentService] Session créée:', data.sessionId);
       
       if (!data.sessionId) {
         throw new Error('Session ID manquant dans la réponse');
@@ -196,32 +177,26 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
       
       return data.sessionId;
     } catch (error) {
-      console.error('[PaymentService] Erreur détaillée lors de la création de session:', error);
+      console.error('[PaymentService] Erreur création session:', error);
       throw error;
     }
   }
 
-  // Rediriger vers la page de paiement Stripe
+  // Rediriger vers Stripe Checkout
   public async redirectToCheckout(sessionId: string): Promise<void> {
-  
     try {
-      console.log('[PaymentService] Redirection vers Stripe Checkout...');
-      
-      // Redirection directe vers Stripe Checkout avec l'ID de session
+      console.log('[PaymentService] Redirection vers Stripe...');
       window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
-      
     } catch (error) {
-      console.error('[PaymentService] Erreur lors de la redirection:', error);
+      console.error('[PaymentService] Erreur redirection:', error);
       throw error;
     }
   }
 
-  // Vérifier l'état d'un paiement via le backend
+  // Vérifier un paiement
   public async verifyPayment(sessionId: string): Promise<boolean> {
-  
-
     try {
-      console.log(`[PaymentService] Vérification du paiement pour la session ${sessionId}`);
+      console.log(`[PaymentService] Vérification paiement: ${sessionId}`);
       
       const response = await fetch(
         `${this.apiUrl}/api/payments/verify-payment?sessionId=${sessionId}`,
@@ -233,18 +208,17 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('[PaymentService] Erreur API:', response.status, errorData);
-        throw new Error(errorData.error || `Erreur ${response.status} lors de la vérification du paiement`);
+        console.error('[PaymentService] Erreur vérification:', response.status, errorData);
+        throw new Error(errorData.error || `Erreur ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('[PaymentService] Réponse de vérification du paiement:', data);
+      console.log('[PaymentService] Résultat vérification:', data);
       
       if (data.status === 'completed') {
-        // Le backend a déjà mis à jour l'abonnement en base
-        console.log('[PaymentService] Paiement vérifié et abonnement mis à jour');
+        console.log('[PaymentService] Paiement confirmé - Abonnement activé');
         
-        // Déclencher un événement pour notifier les composants frontend
+        // Notifier les composants de la mise à jour
         window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
           detail: { tier: SubscriptionTier.PREMIUM }
         }));
@@ -254,17 +228,13 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
       return false;
     } catch (error) {
-      console.error('[PaymentService] Erreur de vérification de paiement:', error);
-      
-    
-      
+      console.error('[PaymentService] Erreur vérification paiement:', error);
       return false;
     }
   }
 
-  // Vérifier l'abonnement actuel via le backend
-
-
+  // Vérifier l'abonnement actuel
+  public async verifySubscription(): Promise<any> {
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
         method: 'GET',
@@ -282,11 +252,8 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     }
   }
 
-  // Vérifier l'accès à une fonctionnalité via le backend
+  // Vérifier l'accès à une fonctionnalité
   public async checkFeatureAccess(feature: string): Promise<any> {
-   
-    }
-
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
         method: 'POST',
@@ -305,14 +272,8 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     }
   }
 
-
-      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-        detail: { tier: SubscriptionTier.FREE }
-      }));
-      
-      return true;
-    }
-
+  // Annuler un abonnement
+  public async cancelSubscription(): Promise<boolean> {
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/cancel`, {
         method: 'POST',
@@ -327,7 +288,6 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
       const data = await response.json();
       
       if (data.success) {
-        // Déclencher un événement pour notifier les composants
         window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
           detail: { tier: SubscriptionTier.FREE }
         }));
@@ -335,15 +295,13 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
       
       return data.success;
     } catch (error) {
-      console.error('[PaymentService] Erreur d\'annulation d\'abonnement:', error);
+      console.error('[PaymentService] Erreur annulation:', error);
       return false;
     }
   }
 
-  // Créer une session du portail client Stripe
+  // Portail client Stripe
   public async createCustomerPortalSession(): Promise<string> {
- 
-
     try {
       const response = await fetch(`${this.apiUrl}/api/payments/customer-portal`, {
         method: 'POST',
@@ -365,7 +323,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     }
   }
 
-  // Récupérer les plans d'abonnement
+  // Récupérer les plans
   public getSubscriptionPlans(): SubscriptionPlan[] {
     return SUBSCRIPTION_PLANS;
   }
@@ -375,7 +333,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     return SUBSCRIPTION_PLANS.find(plan => plan.id === planId);
   }
 
-  // Calculer les économies de l'abonnement annuel
+  // Calculer les économies annuelles
   public calculateYearlySavings(): { amount: number; percentage: number } {
     const monthlyPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
     const yearlyPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly');
@@ -388,21 +346,18 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     const savings = monthlyYearlyEquivalent - yearlyPlan.price; // 48€ - 40€ = 8€
     const percentage = Math.round((savings / monthlyYearlyEquivalent) * 100); // ~16%
 
-    console.log(`[PaymentService] Économies calculées: ${savings}€ (${percentage}%)`);
     return { amount: savings, percentage };
   }
 
-  // Obtenir le plan correspondant à un tier et période de facturation
+  // Obtenir un plan par tier et période
   public getPlanByTier(tier: SubscriptionTier, billingPeriod: 'monthly' | 'yearly' = 'monthly'): SubscriptionPlan | null {
     return SUBSCRIPTION_PLANS.find(
       plan => plan.tier === tier && plan.billingPeriod === billingPeriod
     ) || null;
   }
 
-  // Vérifier si le service est disponible
+  // Vérifier la disponibilité du service
   public async isServiceAvailable(): Promise<boolean> {
-  
-    
     try {
       const response = await fetch(`${this.apiUrl}/api/health`);
       return response.ok;
@@ -411,31 +366,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     }
   }
 
-  // Activation forcée de Premium pour les tests
-  public forceActivatePremium(duration: number = 365, billingPeriod: 'monthly' | 'yearly' = 'yearly'): void {
-    console.log('[PaymentService] Activation forcée de l\'abonnement Premium');
-    
-    const expiresAt = Date.now() + (duration * 24 * 60 * 60 * 1000);
-    const dummyPaymentId = `force_premium_${Date.now()}`;
-    const planId = billingPeriod === 'monthly' ? 'premium_monthly' : 'premium_yearly';
-    
-    subscriptionService.updateSubscription(
-      SubscriptionTier.PREMIUM, 
-      expiresAt, 
-      dummyPaymentId,
-      billingPeriod,
-      planId
-    );
-    
-    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-      detail: { tier: SubscriptionTier.PREMIUM }
-    }));
-    
-    console.log('[PaymentService] Abonnement Premium activé jusqu\'au', new Date(expiresAt).toLocaleDateString());
-  }
-
-
-  // Obtenir des statistiques d'abonnement (admin)
+  // Statistiques d'abonnement (admin)
   public async getSubscriptionStats(): Promise<any> {
     try {
       const response = await fetch(`${this.apiUrl}/api/admin/subscription-stats`, {
@@ -449,12 +380,12 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
       return await response.json();
     } catch (error) {
-      console.error('[PaymentService] Erreur récupération statistiques:', error);
+      console.error('[PaymentService] Erreur statistiques:', error);
       return null;
     }
   }
 }
 
-// Singleton pattern pour le service de paiement
+// Export du service
 const paymentService = new PaymentService();
 export default paymentService;
