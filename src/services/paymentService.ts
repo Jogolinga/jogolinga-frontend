@@ -90,17 +90,14 @@ class PaymentService {
   private authToken: string | null = null;
 
   constructor() {
-    console.log('[PaymentService] Initialisation du service PaymentService...');
-    console.log('[PaymentService] Valeur brute process.env.NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
-    console.log('[PaymentService] Valeur calculée pour apiUrl:', this.apiUrl);
-    console.log('[PaymentService] NODE_ENV:', process.env.NODE_ENV);
-    console.log('[PaymentService] Mode simulation activé ? ->', this.simulatePayments ? 'OUI' : 'NON');
+    console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
+    console.log('[PaymentService] Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
   }
 
   // Définir le token d'authentification
   public setAuthToken(token: string): void {
     this.authToken = token;
-    console.log('[PaymentService] Token d\'authentification défini:', !!token ? 'OK' : 'VIDE');
+    console.log('[PaymentService] Token d\'authentification défini');
   }
 
   // Obtenir les headers d'authentification
@@ -113,11 +110,8 @@ class PaymentService {
       headers['Authorization'] = `Bearer ${this.authToken}`;
     }
 
-    console.log('[PaymentService] Headers utilisés pour la requête:', headers);
     return headers;
   }
-}
-
 
   // Initialisation du service (plus besoin de Stripe côté frontend)
   public async initialize(): Promise<boolean> {
@@ -144,22 +138,14 @@ class PaymentService {
   }
 
   // Récupérer dynamiquement le price ID correct
-// Récupérer dynamiquement le price ID correct
-private getActualPriceId(plan: SubscriptionPlan): string | undefined {
-  console.log(`[PaymentService] getActualPriceId() appelé pour le plan: ${plan.id}`);
-
-  if (plan.id === 'premium_monthly') {
-    console.log('[PaymentService] Utilisation de NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
-    return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
-  } else if (plan.id === 'premium_yearly') {
-    console.log('[PaymentService] Utilisation de NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
-    return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+  private getActualPriceId(plan: SubscriptionPlan): string | undefined {
+    if (plan.id === 'premium_monthly') {
+      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+    } else if (plan.id === 'premium_yearly') {
+      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+    }
+    return plan.stripePriceId;
   }
-
-  console.log('[PaymentService] Aucun priceId spécifique trouvé, retour de plan.stripePriceId:', plan.stripePriceId);
-  return plan.stripePriceId;
-}
-
 
   // Créer une session de paiement via le backend
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
