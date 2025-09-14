@@ -1,486 +1,450 @@
-// SubscriptionModal.tsx - Version minimale sans erreurs TypeScript
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  X, 
-  Check, 
-  ChevronRight, 
-} from 'lucide-react';
-import { 
-  Lock,
-  CreditCard,
-  ShieldCheck as ShieldIcon 
-} from './common/EmojiIcons';
-import paymentService, { SubscriptionPlan, SUBSCRIPTION_PLANS } from '../services/paymentService';
-import subscriptionService, { SubscriptionTier } from '../services/subscriptionService';
-import { useTheme } from './ThemeContext';
-import './SubscriptionModal.css';
+// paymentService.ts - Version avec logs détaillés pour debug
+import subscriptionService, { SubscriptionTier } from './subscriptionService';
 
-interface SubscriptionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: () => void;
-  userEmail?: string;
-  blockedFeature?: string | null;
+// Interface pour les plans d'abonnement
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  billingPeriod: 'monthly' | 'yearly';
+  features: string[];
+  tier: SubscriptionTier;
+  savings?: number;
+  stripePriceId?: string;
 }
 
-const modalVariants = {
-  hidden: { 
-    opacity: 0, 
-    scale: 0.95, 
-    y: 20 
+// Plans disponibles avec vos tarifs finaux
+export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
+  {
+    id: 'free_plan',
+    name: 'Plan Gratuit',
+    description: 'Accès complet aux fonctionnalités de base',
+    price: 0,
+    currency: 'EUR',
+    billingPeriod: 'monthly',
+    features: [
+      'Apprentissage de vocabulaire illimité',
+      'Quiz illimitées',
+      'Révision illimitée du vocabulaire',
+      'Statistiques détaillées',
+      'Accès aux catégories de base'
+    ],
+    tier: SubscriptionTier.FREE
   },
-  visible: { 
-    opacity: 1, 
-    scale: 1, 
-    y: 0, 
-    transition: { 
-      type: "spring", 
-      damping: 25, 
-      stiffness: 300,
-      duration: 0.3
-    } 
+  {
+    id: 'premium_monthly',
+    name: 'Premium Mensuel',
+    description: 'Accès aux fonctionnalités avancées avec facturation mensuelle',
+    price: 4,
+    currency: 'EUR',
+    billingPeriod: 'monthly',
+    features: [
+      'Toutes les fonctionnalités gratuites',
+      'Exercices interactifs avancés',
+      'Grammaire complète avancée',
+      'Construction de phrases interactive',
+      'Phrases à trous avancées',
+      'Analytics avancés et insights',
+      'Mode hors-ligne complet',
+      'Synchronisation Google Drive',
+      'Accès à toutes les catégories premium'
+    ],
+    tier: SubscriptionTier.PREMIUM,
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY
   },
-  exit: { 
-    opacity: 0, 
-    scale: 0.95, 
-    y: 20, 
-    transition: { 
-      duration: 0.2 
-    } 
+  {
+    id: 'premium_yearly',
+    name: 'Premium Annuel',
+    description: 'Accès aux fonctionnalités avancées avec facturation annuelle - Économisez 16% !',
+    price: 40,
+    currency: 'EUR',
+    billingPeriod: 'yearly',
+    features: [
+      'Toutes les fonctionnalités gratuites',
+      'Exercices interactifs avancés',
+      'Grammaire complète avancée',
+      'Construction de phrases interactive', 
+      'Phrases à trous avancées',
+      'Analytics avancés et insights',
+      'Mode hors-ligne complet',
+      'Synchronisation Google Drive',
+      'Accès à toutes les catégories premium',
+      'Économisez 8€ sur l\'année'
+    ],
+    tier: SubscriptionTier.PREMIUM,
+    savings: 8,
+    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
   }
-};
+];
 
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.2 } },
-  exit: { opacity: 0, transition: { duration: 0.2 } }
-};
-
-const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
-  isOpen,
-  onClose,
-  onSuccess,
-  userEmail,
-  blockedFeature
-}) => {
-  const { theme } = useTheme();
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentTier, setCurrentTier] = useState<SubscriptionTier>(SubscriptionTier.FREE);
-  const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
-  const [featureTitle, setFeatureTitle] = useState<string>("");
+class PaymentService {
+  // URL de l'API backend
+  private apiUrl = process.env.NEXT_PUBLIC_API_URL;
   
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  // Token JWT pour l'authentification
+  private authToken: string | null = null;
 
-  // Validation avec logs détaillés
-  const validatePriceId = useCallback((plan: SubscriptionPlan): boolean => {
-    console.log('=== VALIDATION PRICE ID ===');
-    console.log('Plan à valider:', plan.id, plan.name);
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('Toutes les variables env disponibles:', Object.keys(process.env));
+  constructor() {
+    console.log('=== INITIALIZATION PAYMENTSERVICE ===');
+    console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
+    console.log('[PaymentService] NODE_ENV:', process.env.NODE_ENV);
+    console.log('[PaymentService] Toutes les variables env NEXT_PUBLIC_*:');
     
-    if (plan.id === 'premium_monthly') {
-      const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
-      console.log('NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', monthlyPriceId);
-      console.log('Type:', typeof monthlyPriceId);
-      console.log('Longueur:', monthlyPriceId?.length);
-      console.log('Commence par price_:', monthlyPriceId?.startsWith('price_'));
-      return !!monthlyPriceId;
-    } else if (plan.id === 'premium_yearly') {
-      const annualPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
-      console.log('NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', annualPriceId);
-      console.log('Type:', typeof annualPriceId);
-      console.log('Longueur:', annualPriceId?.length);
-      console.log('Commence par price_:', annualPriceId?.startsWith('price_'));
-      return !!annualPriceId;
-    }
+    // Lister toutes les variables d'environnement qui commencent par NEXT_PUBLIC_
+    Object.keys(process.env).forEach(key => {
+      if (key.startsWith('NEXT_PUBLIC_')) {
+        console.log(`[PaymentService] ${key}:`, process.env[key]);
+      }
+    });
     
-    console.log('Plan stripePriceId:', plan.stripePriceId);
-    return !!plan.stripePriceId;
-  }, []);
+    console.log('[PaymentService] Variables Stripe spécifiques:');
+    console.log('[PaymentService] NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
+    console.log('[PaymentService] NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
+    console.log('[PaymentService] NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+    console.log('=====================================');
+  }
 
-  // Détecter le mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent.toLowerCase();
-      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(userAgent);
-      const isSmallScreen = window.innerWidth <= 768;
-      setIsMobile(isMobileDevice || isSmallScreen);
+  // Définir le token d'authentification
+  public setAuthToken(token: string): void {
+    this.authToken = token;
+    console.log('[PaymentService] Token d\'authentification défini');
+  }
+
+  // Obtenir les headers d'authentification
+  private getAuthHeaders(): HeadersInit {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Chargement des données
-  useEffect(() => {
-    if (isOpen) {
-      const tier = subscriptionService.getCurrentTier();
-      const planId = subscriptionService.getCurrentPlanId();
-      
-      setCurrentTier(tier);
-      setCurrentPlanId(planId);
-      
-      if (tier === SubscriptionTier.FREE) {
-        const premiumMonthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
-        setSelectedPlan(premiumMonthly || null);
-      } else if (tier === SubscriptionTier.PREMIUM && planId) {
-        const currentPlan = SUBSCRIPTION_PLANS.find(p => p.id === planId);
-        setSelectedPlan(currentPlan || null);
-      }
-
-      if (blockedFeature) {
-        setFeatureTitle(getFeatureTitle(blockedFeature));
-      } else {
-        setFeatureTitle("");
-      }
-    }
-  }, [isOpen, blockedFeature]);
-
-  const getFeatureTitle = (feature: string): string => {
-    switch(feature) {
-      case 'revision_unlimited': 
-      case 'revision_limited': 
-        return 'Révisions illimitées';
-      case 'grammar_full': return 'Grammaire complète';
-      case 'sentence_construction': return 'Construction de phrases';
-      case 'sentence_gap': return 'Phrases à trous';
-      case 'exercise_mode': 
-      case 'exercise_limited': 
-        return 'Exercices illimités';
-      case 'progress_stats': return 'Statistiques détaillées';
-      case 'categories_full': return 'Toutes les catégories';
-      default: return 'Fonctionnalité Premium';
-    }
-  };
-
-  const handleSelectPlan = (plan: SubscriptionPlan) => {
-    setSelectedPlan(plan);
-  };
-
-  const handleSubscribe = async () => {
-    if (!selectedPlan || selectedPlan.tier === SubscriptionTier.FREE) {
-      return;
+    if (this.authToken) {
+      headers['Authorization'] = `Bearer ${this.authToken}`;
     }
 
+    console.log('[PaymentService] Headers:', headers);
+    return headers;
+  }
+
+  // Initialisation du service
+  public async initialize(): Promise<boolean> {
     try {
-      setIsLoading(true);
-      setError(null);
-
-      // Validation simplifiée
-      if (!validatePriceId(selectedPlan)) {
-        setError('Configuration Stripe manquante. Vérifiez vos variables d\'environnement.');
-        return;
-      }
-
-      if (!process.env.NEXT_PUBLIC_API_URL) {
-        setError('URL de l\'API backend manquante.');
-        return;
-      }
-
-      const sessionId = await paymentService.createCheckoutSession(selectedPlan, userEmail);
-      await paymentService.redirectToCheckout(sessionId);
+      console.log('[PaymentService] Initialisation du service...');
+      console.log('[PaymentService] URL API utilisée:', this.apiUrl);
       
-    } catch {
-      setError('Une erreur est survenue lors du traitement de votre demande. Veuillez réessayer.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  const isPlanCurrent = (plan: SubscriptionPlan): boolean => {
-    return currentTier === plan.tier && currentPlanId === plan.id;
-  };
-
-  const getButtonText = (plan: SubscriptionPlan): string => {
-    if (isPlanCurrent(plan)) {
-      return '✅ Votre plan actuel';
-    }
-    
-    if (plan.tier === SubscriptionTier.FREE) {
-      return 'Rester au plan gratuit';
-    }
-    
-    return 'Sélectionner';
-  };
-
-  const getButtonClass = (plan: SubscriptionPlan): string => {
-    if (isPlanCurrent(plan)) {
-      return 'current-plan-button';
-    }
-    
-    return `select-plan-button ${plan.tier === SubscriptionTier.PREMIUM ? 'premium' : ''}`;
-  };
-
-  const handleCancelSubscription = async () => {
-    if (window.confirm('Êtes-vous sûr de vouloir résilier votre abonnement Premium ?')) {
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        const success = await paymentService.cancelSubscription();
-        
-        if (success) {
-          setCurrentTier(SubscriptionTier.FREE);
-          setCurrentPlanId('free_plan');
-          
-          const premiumMonthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
-          setSelectedPlan(premiumMonthly || null);
-          
-          if (onSuccess) {
-            onSuccess();
-          }
-          
-          alert('Votre abonnement a été résilié avec succès.');
-          
-          setTimeout(() => {
-            onClose();
-          }, 1500);
-        } else {
-          setError('La résiliation a échoué');
-        }
-        
-      } catch {
-        setError('Une erreur est survenue lors de la résiliation.');
-      } finally {
-        setIsLoading(false);
+      if (!this.apiUrl) {
+        console.error('[PaymentService] ERREUR: apiUrl est undefined');
+        return false;
       }
+      
+      // Tester la connexion au backend
+      const healthUrl = `${this.apiUrl}/api/health`;
+      console.log('[PaymentService] Test de connexion vers:', healthUrl);
+      
+      const response = await fetch(healthUrl);
+      console.log('[PaymentService] Réponse du health check:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        throw new Error(`Backend inaccessible: ${response.status}`);
+      }
+      
+      console.log('[PaymentService] Service initialisé avec succès');
+      return true;
+    } catch (error) {
+      console.error('[PaymentService] Erreur d\'initialisation:', error);
+      return false;
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  // Récupérer dynamiquement le price ID correct avec logs détaillés
+  private getActualPriceId(plan: SubscriptionPlan): string | undefined {
+    console.log('=== GET ACTUAL PRICE ID ===');
+    console.log('Plan demandé:', plan.id, plan.name);
+    
+    let priceId: string | undefined;
+    
+    if (plan.id === 'premium_monthly') {
+      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+      console.log('Prix mensuel depuis env:', priceId);
+    } else if (plan.id === 'premium_yearly') {
+      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+      console.log('Prix annuel depuis env:', priceId);
+    } else {
+      priceId = plan.stripePriceId;
+      console.log('Prix depuis plan.stripePriceId:', priceId);
+    }
+    
+    console.log('Price ID final:', priceId);
+    console.log('Est valide (!!priceId):', !!priceId);
+    console.log('==========================');
+    
+    return priceId;
+  }
 
-  return (
-    <AnimatePresence>
-      <motion.div 
-        ref={overlayRef}
-        className={`subscription-modal-overlay ${theme === 'dark' ? 'dark-mode' : ''}`}
-        variants={overlayVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        onClick={handleOverlayClick}
-      >
-        <motion.div 
-          ref={modalRef}
-          className="subscription-modal"
-          variants={modalVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button 
-            className="modal-close-button" 
-            onClick={onClose}
-          >
-            <X size={isMobile ? 20 : 24} />
-          </button>
-          
-          <div className="modal-header">
-            {featureTitle ? (
-              <>
-                <div className="blocked-feature-icon">
-                  <Lock size={isMobile ? 24 : 28} />
-                </div>
-                <h2>Accédez à {featureTitle}</h2>
-                <p>Passez à la version Premium pour débloquer cette fonctionnalité et bien plus encore.</p>
-              </>
-            ) : (
-              <>
-                <h2>Choisissez votre plan</h2>
-                <p>Débloquez toutes les fonctionnalités pour un apprentissage optimal</p>
-                {currentTier === SubscriptionTier.PREMIUM && currentPlanId && (
-                  <div className="current-plan-notice">
-                    <p>
-                      🎉 Vous êtes actuellement abonné au {
-                        currentPlanId === 'premium_monthly' ? 'Premium Mensuel' : 'Premium Annuel'
-                      }
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
-            
-            <div className="production-notice">
-              <p>🔒 Paiements sécurisés via Stripe</p>
-            </div>
-          </div>
-          
-          <div className="plans-container">
-            {SUBSCRIPTION_PLANS.map((plan) => (
-              <motion.div 
-                key={plan.id}
-                className={`plan-card ${plan.tier === SubscriptionTier.PREMIUM ? 'premium' : ''} ${selectedPlan?.id === plan.id ? 'selected' : ''} ${isPlanCurrent(plan) ? 'current' : ''}`}
-                onClick={() => handleSelectPlan(plan)}
-                whileHover={isMobile ? {} : { y: -5 }}
-                whileTap={isMobile ? {} : { scale: 0.98 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * SUBSCRIPTION_PLANS.indexOf(plan) }}
-              >
-                {plan.tier === SubscriptionTier.PREMIUM && (
-                  <div className="premium-badge">
-                    <span role="img" aria-label="Award" className="emoji-icon">🏆</span>
-                    <span>Premium</span>
-                  </div>
-                )}
-                
-                <h3>{plan.name}</h3>
-                
-                {plan.price > 0 ? (
-                  <div className="price">
-                    <span className="amount">{plan.price}</span>
-                    <span className="currency">€</span>
-                    <span className="period">/{plan.billingPeriod === 'monthly' ? 'mois' : 'an'}</span>
-                    {plan.billingPeriod === 'yearly' && plan.savings && (
-                      <span className="savings">Économisez {plan.savings}€</span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="price">
-                    <span className="free">Gratuit</span>
-                  </div>
-                )}
-                
-                <ul className="features">
-                  {plan.features.map((feature, index) => (
-                    <motion.li 
-                      key={index}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3 + index * 0.05 }}
-                    >
-                      <Check size={16} className="check-icon" />
-                      <span>{feature}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-                
-                {isPlanCurrent(plan) ? (
-                  <motion.button 
-                    className="current-plan-button"
-                    disabled
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    ✅ Votre plan actuel
-                  </motion.button>
-                ) : plan.tier === SubscriptionTier.FREE && currentTier === SubscriptionTier.PREMIUM ? (
-                  <motion.button 
-                    className="cancel-subscription-button"
-                    onClick={() => handleCancelSubscription()}
-                    disabled={isLoading}
-                    whileHover={isMobile ? {} : { scale: 1.03 }}
-                    whileTap={isMobile ? {} : { scale: 0.97 }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    🚫 Résilier l'abonnement
-                  </motion.button>
-                ) : (
-                  <motion.button 
-                    className={getButtonClass(plan)}
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={isLoading}
-                    whileHover={isMobile ? {} : { scale: 1.03 }}
-                    whileTap={isMobile ? {} : { scale: 0.97 }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    {getButtonText(plan)}
-                  </motion.button>
-                )}
-              </motion.div>
-            ))}
-          </div>
-          
-          {error && (
-            <motion.div 
-              className="error-message"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <p>{error}</p>
-            </motion.div>
-          )}
-          
-          {selectedPlan && selectedPlan.tier === SubscriptionTier.PREMIUM && !isPlanCurrent(selectedPlan) && (
-            <motion.div 
-              className="checkout-section"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="secure-payment">
-                <ShieldIcon size={16} />
-                <span>Paiement sécurisé via Stripe</span>
-              </div>
-              
-              <div className="plan-summary">
-                <h4>{selectedPlan.name}</h4>
-                <p className="plan-price">
-                  {selectedPlan.price}€/{selectedPlan.billingPeriod === 'monthly' ? 'mois' : 'an'}
-                </p>
-                {selectedPlan.billingPeriod === 'yearly' && selectedPlan.savings && (
-                  <p className="savings-notice">
-                    💰 Vous économisez {selectedPlan.savings}€ par rapport au plan mensuel !
-                  </p>
-                )}
-              </div>
-              
-              <motion.button
-                className="subscribe-button"
-                onClick={handleSubscribe}
-                disabled={isLoading}
-                whileHover={isMobile ? {} : { scale: 1.05 }}
-                whileTap={isMobile ? {} : { scale: 0.95 }}
-              >
-                {isLoading ? (
-                  <div className="loading-spinner" />
-                ) : (
-                  <>
-                    <CreditCard size={20} />
-                    <span>S'abonner maintenant</span>
-                    <ChevronRight size={20} />
-                  </>
-                )}
-              </motion.button>
-              
-              <p className="terms-text">
-                En vous abonnant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité. 
-                Vous pouvez annuler votre abonnement à tout moment.
-              </p>
-              
-              <div className="security-info">
-                <div className="security-header">
-                  <span>🔒</span>
-                  <span>Paiement 100% sécurisé</span>
-                </div>
-                <ul className="security-list">
-                  <li>Traitement sécurisé par Stripe</li>
-                  <li>Aucune donnée bancaire stockée</li>
-                  <li>Annulation possible à tout moment</li>
-                  <li>Facture envoyée par email</li>
-                </ul>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
+  // Créer une session de paiement via le backend avec logs détaillés
+  public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
+    console.log('=== CREATE CHECKOUT SESSION ===');
+    console.log('Plan reçu:', {
+      id: plan.id,
+      name: plan.name,
+      price: plan.price,
+      billingPeriod: plan.billingPeriod,
+      stripePriceId: plan.stripePriceId
+    });
+    console.log('Email utilisateur:', userEmail);
+    
+    try {
+      const actualPriceId = this.getActualPriceId(plan);
+      
+      console.log(`[PaymentService] Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
+      console.log('[PaymentService] Price ID récupéré:', actualPriceId);
+      
+      if (!actualPriceId) {
+        console.error('[PaymentService] ERREUR: Price ID manquant pour le plan', plan.name);
+        console.error('[PaymentService] Variables d\'environnement actuelles:');
+        console.error('[PaymentService] MONTHLY:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
+        console.error('[PaymentService] ANNUAL:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
+        throw new Error(`Price ID manquant pour le plan ${plan.name}. Vérifiez vos variables d'environnement.`);
+      }
+      
+      const requestBody = {
+        planId: plan.id,
+        priceId: actualPriceId,
+        userEmail,
+        metadata: {
+          planName: plan.name,
+          planPrice: plan.price,
+          billingPeriod: plan.billingPeriod,
+          planId: plan.id
+        }
+      };
+      
+      console.log('[PaymentService] Corps de la requête:', JSON.stringify(requestBody, null, 2));
+      
+      const url = `${this.apiUrl}/api/payments/create-checkout-session`;
+      console.log('[PaymentService] URL de la requête:', url);
+      
+      const headers = this.getAuthHeaders();
+      console.log('[PaymentService] Headers de la requête:', headers);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      });
 
-export default SubscriptionModal;
+      console.log('[PaymentService] Réponse reçue:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      if (!response.ok) {
+        console.log('[PaymentService] Tentative de lecture du body d\'erreur...');
+        const errorData = await response.json().catch((err) => {
+          console.log('[PaymentService] Impossible de parser le JSON d\'erreur:', err);
+          return {};
+        });
+        console.error('[PaymentService] Erreur API:', response.status, errorData);
+        throw new Error(errorData.error || `Erreur ${response.status} lors de la création de la session`);
+      }
+
+      const data = await response.json();
+      console.log('[PaymentService] Réponse de l\'API:', data);
+      
+      if (!data.sessionId) {
+        console.error('[PaymentService] ERREUR: Session ID manquant dans la réponse');
+        console.error('[PaymentService] Données reçues:', data);
+        throw new Error('Session ID manquant dans la réponse');
+      }
+      
+      console.log('[PaymentService] Session créée avec succès:', data.sessionId);
+      console.log('===============================');
+      return data.sessionId;
+    } catch (error) {
+      console.error('[PaymentService] Erreur lors de la création de session:', error);
+      console.error('[PaymentService] Stack trace:', error instanceof Error ? error.stack : 'Pas de stack');
+      console.error('===============================');
+      throw error;
+    }
+  }
+
+  // Rediriger vers la page de paiement Stripe
+  public async redirectToCheckout(sessionId: string): Promise<void> {
+    try {
+      console.log('[PaymentService] Redirection vers Stripe Checkout...');
+      console.log('[PaymentService] Session ID:', sessionId);
+      
+      // Redirection directe vers Stripe Checkout avec l'ID de session
+      const redirectUrl = `https://checkout.stripe.com/pay/${sessionId}`;
+      console.log('[PaymentService] URL de redirection:', redirectUrl);
+      
+      window.location.href = redirectUrl;
+      
+    } catch (error) {
+      console.error('[PaymentService] Erreur lors de la redirection:', error);
+      throw error;
+    }
+  }
+
+  // Vérifier l'état d'un paiement via le backend
+  public async verifyPayment(sessionId: string): Promise<boolean> {
+    try {
+      console.log(`[PaymentService] Vérification du paiement pour la session ${sessionId}`);
+      
+      const response = await fetch(
+        `${this.apiUrl}/api/payments/verify-payment?sessionId=${sessionId}`,
+        {
+          method: 'GET',
+          headers: this.getAuthHeaders()
+        }
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error('[PaymentService] Erreur API:', response.status, errorData);
+        throw new Error(errorData.error || `Erreur ${response.status} lors de la vérification du paiement`);
+      }
+
+      const data = await response.json();
+      console.log('[PaymentService] Réponse de vérification du paiement:', data);
+      
+      if (data.status === 'completed') {
+        // Le backend a déjà mis à jour l'abonnement en base
+        console.log('[PaymentService] Paiement vérifié et abonnement mis à jour');
+        
+        // Déclencher un événement pour notifier les composants frontend
+        window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+          detail: { tier: SubscriptionTier.PREMIUM }
+        }));
+        
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error('[PaymentService] Erreur de vérification de paiement:', error);
+      return false;
+    }
+  }
+
+  // Vérifier l'abonnement actuel via le backend
+  public async verifySubscription(): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[PaymentService] Erreur vérification abonnement:', error);
+      throw error;
+    }
+  }
+
+  // Vérifier l'accès à une fonctionnalité via le backend
+  public async checkFeatureAccess(feature: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ feature })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[PaymentService] Erreur vérification accès:', error);
+      throw error;
+    }
+  }
+
+  // Annuler un abonnement via le backend
+  public async cancelSubscription(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/subscription/cancel`, {
+        method: 'POST',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Erreur lors de l\'annulation');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Déclencher un événement pour notifier les composants
+        window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+          detail: { tier: SubscriptionTier.FREE }
+        }));
+      }
+      
+      return data.success;
+    } catch (error) {
+      console.error('[PaymentService] Erreur d\'annulation d\'abonnement:', error);
+      return false;
+    }
+  }
+
+  // Créer une session du portail client Stripe
+  public async createCustomerPortalSession(): Promise<string> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/payments/customer-portal`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          returnUrl: `${window.location.origin}/subscription`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error('[PaymentService] Erreur portail client:', error);
+      throw error;
+    }
+  }
+
+  // Récupérer les plans d'abonnement
+  public getSubscriptionPlans(): SubscriptionPlan[] {
+    return SUBSCRIPTION_PLANS;
+  }
+
+  // Obtenir des statistiques d'abonnement (admin)
+  public async getSubscriptionStats(): Promise<any> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/admin/subscription-stats`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[PaymentService] Erreur récupération statistiques:', error);
+      return null;
+    }
+  }
+}
+
+// Singleton pattern pour le service de paiement
+const paymentService = new PaymentService();
+export default paymentService;
