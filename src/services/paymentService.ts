@@ -52,7 +52,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       'Accès à toutes les catégories premium'
     ],
     tier: SubscriptionTier.PREMIUM,
-    stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY
+    stripePriceId: process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY
   },
   {
     id: 'premium_yearly',
@@ -81,7 +81,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 
 class PaymentService {
   // URL de l'API backend
-  private apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  private apiUrl = process.env.REACT_APP_API_URL;
   
   // Token JWT pour l'authentification
   private authToken: string | null = null;
@@ -90,19 +90,19 @@ class PaymentService {
     console.log('=== INITIALIZATION PAYMENTSERVICE ===');
     console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
     console.log('[PaymentService] NODE_ENV:', process.env.NODE_ENV);
-    console.log('[PaymentService] Toutes les variables env NEXT_PUBLIC_*:');
+    console.log('[PaymentService] Toutes les variables env REACT_APP_*:');
     
-    // Lister toutes les variables d'environnement qui commencent par NEXT_PUBLIC_
+    // Lister toutes les variables d'environnement qui commencent par REACT_APP_
     Object.keys(process.env).forEach(key => {
-      if (key.startsWith('NEXT_PUBLIC_')) {
+      if (key.startsWith('REACT_APP_')) {
         console.log(`[PaymentService] ${key}:`, process.env[key]);
       }
     });
     
     console.log('[PaymentService] Variables Stripe spécifiques:');
-    console.log('[PaymentService] NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
-    console.log('[PaymentService] NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
-    console.log('[PaymentService] NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+    console.log('[PaymentService] REACT_APP_STRIPE_PRICE_ID_MONTHLY:', process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY);
+    console.log('[PaymentService] REACT_APP_STRIPE_PRICE_ID_ANNUAL:', process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL);
+    console.log('[PaymentService] REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
     console.log('=====================================');
   }
 
@@ -164,10 +164,10 @@ class PaymentService {
     let priceId: string | undefined;
     
     if (plan.id === 'premium_monthly') {
-      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+      priceId = process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY;
       console.log('Prix mensuel depuis env:', priceId);
     } else if (plan.id === 'premium_yearly') {
-      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+      priceId = process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL;
       console.log('Prix annuel depuis env:', priceId);
     } else {
       priceId = plan.stripePriceId;
@@ -202,8 +202,8 @@ class PaymentService {
       if (!actualPriceId) {
         console.error('[PaymentService] ERREUR: Price ID manquant pour le plan', plan.name);
         console.error('[PaymentService] Variables d\'environnement actuelles:');
-        console.error('[PaymentService] MONTHLY:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
-        console.error('[PaymentService] ANNUAL:', process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
+        console.error('[PaymentService] MONTHLY:', process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY);
+        console.error('[PaymentService] ANNUAL:', process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL);
         throw new Error(`Price ID manquant pour le plan ${plan.name}. Vérifiez vos variables d'environnement.`);
       }
       
