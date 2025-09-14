@@ -84,15 +84,15 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     console.log('Toutes les variables env disponibles:', Object.keys(process.env));
     
     if (plan.id === 'premium_monthly') {
-      const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
-      console.log('NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY:', monthlyPriceId);
+      const monthlyPriceId = process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY;
+      console.log('REACT_APP_STRIPE_PRICE_ID_MONTHLY:', monthlyPriceId);
       console.log('Type:', typeof monthlyPriceId);
       console.log('Longueur:', monthlyPriceId?.length);
       console.log('Commence par price_:', monthlyPriceId?.startsWith('price_'));
       return !!monthlyPriceId;
     } else if (plan.id === 'premium_yearly') {
-      const annualPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
-      console.log('NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL:', annualPriceId);
+      const annualPriceId = process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL;
+      console.log('REACT_APP_STRIPE_PRICE_ID_ANNUAL:', annualPriceId);
       console.log('Type:', typeof annualPriceId);
       console.log('Longueur:', annualPriceId?.length);
       console.log('Commence par price_:', annualPriceId?.startsWith('price_'));
