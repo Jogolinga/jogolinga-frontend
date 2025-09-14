@@ -170,7 +170,7 @@ const Terms: React.FC = () => {
           </p>
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-gray-700">
-              <strong>Email :</strong> fatouybadjl@gmail.com<br />
+              <strong>Email :</strong> ceddoshop@gmail.com<br />
               <strong>Application :</strong> Jogolinga - Plateforme d'apprentissage de langues africaines
             </p>
           </div>
