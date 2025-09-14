@@ -81,7 +81,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 
 class PaymentService {
   // URL de l'API backend
-  private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  private apiUrl = process.env.NEXT_PUBLIC_API_URL ;
   
   // Token JWT pour l'authentification
   private authToken: string | null = null;
