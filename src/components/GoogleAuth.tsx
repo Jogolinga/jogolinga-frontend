@@ -26,6 +26,19 @@ interface UserData {
   picture?: string;
 }
 
+// Interface pour la réponse backend avec tous les types de tokens possibles
+interface BackendUser {
+  id: string;
+  name: string;
+  email: string;
+  picture?: string;
+  jwtToken?: string;
+  token?: string;
+  accessToken?: string;
+  access_token?: string;
+  [key: string]: any; // Pour d'autres propriétés possibles
+}
+
 const GoogleAuth: React.FC<GoogleAuthProps> = ({ 
   onLogin, 
   onLogout, 
@@ -232,15 +245,22 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       */
 
       // 5. Authentifier via notre backend sécurisé
-      const backendUser = await secureAuthService.authenticateWithGoogle(googleToken);
+      const backendUser: BackendUser = await secureAuthService.authenticateWithGoogle(googleToken);
 
-      // NOUVEAU: Configurer le token pour les paiements
-      if (backendUser.jwtToken || backendUser.token) {
-        const token = backendUser.jwtToken || backendUser.token;
+      // Log pour diagnostic (à supprimer en production si souhaité)
+      console.log('[GoogleAuth] Réponse backend complète:', backendUser);
+      console.log('[GoogleAuth] Propriétés disponibles:', Object.keys(backendUser));
+
+      // NOUVEAU: Configurer le token pour les paiements - VERSION ROBUSTE
+      const { jwtToken, token, accessToken, access_token } = backendUser;
+      const authToken = jwtToken || token || accessToken || access_token;
+
+      if (authToken) {
         console.log('[GoogleAuth] Configuration du token pour PaymentService');
-        paymentService.setAuthToken(token);
+        paymentService.setAuthToken(authToken);
       } else {
         console.warn('[GoogleAuth] Aucun token JWT trouvé dans la réponse backend');
+        console.warn('[GoogleAuth] Propriétés de token recherchées: jwtToken, token, accessToken, access_token');
       }
 
       // 6. Mettre à jour l'état local
@@ -316,6 +336,11 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       // NOUVEAU: Nettoyer le token du PaymentService
       console.log('[GoogleAuth] Nettoyage du token PaymentService lors de la déconnexion');
       // Note: PaymentService n'a pas de méthode clearToken, mais setAuthToken(null) peut être ajouté si nécessaire
+      try {
+        paymentService.setAuthToken(''); // ou null selon l'implémentation de paymentService
+      } catch (paymentError) {
+        console.warn('[GoogleAuth] Erreur lors du nettoyage du token PaymentService:', paymentError);
+      }
 
       // 2. Déconnecter de Google
       try {
