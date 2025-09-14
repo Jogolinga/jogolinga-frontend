@@ -1,4 +1,3 @@
-// SubscriptionModal.tsx - Version complète avec distinction mensuel/annuel + corrections superposition
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -72,9 +71,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const [currentTier, setCurrentTier] = useState<SubscriptionTier>(SubscriptionTier.FREE);
   const [currentPlanId, setCurrentPlanId] = useState<string | null>(null);
   const [featureTitle, setFeatureTitle] = useState<string>("");
-  const [isSimulationMode, setIsSimulationMode] = useState<boolean>(
-    process.env.NODE_ENV === 'development' && !process.env.REACT_APP_USE_STRIPE_TEST
-  );
   
   // Ref pour forcer l'affichage
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -82,6 +78,75 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   
   // État pour détecter si on est sur mobile
   const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  // Validation complète des variables d'environnement
+  const validateEnvironmentVariables = useCallback(() => {
+    console.log('=== DIAGNOSTIC VARIABLES D\'ENVIRONNEMENT PRODUCTION ===');
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL);
+    console.log('MONTHLY Price ID présent:', !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY);
+    console.log('ANNUAL Price ID présent:', !!process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL);
+    
+    const monthlyPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+    const annualPriceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    
+    const issues = [];
+    
+    if (!monthlyPriceId) {
+      issues.push('❌ NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY manquant');
+    }
+    
+    if (!annualPriceId) {
+      issues.push('❌ NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL manquant');
+    }
+    
+    if (!apiUrl) {
+      issues.push('❌ NEXT_PUBLIC_API_URL manquant');
+    }
+    
+    if (issues.length > 0) {
+      console.error('Variables d\'environnement manquantes:', issues);
+      return false;
+    }
+    
+    console.log('✅ Toutes les variables d\'environnement sont présentes');
+    console.log('=======================================================');
+    return true;
+  }, []);
+
+  // Validation spécifique d'un plan avec messages d'erreur détaillés
+  const validatePriceId = useCallback((plan: SubscriptionPlan): string => {
+    let priceId: string | undefined;
+    
+    if (plan.id === 'premium_monthly') {
+      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+    } else if (plan.id === 'premium_yearly') {
+      priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+    } else {
+      priceId = plan.stripePriceId;
+    }
+    
+    if (!priceId) {
+      const errorMessage = `Configuration manquante pour ${plan.name}
+
+Variables d'environnement requises :
+${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '• NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL'} (actuellement: ${priceId || 'NON DÉFINIE'})
+
+Étapes pour corriger :
+1. Créez le produit dans votre dashboard Stripe (${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'})
+2. Copiez le Price ID (commence par "price_")
+3. Ajoutez-le dans vos variables d'environnement Vercel
+4. Redéployez votre application
+
+Si le problème persiste, vérifiez que les variables sont bien synchronisées entre Vercel et votre code.`;
+      
+      throw new Error(errorMessage);
+    }
+    
+    console.log(`✅ Price ID validé pour ${plan.name}: ${priceId.substring(0, 12)}...`);
+    return priceId;
+  }, []);
 
   // Détecter le mobile
   useEffect(() => {
@@ -100,8 +165,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   // Fonction pour forcer l'affichage du modal
   const forceModalDisplay = useCallback(() => {
     if (overlayRef.current && modalRef.current) {
-      console.log('🔧 Forçage de l\'affichage du modal...');
-      
       // Ajouter les classes de force
       overlayRef.current.classList.add('force-display', 'modal-force-front');
       modalRef.current.classList.add('force-display');
@@ -151,16 +214,12 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         backdrop-filter: blur(15px) !important;
         color: ${theme === 'dark' ? '#f1f5f9' : '#2d1810'} !important;
       `;
-      
-      console.log('✅ Styles forcés appliqués');
     }
   }, [isMobile, theme]);
 
-  // Forcer l'affichage correct du modal en mode mobile
+  // Forcer l'affichage correct du modal
   useEffect(() => {
     if (isOpen) {
-      console.log('🔧 SubscriptionModal ouvert, application des corrections...');
-      
       // Désactiver le scroll du body
       document.body.style.overflow = 'hidden';
       
@@ -174,7 +233,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       // Observer pour détecter les changements
       const observer = new MutationObserver(() => {
         if (overlayRef.current && !overlayRef.current.classList.contains('force-display')) {
-          console.log('🔄 Re-application des styles forcés');
           forceModalDisplay();
         }
       });
@@ -198,37 +256,15 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     }
   }, [isOpen, forceModalDisplay]);
 
-  // Ajouter un gestionnaire d'événements pour s'assurer que le modal reste au premier plan
+  // Chargement des données avec validation complète
   useEffect(() => {
     if (isOpen) {
-      const handleFocus = () => {
-        if (overlayRef.current) {
-          forceModalDisplay();
-        }
-      };
+      // Validation des variables d'environnement au démarrage
+      const envValid = validateEnvironmentVariables();
+      if (!envValid) {
+        setError('Configuration incomplète. Vérifiez vos variables d\'environnement Vercel.');
+      }
       
-      const handleClick = (e: MouseEvent) => {
-        // Si le clic n'est pas dans le modal, le remettre au premier plan
-        if (overlayRef.current && !overlayRef.current.contains(e.target as Node)) {
-          e.preventDefault();
-          e.stopPropagation();
-          forceModalDisplay();
-        }
-      };
-      
-      window.addEventListener('focus', handleFocus);
-      document.addEventListener('click', handleClick, true);
-      
-      return () => {
-        window.removeEventListener('focus', handleFocus);
-        document.removeEventListener('click', handleClick, true);
-      };
-    }
-  }, [isOpen, forceModalDisplay]);
-
-  // Chargement des données avec plan actuel
-  useEffect(() => {
-    if (isOpen) {
       const tier = subscriptionService.getCurrentTier();
       const planId = subscriptionService.getCurrentPlanId();
       
@@ -253,12 +289,8 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       } else {
         setFeatureTitle("");
       }
-      
-      setIsSimulationMode(
-        process.env.NODE_ENV === 'development' && !process.env.REACT_APP_USE_STRIPE_TEST
-      );
     }
-  }, [isOpen, blockedFeature]);
+  }, [isOpen, blockedFeature, validateEnvironmentVariables]);
 
   const getFeatureTitle = (feature: string): string => {
     switch(feature) {
@@ -291,42 +323,57 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
       setIsLoading(true);
       setError(null);
 
-      console.log('[SubscriptionModal] Début du processus d\'abonnement:', {
+      console.log('[SubscriptionModal] Début du processus d\'abonnement PRODUCTION:', {
         plan: selectedPlan.name,
         planId: selectedPlan.id,
         billingPeriod: selectedPlan.billingPeriod,
-        priceId: selectedPlan.stripePriceId
+        price: selectedPlan.price,
+        apiUrl: process.env.NEXT_PUBLIC_API_URL
       });
 
-      if (isSimulationMode) {
-        console.log("[SubscriptionModal] Mode DEV détecté, simulation du paiement");
-        
-        // Inclure les informations du plan dans la simulation
-        subscriptionService.updateSubscription(
-          SubscriptionTier.PREMIUM,
-          Date.now() + (selectedPlan.billingPeriod === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000,
-          `sim_payment_${Date.now()}`,
-          selectedPlan.billingPeriod,
-          selectedPlan.id
-        );
-        
-        if (onSuccess) {
-          onSuccess();
-        }
-        
-        setTimeout(() => {
-          onClose();
-        }, 1000);
-        
+      // Validation du Price ID AVANT de continuer
+      try {
+        const validatedPriceId = validatePriceId(selectedPlan);
+        console.log('✅ Price ID validé pour la requête:', validatedPriceId.substring(0, 12) + '...');
+      } catch (validationError) {
+        console.error('❌ Erreur de validation Price ID:', validationError);
+        setError(validationError.message);
         return;
       }
 
+      // Vérification de l'API backend
+      if (!process.env.NEXT_PUBLIC_API_URL) {
+        throw new Error('URL de l\'API backend manquante (NEXT_PUBLIC_API_URL)');
+      }
+
+      console.log('🚀 Création de session de paiement Stripe via Railway...');
+      console.log('📡 URL de l\'API:', process.env.NEXT_PUBLIC_API_URL);
+      
       const sessionId = await paymentService.createCheckoutSession(selectedPlan, userEmail);
+      console.log('✅ Session Stripe créée avec succès:', sessionId);
+      
+      console.log('🔗 Redirection vers Stripe Checkout...');
       await paymentService.redirectToCheckout(sessionId);
       
     } catch (error) {
-      console.error('Erreur lors de la souscription:', error);
-      setError('Une erreur est survenue lors du traitement de votre demande. Veuillez réessayer.');
+      console.error('❌ Erreur lors de l\'abonnement:', error);
+      
+      // Messages d'erreur spécifiques selon le type d'erreur
+      if (error.message.includes('Price ID manquant') || error.message.includes('Configuration manquante')) {
+        setError(`Erreur de configuration Stripe : ${error.message}`);
+      } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+        setError('Erreur de connexion au serveur. Vérifiez que votre backend Railway est actif et accessible.');
+      } else if (error.message.includes('Backend inaccessible')) {
+        setError('Le serveur de paiement est temporairement indisponible. Veuillez réessayer dans quelques instants.');
+      } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        setError('Erreur d\'authentification. Veuillez vous reconnecter.');
+      } else if (error.message.includes('400') || error.message.includes('Bad Request')) {
+        setError('Données de requête invalides. Veuillez réessayer.');
+      } else if (error.message.includes('500') || error.message.includes('Internal Server Error')) {
+        setError('Erreur interne du serveur. Notre équipe a été notifiée.');
+      } else {
+        setError(`Erreur inattendue : ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -372,24 +419,17 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         setIsLoading(true);
         setError(null);
 
-        console.log('[SubscriptionModal] Résiliation d\'abonnement demandée');
+        console.log('[SubscriptionModal] Résiliation d\'abonnement via Railway...');
 
-        if (isSimulationMode) {
-          // En mode simulation, résilier directement
-          console.log('[SubscriptionModal] Résiliation en mode simulation');
-          
-          subscriptionService.updateSubscription(
-            SubscriptionTier.FREE,
-            null,
-            'cancelled_by_user',
-            'monthly',
-            'free_plan'
-          );
+        const success = await paymentService.cancelSubscription();
+        
+        if (success) {
+          console.log('[SubscriptionModal] Résiliation réussie');
           
           setCurrentTier(SubscriptionTier.FREE);
           setCurrentPlanId('free_plan');
           
-          // Sélectionner automatiquement le plan mensuel pour un éventuel re-abonnement
+          // Sélectionner automatiquement le plan mensuel
           const premiumMonthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
           setSelectedPlan(premiumMonthly || null);
           
@@ -397,38 +437,14 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
             onSuccess();
           }
           
-          // Fermer le modal après un délai
+          // Afficher un message de confirmation
+          alert('Votre abonnement a été résilié avec succès. Vous êtes maintenant sur le plan gratuit.');
+          
           setTimeout(() => {
             onClose();
           }, 1500);
-          
         } else {
-          // En mode réel, appeler l'API de résiliation
-          const success = await paymentService.cancelSubscription();
-          
-          if (success) {
-            console.log('[SubscriptionModal] Résiliation réussie');
-            
-            setCurrentTier(SubscriptionTier.FREE);
-            setCurrentPlanId('free_plan');
-            
-            // Sélectionner automatiquement le plan mensuel
-            const premiumMonthly = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
-            setSelectedPlan(premiumMonthly || null);
-            
-            if (onSuccess) {
-              onSuccess();
-            }
-            
-            // Afficher un message de confirmation
-            alert('Votre abonnement a été résilié avec succès. Vous êtes maintenant sur le plan gratuit.');
-            
-            setTimeout(() => {
-              onClose();
-            }, 1500);
-          } else {
-            throw new Error('La résiliation a échoué');
-          }
+          throw new Error('La résiliation a échoué');
         }
         
       } catch (error) {
@@ -452,25 +468,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         animate="visible"
         exit="exit"
         onClick={handleOverlayClick}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 2147483647,
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          background: 'rgba(0, 0, 0, 0.95)',
-          backdropFilter: 'blur(20px)',
-          padding: isMobile ? '70px 8px 15px 8px' : '80px 20px 20px 20px',
-          overflowY: 'auto',
-          boxSizing: 'border-box',
-          opacity: 1,
-          visibility: 'visible',
-          pointerEvents: 'auto'
-        }}
       >
         <motion.div 
           ref={modalRef}
@@ -480,22 +477,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
           animate="visible"
           exit="exit"
           onClick={(e) => e.stopPropagation()}
-          style={{
-            position: 'relative',
-            zIndex: 2147483646,
-            width: isMobile ? 'calc(100% - 16px)' : '100%',
-            maxWidth: isMobile ? 'calc(100% - 16px)' : '1000px',
-            margin: '0 auto',
-            padding: isMobile ? '16px' : '48px',
-            borderRadius: isMobile ? '12px' : '20px',
-            maxHeight: isMobile ? 'calc(100vh - 85px)' : 'calc(100vh - 100px)',
-            overflowY: 'auto',
-            boxSizing: 'border-box',
-            display: 'block',
-            opacity: 1,
-            visibility: 'visible',
-            transform: 'none'
-          }}
         >
           <button 
             className="modal-close-button" 
@@ -548,6 +529,25 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 )}
               </>
             )}
+            
+            {/* Indicateur de mode production */}
+            <div style={{
+              marginTop: '12px',
+              padding: '8px 12px',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '6px',
+              textAlign: 'center'
+            }}>
+              <p style={{
+                color: '#10b981',
+                fontSize: '12px',
+                fontWeight: '600',
+                margin: 0
+              }}>
+                🔒 Paiements sécurisés via Stripe
+              </p>
+            </div>
           </div>
           
           <div className="plans-container">
@@ -562,7 +562,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * SUBSCRIPTION_PLANS.indexOf(plan) }}
                 style={{
-                  // Style spécial pour le plan actuel
                   ...(isPlanCurrent(plan) ? {
                     borderColor: '#10b981',
                     boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.3), 0 15px 30px rgba(16, 185, 129, 0.2)'
@@ -576,14 +575,13 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                   </div>
                 )}
                 
-               
+                <h3>{plan.name}</h3>
                 
                 {plan.price > 0 ? (
                   <div className="price">
                     <span className="amount">{plan.price}</span>
                     <span className="currency">€</span>
                     <span className="period">/{plan.billingPeriod === 'monthly' ? 'mois' : 'an'}</span>
-                    {/* Affichage des économies pour l'annuel */}
                     {plan.billingPeriod === 'yearly' && plan.savings && (
                       <span className="savings">Économisez {plan.savings}€</span>
                     )}
@@ -608,7 +606,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                   ))}
                 </ul>
                 
-                {/* Bouton avec logique améliorée et gestion résiliation */}
                 {isPlanCurrent(plan) ? (
                   <motion.button 
                     className="current-plan-button"
@@ -619,7 +616,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     ✅ Votre plan actuel
                   </motion.button>
                 ) : plan.tier === SubscriptionTier.FREE && currentTier === SubscriptionTier.PREMIUM ? (
-                  /* Bouton spécial pour résilier vers le gratuit */
                   <motion.button 
                     className="cancel-subscription-button"
                     onClick={() => handleCancelSubscription()}
@@ -634,7 +630,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                       color: 'white'
                     }}
                   >
-                    🚫 Résilier l'abonnement et repasser au plan gratuit
+                    🚫 Résilier l'abonnement
                   </motion.button>
                 ) : (
                   <motion.button 
@@ -658,8 +654,18 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
               className="error-message"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
+              style={{
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '8px',
+                padding: '16px',
+                marginTop: '20px',
+                whiteSpace: 'pre-line'
+              }}
             >
-              {error}
+              <p style={{ color: '#ef4444', margin: 0, fontSize: '14px' }}>
+                {error}
+              </p>
             </motion.div>
           )}
           
@@ -672,14 +678,8 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
             >
               <div className="secure-payment">
                 <ShieldIcon size={16} />
-                <span>Paiement sécurisé</span>
+                <span>Paiement sécurisé via Stripe</span>
               </div>
-              
-              {isSimulationMode && (
-                <div className="dev-mode-notice">
-                  <p>Mode développement détecté - Le paiement sera simulé</p>
-                </div>
-              )}
               
               {/* Résumé du plan sélectionné */}
               <div style={{
@@ -692,16 +692,6 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
               }}>
                 <h4 style={{ 
                   margin: '0 0 8px 0', 
-                  color: theme === 'dark' ? '#d2691e' : '#8b4513',
-                  fontSize: '18px',
-                  fontWeight: '600'
-                }}>
-                  {selectedPlan.name}
-                </h4>
-                <p style={{ 
-                  margin: '0 0 8px 0', 
-                  fontSize: '24px', 
-                  fontWeight: '700',
                   color: theme === 'dark' ? '#f1f5f9' : '#2d1810'
                 }}>
                   {selectedPlan.price}€/{selectedPlan.billingPeriod === 'monthly' ? 'mois' : 'an'}
@@ -724,9 +714,34 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 disabled={isLoading}
                 whileHover={isMobile ? {} : { scale: 1.05 }}
                 whileTap={isMobile ? {} : { scale: 0.95 }}
+                style={{
+                  width: '100%',
+                  padding: '16px 24px',
+                  background: 'linear-gradient(135deg, #d2691e 0%, #8b4513 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  opacity: isLoading ? 0.7 : 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 4px 12px rgba(210, 105, 30, 0.3)'
+                }}
               >
                 {isLoading ? (
-                  <div className="loading-spinner" />
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid rgba(255, 255, 255, 0.3)',
+                    borderTop: '2px solid white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }} />
                 ) : (
                   <>
                     <CreditCard size={20} />
@@ -736,14 +751,56 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                 )}
               </motion.button>
               
-              <p className="terms-text">
+              <p style={{
+                textAlign: 'center',
+                fontSize: '12px',
+                color: theme === 'dark' ? '#94a3b8' : '#64748b',
+                marginTop: '16px',
+                lineHeight: '1.5'
+              }}>
                 En vous abonnant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité. 
-                Vous pouvez annuler votre abonnement à tout moment.
+                Vous pouvez annuler votre abonnement à tout moment via votre compte.
               </p>
+              
+              {/* Informations supplémentaires pour rassurer */}
+              <div style={{
+                marginTop: '16px',
+                padding: '12px',
+                background: theme === 'dark' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)',
+                border: '1px solid rgba(59, 130, 246, 0.2)',
+                borderRadius: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '14px' }}>🔒</span>
+                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#3b82f6' }}>
+                    Paiement 100% sécurisé
+                  </span>
+                </div>
+                <ul style={{ 
+                  margin: 0, 
+                  paddingLeft: '20px', 
+                  fontSize: '12px', 
+                  color: theme === 'dark' ? '#94a3b8' : '#64748b',
+                  lineHeight: '1.4'
+                }}>
+                  <li>Traitement sécurisé par Stripe</li>
+                  <li>Aucune donnée bancaire stockée</li>
+                  <li>Annulation possible à tout moment</li>
+                  <li>Facture envoyée par email</li>
+                </ul>
+              </div>
             </motion.div>
           )}
         </motion.div>
       </motion.div>
+      
+      {/* Ajout du CSS pour l'animation de rotation */}
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </AnimatePresence>
   );
 };
