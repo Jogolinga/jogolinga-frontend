@@ -178,7 +178,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         return;
       }
 
-      if (!process.env.NEXT_PUBLIC_API_URL) {
+      if (!process.env.REACT_APP_API_URL) {
         setError('URL de l\'API backend manquante.');
         return;
       }
