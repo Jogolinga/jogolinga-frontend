@@ -251,20 +251,22 @@ ${plan.id === 'premium_monthly' ? '• NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY' : '�
     } catch (error) {
       console.error('❌ Erreur lors de l\'abonnement:', error);
       
-      if (error.message.includes('Price ID manquant') || error.message.includes('Configuration manquante')) {
-        setError(`Erreur de configuration Stripe : ${error.message}`);
-      } else if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+      
+      if (errorMessage.includes('Price ID manquant') || errorMessage.includes('Configuration manquante')) {
+        setError(`Erreur de configuration Stripe : ${errorMessage}`);
+      } else if (errorMessage.includes('fetch') || errorMessage.includes('NetworkError')) {
         setError('Erreur de connexion au serveur. Vérifiez que votre backend Railway est actif et accessible.');
-      } else if (error.message.includes('Backend inaccessible')) {
+      } else if (errorMessage.includes('Backend inaccessible')) {
         setError('Le serveur de paiement est temporairement indisponible. Veuillez réessayer dans quelques instants.');
-      } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+      } else if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
         setError('Erreur d\'authentification. Veuillez vous reconnecter.');
-      } else if (error.message.includes('400') || error.message.includes('Bad Request')) {
+      } else if (errorMessage.includes('400') || errorMessage.includes('Bad Request')) {
         setError('Données de requête invalides. Veuillez réessayer.');
-      } else if (error.message.includes('500') || error.message.includes('Internal Server Error')) {
+      } else if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
         setError('Erreur interne du serveur. Notre équipe a été notifiée.');
       } else {
-        setError(`Erreur inattendue : ${error.message}`);
+        setError(`Erreur inattendue : ${errorMessage}`);
       }
     } finally {
       setIsLoading(false);
