@@ -81,7 +81,7 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 
 class PaymentService {
   // URL de l'API backend
- private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://jogolinga-backend-production.up.railway.app';
+  private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   
   // Mode simulation pour développement local sans backend
   private simulatePayments = process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_API_URL;
@@ -137,6 +137,16 @@ class PaymentService {
     }
   }
 
+  // Récupérer dynamiquement le price ID correct
+  private getActualPriceId(plan: SubscriptionPlan): string | undefined {
+    if (plan.id === 'premium_monthly') {
+      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY;
+    } else if (plan.id === 'premium_yearly') {
+      return process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL;
+    }
+    return plan.stripePriceId;
+  }
+
   // Créer une session de paiement via le backend
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
     if (this.simulatePayments) {
@@ -145,18 +155,30 @@ class PaymentService {
     }
 
     try {
+      const actualPriceId = this.getActualPriceId(plan);
+      
       console.log(`[PaymentService] Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
+      
       console.log('DEBUG - Plan data:', {
-  planId: plan.id,
-  priceId: plan.stripePriceId,
-  name: plan.name
-});
+        planId: plan.id,
+        priceId: actualPriceId,
+        name: plan.name,
+        envVars: {
+          monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY,
+          annual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
+        }
+      });
+
+      if (!actualPriceId) {
+        throw new Error(`Price ID manquant pour le plan ${plan.name}. Vérifiez vos variables d'environnement.`);
+      }
+      
       const response = await fetch(`${this.apiUrl}/api/payments/create-checkout-session`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({
           planId: plan.id,
-          priceId: plan.stripePriceId,
+          priceId: actualPriceId,
           userEmail,
           metadata: {
             planName: plan.name,
@@ -164,8 +186,6 @@ class PaymentService {
             billingPeriod: plan.billingPeriod,
             planId: plan.id
           }
-
-          
         }),
       });
 
