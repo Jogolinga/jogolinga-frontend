@@ -1,4 +1,4 @@
-// paymentService.ts - Version intégrée avec backend Railway
+// paymentService.ts - Version simplifiée sans simulation
 import subscriptionService, { SubscriptionTier } from './subscriptionService';
 
 // Interface pour les plans d'abonnement
@@ -83,15 +83,11 @@ class PaymentService {
   // URL de l'API backend
   private apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
   
-  // Mode simulation pour développement local sans backend
-  private simulatePayments = process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_API_URL;
-  
   // Token JWT pour l'authentification
   private authToken: string | null = null;
 
   constructor() {
     console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
-    console.log('[PaymentService] Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
   }
 
   // Définir le token d'authentification
@@ -113,15 +109,10 @@ class PaymentService {
     return headers;
   }
 
-  // Initialisation du service (plus besoin de Stripe côté frontend)
+  // Initialisation du service
   public async initialize(): Promise<boolean> {
     try {
       console.log('[PaymentService] Initialisation du service...');
-      
-      if (this.simulatePayments) {
-        console.log('[PaymentService] Mode simulation activé');
-        return true;
-      }
       
       // Tester la connexion au backend
       const response = await fetch(`${this.apiUrl}/api/health`);
@@ -149,26 +140,11 @@ class PaymentService {
 
   // Créer une session de paiement via le backend
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
-    if (this.simulatePayments) {
-      console.log(`[PaymentService] Simulation de création de session pour le plan ${plan.name} (${plan.price}€)`);
-      return `sim_checkout_${Date.now()}`;
-    }
-
     try {
       const actualPriceId = this.getActualPriceId(plan);
       
       console.log(`[PaymentService] Création d'une session pour le plan: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
       
-      console.log('DEBUG - Plan data:', {
-        planId: plan.id,
-        priceId: actualPriceId,
-        name: plan.name,
-        envVars: {
-          monthly: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_MONTHLY,
-          annual: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_ANNUAL
-        }
-      });
-
       if (!actualPriceId) {
         throw new Error(`Price ID manquant pour le plan ${plan.name}. Vérifiez vos variables d'environnement.`);
       }
@@ -204,22 +180,13 @@ class PaymentService {
       
       return data.sessionId;
     } catch (error) {
-      console.error('[PaymentService] Erreur détaillée lors de la création de session:', error);
+      console.error('[PaymentService] Erreur lors de la création de session:', error);
       throw error;
     }
   }
 
   // Rediriger vers la page de paiement Stripe
   public async redirectToCheckout(sessionId: string): Promise<void> {
-    if (this.simulatePayments) {
-      console.log(`[PaymentService] Simulation de redirection vers la page de paiement pour la session ${sessionId}`);
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      window.location.href = `${window.location.origin}/payment-success?session_id=${sessionId}&simulated=true`;
-      return;
-    }
-
     try {
       console.log('[PaymentService] Redirection vers Stripe Checkout...');
       
@@ -234,31 +201,6 @@ class PaymentService {
 
   // Vérifier l'état d'un paiement via le backend
   public async verifyPayment(sessionId: string): Promise<boolean> {
-    if (this.simulatePayments && sessionId.startsWith('sim_checkout_')) {
-      console.log(`[PaymentService] Simulation de vérification pour la session ${sessionId}`);
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simuler la mise à jour d'abonnement
-      const defaultPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly');
-      const expiresAt = Date.now() + (365 * 24 * 60 * 60 * 1000);
-      
-      subscriptionService.updateSubscription(
-        SubscriptionTier.PREMIUM, 
-        expiresAt, 
-        sessionId,
-        defaultPlan?.billingPeriod || 'yearly',
-        defaultPlan?.id || 'premium_yearly'
-      );
-      
-      // Déclencher un événement pour notifier les composants
-      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-        detail: { tier: SubscriptionTier.PREMIUM }
-      }));
-      
-      return true;
-    }
-
     try {
       console.log(`[PaymentService] Vérification du paiement pour la session ${sessionId}`);
       
@@ -294,26 +236,12 @@ class PaymentService {
       return false;
     } catch (error) {
       console.error('[PaymentService] Erreur de vérification de paiement:', error);
-      
-      if (this.simulatePayments) {
-        console.log('[PaymentService] Mode simulation: considérer le paiement comme réussi malgré l\'erreur');
-        return true;
-      }
-      
       return false;
     }
   }
 
   // Vérifier l'abonnement actuel via le backend
   public async verifySubscription(): Promise<any> {
-    if (this.simulatePayments) {
-      return {
-        isPremium: true,
-        tier: 'premium',
-        status: 'active'
-      };
-    }
-
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
         method: 'GET',
@@ -333,13 +261,6 @@ class PaymentService {
 
   // Vérifier l'accès à une fonctionnalité via le backend
   public async checkFeatureAccess(feature: string): Promise<any> {
-    if (this.simulatePayments) {
-      return {
-        hasAccess: true,
-        isPremium: true
-      };
-    }
-
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
         method: 'POST',
@@ -360,24 +281,6 @@ class PaymentService {
 
   // Annuler un abonnement via le backend
   public async cancelSubscription(): Promise<boolean> {
-    if (this.simulatePayments) {
-      console.log('[PaymentService] Simulation d\'annulation d\'abonnement');
-      
-      subscriptionService.updateSubscription(
-        SubscriptionTier.FREE,
-        null,
-        'cancelled',
-        'monthly',
-        'free_plan'
-      );
-      
-      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-        detail: { tier: SubscriptionTier.FREE }
-      }));
-      
-      return true;
-    }
-
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/cancel`, {
         method: 'POST',
@@ -407,10 +310,6 @@ class PaymentService {
 
   // Créer une session du portail client Stripe
   public async createCustomerPortalSession(): Promise<string> {
-    if (this.simulatePayments) {
-      return `${window.location.origin}/subscription`;
-    }
-
     try {
       const response = await fetch(`${this.apiUrl}/api/payments/customer-portal`, {
         method: 'POST',
@@ -435,75 +334,6 @@ class PaymentService {
   // Récupérer les plans d'abonnement
   public getSubscriptionPlans(): SubscriptionPlan[] {
     return SUBSCRIPTION_PLANS;
-  }
-
-  // Obtenir un plan par ID
-  public getPlanById(planId: string): SubscriptionPlan | undefined {
-    return SUBSCRIPTION_PLANS.find(plan => plan.id === planId);
-  }
-
-  // Calculer les économies de l'abonnement annuel
-  public calculateYearlySavings(): { amount: number; percentage: number } {
-    const monthlyPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
-    const yearlyPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly');
-    
-    if (!monthlyPlan || !yearlyPlan) {
-      return { amount: 0, percentage: 0 };
-    }
-
-    const monthlyYearlyEquivalent = monthlyPlan.price * 12; // 4€ x 12 = 48€
-    const savings = monthlyYearlyEquivalent - yearlyPlan.price; // 48€ - 40€ = 8€
-    const percentage = Math.round((savings / monthlyYearlyEquivalent) * 100); // ~16%
-
-    console.log(`[PaymentService] Économies calculées: ${savings}€ (${percentage}%)`);
-    return { amount: savings, percentage };
-  }
-
-  // Obtenir le plan correspondant à un tier et période de facturation
-  public getPlanByTier(tier: SubscriptionTier, billingPeriod: 'monthly' | 'yearly' = 'monthly'): SubscriptionPlan | null {
-    return SUBSCRIPTION_PLANS.find(
-      plan => plan.tier === tier && plan.billingPeriod === billingPeriod
-    ) || null;
-  }
-
-  // Vérifier si le service est disponible
-  public async isServiceAvailable(): Promise<boolean> {
-    if (this.simulatePayments) return true;
-    
-    try {
-      const response = await fetch(`${this.apiUrl}/api/health`);
-      return response.ok;
-    } catch {
-      return false;
-    }
-  }
-
-  // Activation forcée de Premium pour les tests
-  public forceActivatePremium(duration: number = 365, billingPeriod: 'monthly' | 'yearly' = 'yearly'): void {
-    console.log('[PaymentService] Activation forcée de l\'abonnement Premium');
-    
-    const expiresAt = Date.now() + (duration * 24 * 60 * 60 * 1000);
-    const dummyPaymentId = `force_premium_${Date.now()}`;
-    const planId = billingPeriod === 'monthly' ? 'premium_monthly' : 'premium_yearly';
-    
-    subscriptionService.updateSubscription(
-      SubscriptionTier.PREMIUM, 
-      expiresAt, 
-      dummyPaymentId,
-      billingPeriod,
-      planId
-    );
-    
-    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-      detail: { tier: SubscriptionTier.PREMIUM }
-    }));
-    
-    console.log('[PaymentService] Abonnement Premium activé jusqu\'au', new Date(expiresAt).toLocaleDateString());
-  }
-
-  // Vérifier si on est en mode simulation
-  public isSimulationMode(): boolean {
-    return this.simulatePayments;
   }
 
   // Obtenir des statistiques d'abonnement (admin)
