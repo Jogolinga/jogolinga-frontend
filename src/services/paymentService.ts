@@ -117,10 +117,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     try {
       console.log('[PaymentService] Initialisation du service...');
       
-      if (this.simulatePayments) {
-        console.log('[PaymentService] Mode simulation activé');
-        return true;
-      }
+    
       
       // Tester la connexion au backend
       const response = await fetch(`${this.apiUrl}/api/health`);
@@ -148,11 +145,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   // Créer une session de paiement via le backend
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
-    if (this.simulatePayments) {
-      console.log(`[PaymentService] Simulation de création de session pour le plan ${plan.name} (${plan.price}€)`);
-      return `sim_checkout_${Date.now()}`;
-    }
-
+   
     try {
       const actualPriceId = this.getActualPriceId(plan);
       
@@ -210,15 +203,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   // Rediriger vers la page de paiement Stripe
   public async redirectToCheckout(sessionId: string): Promise<void> {
-    if (this.simulatePayments) {
-      console.log(`[PaymentService] Simulation de redirection vers la page de paiement pour la session ${sessionId}`);
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      window.location.href = `${window.location.origin}/payment-success?session_id=${sessionId}&simulated=true`;
-      return;
-    }
-
+  
     try {
       console.log('[PaymentService] Redirection vers Stripe Checkout...');
       
@@ -233,30 +218,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   // Vérifier l'état d'un paiement via le backend
   public async verifyPayment(sessionId: string): Promise<boolean> {
-    if (this.simulatePayments && sessionId.startsWith('sim_checkout_')) {
-      console.log(`[PaymentService] Simulation de vérification pour la session ${sessionId}`);
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simuler la mise à jour d'abonnement
-      const defaultPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly');
-      const expiresAt = Date.now() + (365 * 24 * 60 * 60 * 1000);
-      
-      subscriptionService.updateSubscription(
-        SubscriptionTier.PREMIUM, 
-        expiresAt, 
-        sessionId,
-        defaultPlan?.billingPeriod || 'yearly',
-        defaultPlan?.id || 'premium_yearly'
-      );
-      
-      // Déclencher un événement pour notifier les composants
-      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-        detail: { tier: SubscriptionTier.PREMIUM }
-      }));
-      
-      return true;
-    }
+  
 
     try {
       console.log(`[PaymentService] Vérification du paiement pour la session ${sessionId}`);
@@ -294,24 +256,14 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     } catch (error) {
       console.error('[PaymentService] Erreur de vérification de paiement:', error);
       
-      if (this.simulatePayments) {
-        console.log('[PaymentService] Mode simulation: considérer le paiement comme réussi malgré l\'erreur');
-        return true;
-      }
+    
       
       return false;
     }
   }
 
   // Vérifier l'abonnement actuel via le backend
-  public async verifySubscription(): Promise<any> {
-    if (this.simulatePayments) {
-      return {
-        isPremium: true,
-        tier: 'premium',
-        status: 'active'
-      };
-    }
+
 
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
@@ -332,11 +284,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   // Vérifier l'accès à une fonctionnalité via le backend
   public async checkFeatureAccess(feature: string): Promise<any> {
-    if (this.simulatePayments) {
-      return {
-        hasAccess: true,
-        isPremium: true
-      };
+   
     }
 
     try {
@@ -357,19 +305,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     }
   }
 
-  // Annuler un abonnement via le backend
-  public async cancelSubscription(): Promise<boolean> {
-    if (this.simulatePayments) {
-      console.log('[PaymentService] Simulation d\'annulation d\'abonnement');
-      
-      subscriptionService.updateSubscription(
-        SubscriptionTier.FREE,
-        null,
-        'cancelled',
-        'monthly',
-        'free_plan'
-      );
-      
+
       window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
         detail: { tier: SubscriptionTier.FREE }
       }));
@@ -406,9 +342,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   // Créer une session du portail client Stripe
   public async createCustomerPortalSession(): Promise<string> {
-    if (this.simulatePayments) {
-      return `${window.location.origin}/subscription`;
-    }
+ 
 
     try {
       const response = await fetch(`${this.apiUrl}/api/payments/customer-portal`, {
@@ -467,7 +401,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   // Vérifier si le service est disponible
   public async isServiceAvailable(): Promise<boolean> {
-    if (this.simulatePayments) return true;
+  
     
     try {
       const response = await fetch(`${this.apiUrl}/api/health`);
@@ -500,10 +434,6 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
     console.log('[PaymentService] Abonnement Premium activé jusqu\'au', new Date(expiresAt).toLocaleDateString());
   }
 
-  // Vérifier si on est en mode simulation
-  public isSimulationMode(): boolean {
-    return this.simulatePayments;
-  }
 
   // Obtenir des statistiques d'abonnement (admin)
   public async getSubscriptionStats(): Promise<any> {
