@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 //import './components/globals.css'
 import './App.css';
 import { ThemeProvider } from './components/ThemeContext';
+import Privacy from './components/Privacy';
+import Terms from './components/Terms';
 
 // Languages import
 import { languages, getLanguageData } from './data/languages';
@@ -3680,6 +3682,8 @@ if (isMobileView && showLandingPage) {
   return (
   <ThemeProvider>
     <Routes>
+       <Route path="/privacy" element={<Privacy />} />
+  <Route path="/terms" element={<Terms />} />
       {/* ✅ Route spéciale pour la page de succès de paiement */}
       <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
