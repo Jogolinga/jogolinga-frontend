@@ -90,7 +90,7 @@ private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
   constructor() {
     console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
-    console.log('[PaymentService] Mode simulation:', this.simulatePayments ? 'OUI' : 'NON');
+   
   }
 
   // Définir le token d'authentification
