@@ -134,6 +134,41 @@ class PaymentService {
     }
   }
 
+  // Ajouter cette méthode dans votre classe PaymentService
+
+// Forcer l'activation du Premium (mode développement)
+public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly'): Promise<boolean> {
+  try {
+    console.log('[PaymentService] Activation forcée du Premium en mode développement');
+    
+    // Déterminer le plan ID selon la période
+    const planId = billingPeriod === 'yearly' ? 'premium_yearly' : 'premium_monthly';
+    
+    // Calculer la date d'expiration
+    const expiresAt = Date.now() + (billingPeriod === 'yearly' ? 365 : 30) * 24 * 60 * 60 * 1000;
+    
+    // Mettre à jour l'abonnement via subscriptionService
+    subscriptionService.updateSubscription(
+      SubscriptionTier.PREMIUM,
+      expiresAt,
+      `dev_activation_${Date.now()}`,
+      billingPeriod,
+      planId
+    );
+    
+    // Déclencher l'événement de mise à jour
+    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+      detail: { tier: SubscriptionTier.PREMIUM }
+    }));
+    
+    console.log(`[PaymentService] Premium activé avec succès (${billingPeriod})`);
+    return true;
+  } catch (error) {
+    console.error('[PaymentService] Erreur lors de l\'activation forcée:', error);
+    return false;
+  }
+}
+
   // Créer une session de paiement
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
     if (plan.tier === SubscriptionTier.FREE) {
