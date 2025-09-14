@@ -77,20 +77,20 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
 ];
 
 class PaymentService {
-  // URL de l'API backend - Production uniquement
+  // URL de l'API backend (production)
   private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
   
   // Token JWT pour l'authentification
   private authToken: string | null = null;
 
   constructor() {
-    console.log('[PaymentService] Mode production - Backend:', this.apiUrl);
+    console.log('[PaymentService] Mode Production - Backend:', this.apiUrl);
   }
 
   // Définir le token d'authentification
   public setAuthToken(token: string): void {
     this.authToken = token;
-    console.log('[PaymentService] Token d\'authentification configuré');
+    console.log('[PaymentService] Token d\'authentification défini');
   }
 
   // Obtenir les headers d'authentification
@@ -106,81 +106,45 @@ class PaymentService {
     return headers;
   }
 
-  // Récupérer le price ID Stripe correct
-  private getPriceId(plan: SubscriptionPlan): string {
+  // Récupérer dynamiquement le price ID correct
+  private getActualPriceId(plan: SubscriptionPlan): string {
     if (plan.id === 'premium_monthly') {
       return 'price_1S6fiUQuDKrWMtCMYNGdkPM2';
     } else if (plan.id === 'premium_yearly') {
       return 'price_1S6fosQuDKrWMtCMyhsJdSgV';
     }
-    throw new Error(`Price ID non défini pour le plan: ${plan.id}`);
+    throw new Error(`Plan non supporté: ${plan.id}`);
   }
 
   // Initialisation du service
   public async initialize(): Promise<boolean> {
     try {
-      console.log('[PaymentService] Test de connexion au backend...');
+      console.log('[PaymentService] Initialisation du service...');
       
       const response = await fetch(`${this.apiUrl}/api/health`);
       if (!response.ok) {
         throw new Error(`Backend inaccessible: ${response.status}`);
       }
       
-      console.log('[PaymentService] Backend accessible - Service prêt');
+      console.log('[PaymentService] Service initialisé avec succès');
       return true;
     } catch (error) {
-      console.error('[PaymentService] Erreur de connexion backend:', error);
+      console.error('[PaymentService] Erreur d\'initialisation:', error);
       return false;
     }
   }
 
-  // Ajouter cette méthode dans votre classe PaymentService
-
-// Forcer l'activation du Premium (mode développement)
-public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly'): Promise<boolean> {
-  try {
-    console.log('[PaymentService] Activation forcée du Premium en mode développement');
-    
-    // Déterminer le plan ID selon la période
-    const planId = billingPeriod === 'yearly' ? 'premium_yearly' : 'premium_monthly';
-    
-    // Calculer la date d'expiration
-    const expiresAt = Date.now() + (billingPeriod === 'yearly' ? 365 : 30) * 24 * 60 * 60 * 1000;
-    
-    // Mettre à jour l'abonnement via subscriptionService
-    subscriptionService.updateSubscription(
-      SubscriptionTier.PREMIUM,
-      expiresAt,
-      `dev_activation_${Date.now()}`,
-      billingPeriod,
-      planId
-    );
-    
-    // Déclencher l'événement de mise à jour
-    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-      detail: { tier: SubscriptionTier.PREMIUM }
-    }));
-    
-    console.log(`[PaymentService] Premium activé avec succès (${billingPeriod})`);
-    return true;
-  } catch (error) {
-    console.error('[PaymentService] Erreur lors de l\'activation forcée:', error);
-    return false;
-  }
-}
-
-  // Créer une session de paiement
+  // Créer une session de paiement via le backend
   public async createCheckoutSession(plan: SubscriptionPlan, userEmail?: string): Promise<string> {
     if (plan.tier === SubscriptionTier.FREE) {
-      throw new Error('Impossible de créer une session pour un plan gratuit');
+      throw new Error('Impossible de créer une session de paiement pour le plan gratuit');
     }
 
     try {
-      const priceId = this.getPriceId(plan);
+      const priceId = this.getActualPriceId(plan);
       
-      console.log(`[PaymentService] Création session: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
-      console.log(`[PaymentService] Price ID: ${priceId}`);
-
+      console.log(`[PaymentService] Création session pour: ${plan.name} - ${plan.price}€/${plan.billingPeriod === 'monthly' ? 'mois' : 'an'}`);
+      
       const response = await fetch(`${this.apiUrl}/api/payments/create-checkout-session`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
@@ -217,18 +181,18 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     }
   }
 
-  // Rediriger vers Stripe Checkout
+  // Rediriger vers la page de paiement Stripe
   public async redirectToCheckout(sessionId: string): Promise<void> {
     try {
-      console.log('[PaymentService] Redirection vers Stripe...');
+      console.log('[PaymentService] Redirection vers Stripe Checkout...');
       window.location.href = `https://checkout.stripe.com/pay/${sessionId}`;
     } catch (error) {
-      console.error('[PaymentService] Erreur redirection:', error);
+      console.error('[PaymentService] Erreur lors de la redirection:', error);
       throw error;
     }
   }
 
-  // Vérifier un paiement
+  // Vérifier l'état d'un paiement via le backend
   public async verifyPayment(sessionId: string): Promise<boolean> {
     try {
       console.log(`[PaymentService] Vérification paiement: ${sessionId}`);
@@ -251,9 +215,9 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
       console.log('[PaymentService] Résultat vérification:', data);
       
       if (data.status === 'completed') {
-        console.log('[PaymentService] Paiement confirmé - Abonnement activé');
+        console.log('[PaymentService] Paiement confirmé et abonnement mis à jour');
         
-        // Notifier les composants de la mise à jour
+        // Déclencher un événement pour notifier les composants
         window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
           detail: { tier: SubscriptionTier.PREMIUM }
         }));
@@ -268,7 +232,7 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     }
   }
 
-  // Vérifier l'abonnement actuel
+  // Vérifier l'abonnement actuel via le backend
   public async verifySubscription(): Promise<any> {
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
@@ -287,7 +251,7 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     }
   }
 
-  // Vérifier l'accès à une fonctionnalité
+  // Vérifier l'accès à une fonctionnalité via le backend
   public async checkFeatureAccess(feature: string): Promise<any> {
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
@@ -307,7 +271,7 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     }
   }
 
-  // Annuler un abonnement
+  // Annuler un abonnement via le backend
   public async cancelSubscription(): Promise<boolean> {
     try {
       const response = await fetch(`${this.apiUrl}/api/subscription/cancel`, {
@@ -323,6 +287,7 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
       const data = await response.json();
       
       if (data.success) {
+        // Déclencher un événement pour notifier les composants
         window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
           detail: { tier: SubscriptionTier.FREE }
         }));
@@ -330,12 +295,12 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
       
       return data.success;
     } catch (error) {
-      console.error('[PaymentService] Erreur annulation:', error);
+      console.error('[PaymentService] Erreur annulation abonnement:', error);
       return false;
     }
   }
 
-  // Portail client Stripe
+  // Créer une session du portail client Stripe
   public async createCustomerPortalSession(): Promise<string> {
     try {
       const response = await fetch(`${this.apiUrl}/api/payments/customer-portal`, {
@@ -358,7 +323,7 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     }
   }
 
-  // Récupérer les plans
+  // Récupérer les plans d'abonnement
   public getSubscriptionPlans(): SubscriptionPlan[] {
     return SUBSCRIPTION_PLANS;
   }
@@ -368,7 +333,7 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     return SUBSCRIPTION_PLANS.find(plan => plan.id === planId);
   }
 
-  // Calculer les économies annuelles
+  // Calculer les économies de l'abonnement annuel
   public calculateYearlySavings(): { amount: number; percentage: number } {
     const monthlyPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_monthly');
     const yearlyPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'premium_yearly');
@@ -384,14 +349,14 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     return { amount: savings, percentage };
   }
 
-  // Obtenir un plan par tier et période
+  // Obtenir le plan correspondant à un tier et période de facturation
   public getPlanByTier(tier: SubscriptionTier, billingPeriod: 'monthly' | 'yearly' = 'monthly'): SubscriptionPlan | null {
     return SUBSCRIPTION_PLANS.find(
       plan => plan.tier === tier && plan.billingPeriod === billingPeriod
     ) || null;
   }
 
-  // Vérifier la disponibilité du service
+  // Vérifier si le service est disponible
   public async isServiceAvailable(): Promise<boolean> {
     try {
       const response = await fetch(`${this.apiUrl}/api/health`);
@@ -401,7 +366,30 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
     }
   }
 
-  // Statistiques d'abonnement (admin)
+  // ACTIVATION FORCÉE DE PREMIUM POUR LES TESTS
+  public forceActivatePremium(duration: number = 365, billingPeriod: 'monthly' | 'yearly' = 'yearly'): void {
+    console.log('[PaymentService] ACTIVATION FORCÉE Premium pour tests');
+    
+    const expiresAt = Date.now() + (duration * 24 * 60 * 60 * 1000);
+    const dummyPaymentId = `force_premium_${Date.now()}`;
+    const planId = billingPeriod === 'monthly' ? 'premium_monthly' : 'premium_yearly';
+    
+    subscriptionService.updateSubscription(
+      SubscriptionTier.PREMIUM, 
+      expiresAt, 
+      dummyPaymentId,
+      billingPeriod,
+      planId
+    );
+    
+    window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+      detail: { tier: SubscriptionTier.PREMIUM }
+    }));
+    
+    console.log('[PaymentService] Premium activé jusqu\'au', new Date(expiresAt).toLocaleDateString());
+  }
+
+  // Obtenir des statistiques d'abonnement (admin)
   public async getSubscriptionStats(): Promise<any> {
     try {
       const response = await fetch(`${this.apiUrl}/api/admin/subscription-stats`, {
@@ -415,12 +403,12 @@ public async forceActivatePremium(billingPeriod: 'monthly' | 'yearly' = 'monthly
 
       return await response.json();
     } catch (error) {
-      console.error('[PaymentService] Erreur statistiques:', error);
+      console.error('[PaymentService] Erreur récupération statistiques:', error);
       return null;
     }
   }
 }
 
-// Export du service
+// Singleton pattern pour le service de paiement
 const paymentService = new PaymentService();
 export default paymentService;
