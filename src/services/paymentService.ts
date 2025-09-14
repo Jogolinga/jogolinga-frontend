@@ -83,10 +83,8 @@ class PaymentService {
   // URL de l'API backend
 private apiUrl = 'https://jogolinga-backend-production.up.railway.app';
 
-  
-  // Mode simulation pour développement local sans backend
-  private simulatePayments = process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_API_URL;
-  
+
+   
   // Token JWT pour l'authentification
   private authToken: string | null = null;
 
