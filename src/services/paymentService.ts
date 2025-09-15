@@ -1,5 +1,6 @@
-// paymentService.ts - Version avec logs détaillés pour debug
+// paymentService.ts - Version OPTION 1 avec Stripe loadStripe
 import subscriptionService, { SubscriptionTier } from './subscriptionService';
+import { loadStripe, Stripe } from '@stripe/stripe-js'; // ← NOUVEAU IMPORT
 
 // Interface pour les plans d'abonnement
 export interface SubscriptionPlan {
@@ -86,11 +87,13 @@ class PaymentService {
   // Token JWT pour l'authentification
   private authToken: string | null = null;
 
+  // ← NOUVEAU : Instance Stripe Promise
+  private stripePromise: Promise<Stripe | null>;
+
   constructor() {
     console.log('=== INITIALIZATION PAYMENTSERVICE ===');
     console.log('[PaymentService] Initialisation avec backend:', this.apiUrl);
     console.log('[PaymentService] NODE_ENV:', process.env.NODE_ENV);
-    console.log('[PaymentService] Toutes les variables env REACT_APP_*:');
     
     // Lister toutes les variables d'environnement qui commencent par REACT_APP_
     Object.keys(process.env).forEach(key => {
@@ -100,9 +103,22 @@ class PaymentService {
     });
     
     console.log('[PaymentService] Variables Stripe spécifiques:');
+    console.log('[PaymentService] REACT_APP_STRIPE_PUBLISHABLE_KEY:', process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY?.substring(0, 12) + '...');
     console.log('[PaymentService] REACT_APP_STRIPE_PRICE_ID_MONTHLY:', process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY);
     console.log('[PaymentService] REACT_APP_STRIPE_PRICE_ID_ANNUAL:', process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL);
     console.log('[PaymentService] REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+
+    // ← NOUVEAU : Initialiser Stripe avec la clé publique
+    const publishableKey = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
+    if (!publishableKey) {
+      console.error('❌ REACT_APP_STRIPE_PUBLISHABLE_KEY manquante !');
+      console.error('   Ajoutez cette variable dans vos paramètres Vercel');
+    } else {
+      console.log('✅ Clé publique Stripe trouvée:', publishableKey.substring(0, 12) + '...');
+    }
+    
+    this.stripePromise = loadStripe(publishableKey!);
+    console.log('✅ Stripe Promise initialisée');
     console.log('=====================================');
   }
 
@@ -122,11 +138,10 @@ class PaymentService {
       headers['Authorization'] = `Bearer ${this.authToken}`;
     }
 
-    console.log('[PaymentService] Headers:', headers);
     return headers;
   }
 
-  // Initialisation du service
+  // ← MODIFIÉ : Initialisation du service avec vérification Stripe
   public async initialize(): Promise<boolean> {
     try {
       console.log('[PaymentService] Initialisation du service...');
@@ -147,6 +162,16 @@ class PaymentService {
       if (!response.ok) {
         throw new Error(`Backend inaccessible: ${response.status}`);
       }
+      
+      // ← NOUVEAU : Vérifier que Stripe est chargé
+      console.log('[PaymentService] Vérification du chargement de Stripe...');
+      const stripe = await this.stripePromise;
+      if (!stripe) {
+        console.error('❌ Stripe n\'a pas pu être chargé');
+        console.error('   Vérifiez votre REACT_APP_STRIPE_PUBLISHABLE_KEY');
+        return false;
+      }
+      console.log('✅ Stripe chargé avec succès');
       
       console.log('[PaymentService] Service initialisé avec succès');
       return true;
@@ -225,7 +250,6 @@ class PaymentService {
       console.log('[PaymentService] URL de la requête:', url);
       
       const headers = this.getAuthHeaders();
-      console.log('[PaymentService] Headers de la requête:', headers);
       
       const response = await fetch(url, {
         method: 'POST',
@@ -270,20 +294,61 @@ class PaymentService {
     }
   }
 
-  // Rediriger vers la page de paiement Stripe
+  // ← MODIFIÉ : Nouvelle méthode de redirection avec l'API Stripe officielle
   public async redirectToCheckout(sessionId: string): Promise<void> {
     try {
-      console.log('[PaymentService] Redirection vers Stripe Checkout...');
-      console.log('[PaymentService] Session ID:', sessionId);
+      console.log('🚀 [PaymentService] Redirection vers Stripe Checkout...');
+      console.log('🆔 [PaymentService] Session ID:', sessionId);
       
-      // Redirection directe vers Stripe Checkout avec l'ID de session
-      const redirectUrl = `https://checkout.stripe.com/pay/${sessionId}`;
-      console.log('[PaymentService] URL de redirection:', redirectUrl);
+      // Attendre que Stripe soit chargé
+      console.log('⏳ [PaymentService] Chargement de Stripe...');
+      const stripe = await this.stripePromise;
       
-      window.location.href = redirectUrl;
+      if (!stripe) {
+        console.error('❌ [PaymentService] Stripe n\'a pas pu être chargé');
+        console.error('   Vérifiez votre REACT_APP_STRIPE_PUBLISHABLE_KEY');
+        throw new Error('Stripe n\'est pas disponible. Vérifiez votre configuration.');
+      }
+
+      console.log('✅ [PaymentService] Stripe chargé avec succès');
+      console.log('🔄 [PaymentService] Redirection en cours...');
+      
+      // Utiliser l'API officielle Stripe au lieu de la redirection manuelle
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: sessionId
+      });
+
+      if (error) {
+        console.error('❌ [PaymentService] Erreur Stripe lors de la redirection:', error);
+        throw new Error(`Erreur Stripe: ${error.message}`);
+      }
+
+      // Si on arrive ici, c'est qu'il y a eu un problème (normalement on est redirigé)
+      console.log('⚠️ [PaymentService] Aucune redirection effectuée - cela pourrait indiquer un problème');
       
     } catch (error) {
-      console.error('[PaymentService] Erreur lors de la redirection:', error);
+      console.error('💥 [PaymentService] Erreur lors de la redirection:', error);
+      throw error;
+    }
+  }
+
+  // ← NOUVEAU : Méthode combinée mise à jour
+  public async createCheckoutSessionAndRedirect(plan: SubscriptionPlan, userEmail?: string): Promise<void> {
+    try {
+      console.log('🎯 [PaymentService] Début du processus de paiement complet');
+      
+      // 1. Créer la session via le backend
+      console.log('📝 [PaymentService] Étape 1: Création de la session...');
+      const sessionId = await this.createCheckoutSession(plan, userEmail);
+      
+      // 2. Rediriger avec l'API Stripe officielle
+      console.log('🚀 [PaymentService] Étape 2: Redirection vers Stripe...');
+      await this.redirectToCheckout(sessionId);
+      
+      console.log('✅ [PaymentService] Processus terminé avec succès');
+      
+    } catch (error) {
+      console.error('💥 [PaymentService] Erreur dans le processus complet:', error);
       throw error;
     }
   }
@@ -314,71 +379,31 @@ class PaymentService {
         // Le backend a déjà mis à jour l'abonnement en base
         console.log('[PaymentService] Paiement vérifié et abonnement mis à jour');
         
-        // Déclencher un événement pour notifier les composants frontend
+        // Déclencher un événement pour notifier les composants
         window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
-          detail: { tier: SubscriptionTier.PREMIUM }
+          detail: { tier: SubscriptionTier.PREMIUM, planId: data.planId }
         }));
         
         return true;
       }
-
+      
       return false;
     } catch (error) {
-      console.error('[PaymentService] Erreur de vérification de paiement:', error);
+      console.error('[PaymentService] Erreur vérification paiement:', error);
       return false;
     }
   }
 
-  // Vérifier l'abonnement actuel via le backend
-  public async verifySubscription(): Promise<any> {
-    try {
-      const response = await fetch(`${this.apiUrl}/api/subscription/verify`, {
-        method: 'GET',
-        headers: this.getAuthHeaders()
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('[PaymentService] Erreur vérification abonnement:', error);
-      throw error;
-    }
-  }
-
-  // Vérifier l'accès à une fonctionnalité via le backend
-  public async checkFeatureAccess(feature: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.apiUrl}/api/subscription/check-access`, {
-        method: 'POST',
-        headers: this.getAuthHeaders(),
-        body: JSON.stringify({ feature })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erreur ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('[PaymentService] Erreur vérification accès:', error);
-      throw error;
-    }
-  }
-
-  // Annuler un abonnement via le backend
+  // Annuler un abonnement
   public async cancelSubscription(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.apiUrl}/api/subscription/cancel`, {
+      const response = await fetch(`${this.apiUrl}/api/payments/cancel-subscription`, {
         method: 'POST',
         headers: this.getAuthHeaders()
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Erreur lors de l\'annulation');
+        throw new Error(`Erreur ${response.status}`);
       }
 
       const data = await response.json();
