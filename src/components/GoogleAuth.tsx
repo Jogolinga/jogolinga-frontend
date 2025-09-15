@@ -325,68 +325,25 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
 
   // Déconnexion sécurisée
   const handleSecureLogout = async () => {
-    if (isProcessing) return;
-
-    setIsProcessing(true);
-
-    try {
-      // 1. Déconnecter du backend sécurisé
-      secureAuthService.logout();
-
-      // NOUVEAU: Nettoyer le token du PaymentService
-      console.log('[GoogleAuth] Nettoyage du token PaymentService lors de la déconnexion');
-      // Note: PaymentService n'a pas de méthode clearToken, mais setAuthToken(null) peut être ajouté si nécessaire
-      try {
-        paymentService.setAuthToken(''); // ou null selon l'implémentation de paymentService
-      } catch (paymentError) {
-        console.warn('[GoogleAuth] Erreur lors du nettoyage du token PaymentService:', paymentError);
-      }
-
-      // 2. Déconnecter de Google
-      try {
-        if (gapi.auth2 && gapi.auth2.getAuthInstance()) {
-          await gapi.auth2.getAuthInstance().signOut();
-        }
-      } catch (googleError) {
-        console.warn('Erreur déconnexion Google (non critique):', googleError);
-      }
-
-      // 3. Nettoyer l'état local
-      setIsLoggedIn(false);
-      setUser(null);
-      setError(null);
-
-      // 4. Nettoyer le stockage local
-      localStorage.removeItem('googleToken');
-      localStorage.removeItem('tokenExpires');
-      localStorage.removeItem('googleScopes');
-
-      // Protection : Appel sécurisé de onLogout
-      try {
-        safeOnLogout();
-      } catch (callbackError) {
-        console.error('Erreur callback onLogout:', callbackError);
-      }
-
-      // 5. Rediriger si nécessaire
-      if (onForceLoginPage) {
-        try {
-          onForceLoginPage();
-        } catch (redirectError) {
-          console.error('Erreur redirection:', redirectError);
-        }
-      }
-
-    } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
-      // Même en cas d'erreur, nettoyer l'état local
-      setIsLoggedIn(false);
-      setUser(null);
-      setError(null);
-    } finally {
-      setIsProcessing(false);
+  setIsProcessing(true);
+  try {
+    const auth2 = gapi.auth2.getAuthInstance();
+    if (auth2 != null) {
+      await auth2.signOut();
+      await auth2.disconnect();
     }
-  };
+    
+    // Réinitialisation locale immédiate
+    setUser(null);
+    setIsLoggedIn(false);
+    localStorage.removeItem("googleUser"); // si tu stockes l’utilisateur
+  } catch (error) {
+    console.error("Erreur de déconnexion", error);
+  } finally {
+    setIsProcessing(false);
+  }
+};
+
 
   // Gestion d'erreur pour l'affichage
   const clearError = () => {
