@@ -424,19 +424,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         
         {isLoggedIn ? (
           <div className="header-user-info">
-            {user?.picture && (
-              <img 
-                src={user.picture} 
-                alt={user.name} 
-                title={`Connecté en tant que ${user.name || user.email}`}
-                style={{ 
-                  width: '24px', 
-                  height: '24px', 
-                  borderRadius: '50%', 
-                  marginRight: '8px' 
-                }}
-              />
-            )}
+          
             <button 
               onClick={handleSecureLogout}
               disabled={isProcessing}
