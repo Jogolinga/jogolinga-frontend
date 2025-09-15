@@ -163,35 +163,80 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     setSelectedPlan(plan);
   };
 
-  const handleSubscribe = async () => {
-    if (!selectedPlan || selectedPlan.tier === SubscriptionTier.FREE) {
+
+const handleSubscribe = async () => {
+  if (!selectedPlan || selectedPlan.tier === SubscriptionTier.FREE) {
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+    setError(null);
+
+    console.log('🎯 === DÉBUT PROCESSUS ABONNEMENT ===');
+    console.log('📋 Plan sélectionné:', selectedPlan);
+    console.log('📧 Email utilisateur:', userEmail);
+
+    // Validation simplifiée
+    if (!validatePriceId(selectedPlan)) {
+      setError('Configuration Stripe manquante. Vérifiez vos variables d\'environnement.');
       return;
     }
 
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      // Validation simplifiée
-      if (!validatePriceId(selectedPlan)) {
-        setError('Configuration Stripe manquante. Vérifiez vos variables d\'environnement.');
-        return;
-      }
-
-      if (!process.env.REACT_APP_API_URL) {
-        setError('URL de l\'API backend manquante.');
-        return;
-      }
-
-      const sessionId = await paymentService.createCheckoutSession(selectedPlan, userEmail);
-      await paymentService.redirectToCheckout(sessionId);
-      
-    } catch {
-      setError('Une erreur est survenue lors du traitement de votre demande. Veuillez réessayer.');
-    } finally {
-      setIsLoading(false);
+    // Vérifier que le service de paiement est initialisé
+    console.log('⚙️ Initialisation du service de paiement...');
+    const isInitialized = await paymentService.initialize();
+    if (!isInitialized) {
+      throw new Error('Impossible d\'initialiser le service de paiement. Vérifiez votre connexion et vos variables d\'environnement.');
     }
-  };
+    console.log('✅ Service de paiement initialisé');
+
+    // Définir le token d'authentification si disponible
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('secureToken');
+    if (token) {
+      paymentService.setAuthToken(token);
+      console.log('🔐 Token d\'authentification configuré');
+    } else {
+      console.warn('⚠️ Aucun token d\'authentification trouvé');
+    }
+
+    console.log('🚀 Lancement du processus de paiement...');
+    console.log('   → Ceci va créer une session de paiement sur votre backend');
+    console.log('   → Puis rediriger vers Stripe Checkout');
+    
+    // ← CHANGEMENT PRINCIPAL : Utiliser la nouvelle méthode combinée
+    await paymentService.createCheckoutSessionAndRedirect(selectedPlan, userEmail);
+    
+    // Si on arrive ici sans redirection, c'est qu'il y a eu un problème
+    console.log('⚠️ Aucune redirection effectuée - possible erreur');
+    setError('La redirection vers le paiement n\'a pas fonctionné. Veuillez réessayer.');
+
+  } catch (error) {
+    console.error('💥 Erreur lors de l\'abonnement:', error);
+    
+    // Messages d'erreur plus spécifiques
+    let errorMessage = 'Erreur inconnue lors du paiement';
+    
+    if (error instanceof Error) {
+      if (error.message.includes('Price ID manquant')) {
+        errorMessage = 'Configuration des prix manquante. Contactez le support.';
+      } else if (error.message.includes('Backend inaccessible')) {
+        errorMessage = 'Service temporairement indisponible. Veuillez réessayer.';
+      } else if (error.message.includes('Stripe n\'est pas disponible')) {
+        errorMessage = 'Erreur de configuration du paiement. Contactez le support.';
+      } else if (error.message.includes('Session ID manquant')) {
+        errorMessage = 'Erreur lors de la création de la session de paiement.';
+      } else {
+        errorMessage = error.message;
+      }
+    }
+    
+    setError(errorMessage);
+  } finally {
+    setIsLoading(false);
+    console.log('🏁 === FIN PROCESSUS ABONNEMENT ===');
+  }
+};
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
