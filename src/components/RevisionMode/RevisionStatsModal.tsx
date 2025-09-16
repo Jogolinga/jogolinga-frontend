@@ -19,6 +19,12 @@ interface RevisionWordInfo {
   subCategory?: string;
 }
 
+// Interface étendue pour l'historique avec statuts supplémentaires
+interface ExtendedRevisionWordInfo extends RevisionWordInfo {
+  isFromHistory?: boolean;
+  isAwaitingFirstRevision?: boolean;
+}
+
 // Interface pour GrammarProgress
 interface GrammarProgress {
   subcategory: string;
@@ -72,7 +78,7 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
 
   // Grouper les mots par catégorie - HISTORIQUE COMPLET AVEC STATUTS
   const groupedWords = useMemo(() => {
-    const latestWords = new Map<string, RevisionWordInfo>();
+    const latestWords = new Map<string, ExtendedRevisionWordInfo>();
     
     // 1. D'abord, traiter l'historique de révision existant (mots réellement révisés)
     if (revisionHistory?.length) {
@@ -126,7 +132,7 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
     }
 
     // 3. Regrouper par catégorie
-    const grouped = Array.from(latestWords.values()).reduce<Record<string, RevisionWordInfo[]>>((acc, word) => {
+    const grouped = Array.from(latestWords.values()).reduce<Record<string, ExtendedRevisionWordInfo[]>>((acc, word) => {
       if (!acc[word.category]) {
         acc[word.category] = [];
       }
@@ -138,8 +144,8 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
     Object.keys(grouped).forEach(category => {
       grouped[category].sort((a, b) => {
         // D'abord par statut : mots en attente de révision en premier
-        const aIsAwaiting = (a as any).isAwaitingFirstRevision || false;
-        const bIsAwaiting = (b as any).isAwaitingFirstRevision || false;
+        const aIsAwaiting = a.isAwaitingFirstRevision || false;
+        const bIsAwaiting = b.isAwaitingFirstRevision || false;
         
         if (aIsAwaiting !== bIsAwaiting) {
           return aIsAwaiting ? -1 : 1; // Mots en attente en premier
@@ -158,8 +164,8 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
           cat, 
           {
             total: words.length,
-            revised: words.filter(w => (w as any).isFromHistory).length,
-            awaitingFirst: words.filter(w => (w as any).isAwaitingFirstRevision).length
+            revised: words.filter(w => w.isFromHistory).length,
+            awaitingFirst: words.filter(w => w.isAwaitingFirstRevision).length
           }
         ])
       )
@@ -170,8 +176,13 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
 
   const categories = Object.keys(groupedWords);
 
-  // Fonction pour formater le temps de révision
-  const getNextReviewTime = useCallback((nextReview: number) => {
+  // Fonction pour formater le temps de révision - AVEC GESTION PREMIÈRE RÉVISION
+  const getNextReviewTime = useCallback((nextReview: number, wordItem?: any) => {
+    // Cas spécial : première révision disponible
+    if (wordItem?.isAwaitingFirstRevision) {
+      return "Première révision disponible";
+    }
+    
     if (!nextReview) return "Non programmé";
     
     const now = Date.now();
@@ -214,30 +225,37 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, handleClose]);
 
-  // 🔧 NOUVEAU : Composant StatusIcon corrigé avec logique de statut améliorée
+  // 🔧 StatusIcon avec gestion du statut "première révision"
   const StatusIcon = React.memo<{ 
-    wordItem: RevisionWordInfo;
-    getNextReviewTime: (nextReview: number) => string;
+    wordItem: ExtendedRevisionWordInfo;
+    getNextReviewTime: (nextReview: number, wordItem?: any) => string;
   }>(({ wordItem, getNextReviewTime }) => {
     const now = Date.now();
-    const isDue = wordItem.nextReview <= now;
     
     // Logique de statut améliorée
     let statusClass = '';
     let icon = null;
     
-    if (isDue) {
-      // Mot disponible pour révision
-      statusClass = 'available';
-      icon = <span style={{ fontSize: '14px' }}>🔄</span>; // Icône de révision
-    } else if (wordItem.isCorrect) {
-      // Mot maîtrisé (pas encore dû)
-      statusClass = 'mastered';
-      icon = <Check size={14} />; // ✅
+    if (wordItem.isAwaitingFirstRevision) {
+      // Mot appris mais jamais révisé - première révision disponible
+      statusClass = 'first-revision';
+      icon = <span style={{ fontSize: '14px' }}>🆕</span>; // Nouveau
     } else {
-      // Mot échoué mais pas encore dû pour révision
-      statusClass = 'needs-work';
-      icon = <span style={{ fontSize: '14px' }}>⚠️</span>; // Avertissement
+      const isDue = wordItem.nextReview <= now;
+      
+      if (isDue) {
+        // Mot disponible pour révision
+        statusClass = 'available';
+        icon = <span style={{ fontSize: '14px' }}>🔄</span>; // Icône de révision
+      } else if (wordItem.isCorrect) {
+        // Mot maîtrisé (pas encore dû)
+        statusClass = 'mastered';
+        icon = <Check size={14} />; // ✅
+      } else {
+        // Mot échoué mais pas encore dû pour révision
+        statusClass = 'needs-work';
+        icon = <span style={{ fontSize: '14px' }}>⚠️</span>; // Avertissement
+      }
     }
     
     return (
@@ -247,17 +265,19 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
     );
   });
 
-  // Composant pour un item de mot mis à jour
+  // Composant pour un item de mot avec gestion première révision
   const WordItem = React.memo<{ 
-    wordItem: RevisionWordInfo; 
+    wordItem: ExtendedRevisionWordInfo;
     category: string;
-    getNextReviewTime: (nextReview: number) => string;
+    getNextReviewTime: (nextReview: number, wordItem?: any) => string;
   }>(({ wordItem, category, getNextReviewTime }) => {
     const translation = wordDataMap[category]?.[wordItem.word]?.translation || wordItem.translation;
     
     return (
       <motion.div 
-        className={`revision-stats-modal-word-item ${isDarkMode ? 'dark' : ''}`}
+        className={`revision-stats-modal-word-item ${isDarkMode ? 'dark' : ''} ${
+          wordItem.isAwaitingFirstRevision ? 'awaiting-first-revision' : ''
+        }`}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
@@ -272,6 +292,9 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
             <span className={`revision-stats-modal-word-text ${isDarkMode ? 'dark' : ''}`}>
               {wordItem.word}
             </span>
+            {wordItem.isAwaitingFirstRevision && (
+              <span className="first-revision-badge">Nouveau</span>
+            )}
           </div>
         </div>
 
@@ -285,9 +308,10 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
         {/* Prochaine révision */}
         <div className="revision-stats-modal-next-review">
           <span className={`revision-stats-modal-next-review-text ${
+            wordItem.isAwaitingFirstRevision ? 'first-revision' : 
             wordItem.nextReview <= Date.now() ? 'available' : 'pending'
           } ${isDarkMode ? 'dark' : ''}`}>
-            {getNextReviewTime(wordItem.nextReview)}
+            {getNextReviewTime(wordItem.nextReview, wordItem)}
           </span>
         </div>
       </motion.div>
