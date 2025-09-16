@@ -2158,6 +2158,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
           }))}
           wordDataMap={wordDataMap}
           wordProgress={userProgress.wordProgress}  
+          languageCode={languageCode}
         />
 
         <ConfirmationModal
