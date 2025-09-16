@@ -335,6 +335,8 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
           const grammarCleanWord = cleanParentheses(wordData.word);
           return grammarCleanWord === cleanWord || wordData.word === word;
         });
+        
+        console.log(`🔍 Grammaire - Mot ${cleanWord} appris: ${isWordLearned}`);
       }
     } catch (error) {
       console.error('Erreur lors de la vérification grammaire:', error);
@@ -355,11 +357,13 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
 
   // Si le mot n'a jamais été appris DANS CETTE CATÉGORIE, il ne peut pas être révisé
   if (!isWordLearned) {
+    console.log(`❌ Mot ${cleanWord} non appris dans ${category}`);
     return false;
   }
 
   // Si pas d'historique de révision, le mot est dû pour sa première révision
   if (wordHistory.length === 0) {
+    console.log(`✅ Mot ${cleanWord} dû pour première révision`);
     return true;
   }
 
@@ -368,6 +372,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
   // Vérifier explicitement si le mot a une nextReview programmée
   if (lastReview.nextReview && typeof lastReview.nextReview === 'number') {
     const isDue = lastReview.nextReview <= now;
+    console.log(`🔄 Mot ${cleanWord} - Next review: ${new Date(lastReview.nextReview).toLocaleDateString()}, Due: ${isDue}`);
     return isDue;
   }
   
@@ -408,6 +413,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
   }
   
   const isDue = daysSinceLastReview >= revisionInterval;
+  console.log(`📊 Mot ${cleanWord} - ${consecutiveCorrect} succès, ${daysSinceLastReview.toFixed(1)} jours écoulés, interval: ${revisionInterval}, due: ${isDue}`);
   return isDue;
 }, [getSessionWords, languageCode]);
 
@@ -528,94 +534,110 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
   }, [languageCode, languageData.categories]);
 
   const getDueWordsForCategory = useCallback((category: string): [string, WordData][] => {
-    const isGrammarCategory = category === 'Grammaire';
-    
-    // Pour les phrases construites (inchangé)
-    const sentenceStorageKey = `sentence-construction-progress-${languageCode}`;
-    let sentencesForReview: [string, WordData][] = [];
+  const isGrammarCategory = category === 'Grammaire';
+  
+  // Pour les phrases construites (inchangé)
+  const sentenceStorageKey = `sentence-construction-progress-${languageCode}`;
+  let sentencesForReview: [string, WordData][] = [];
+  try {
+    const savedSentences = localStorage.getItem(sentenceStorageKey);
+    if (savedSentences) {
+      const sentences = JSON.parse(savedSentences) as LearnedSentence[];
+      sentencesForReview = sentences
+        .filter(sentence => 
+          sentence.category === category && 
+          sentence.mastered &&
+          isWordDueForRevision(sentence.original, category)
+        )
+        .map(sentence => [
+          cleanParentheses(sentence.original),
+          {
+            translation: sentence.french,
+            audio: sentence.audio
+          }
+        ] as [string, WordData]);
+    }
+  } catch (error) {
+    console.error('Erreur lors de la lecture des phrases:', error);
+  }
+  
+  // Pour la grammaire - CORRECTION ICI
+  if (isGrammarCategory) {
+    const storageKey = `grammar-progress-${languageCode}`;
     try {
-      const savedSentences = localStorage.getItem(sentenceStorageKey);
-      if (savedSentences) {
-        const sentences = JSON.parse(savedSentences) as LearnedSentence[];
-        sentencesForReview = sentences
-          .filter(sentence => 
-            sentence.category === category && 
-            sentence.mastered &&
-            isWordDueForRevision(sentence.original, category)
-          )
-          .map(sentence => [
-            cleanParentheses(sentence.original),
-            {
-              translation: sentence.french,
-              audio: sentence.audio
+      const savedProgress = localStorage.getItem(storageKey);
+      if (savedProgress) {
+        const progress = JSON.parse(savedProgress) as GrammarProgress[];
+        const allGrammarWords = progress.flatMap((p: GrammarProgress) => p.masteredWords);
+        
+        const uniqueGrammarWords: {[key: string]: [string, WordData]} = {};
+        
+        allGrammarWords.forEach(wordData => {
+          const cleanWord = cleanParentheses(wordData.word);
+          
+          // CORRECTION : Utiliser la fonction isWordDueForRevision avec le bon grammarType
+          // Déterminer le grammarType basé sur la subcategory ou un défaut
+          let detectedGrammarType: 'rule' | 'conjugation' | 'vocabulary' = 'rule';
+          
+          // Logique pour déterminer le type de grammaire basé sur la subcategory
+          const subcategory = progress.find(p => p.masteredWords.includes(wordData))?.subcategory?.toLowerCase();
+          if (subcategory) {
+            if (subcategory.includes('conjugaison') || subcategory.includes('verbe')) {
+              detectedGrammarType = 'conjugation';
+            } else if (subcategory.includes('vocabulaire') || subcategory.includes('mot')) {
+              detectedGrammarType = 'vocabulary';
             }
-          ] as [string, WordData]);
+          }
+          
+          // Vérifier si le mot est dû pour révision AVEC le type de grammaire
+          if (isWordDueForRevision(cleanWord, category, detectedGrammarType) && !uniqueGrammarWords[cleanWord]) {
+            uniqueGrammarWords[cleanWord] = [
+              cleanWord,
+              {
+                translation: wordData.data.translation,
+                explanation: wordData.data.explanation || '',
+                example: wordData.data.example || ''
+              }
+            ];
+          }
+        });
+
+        const grammarWordsArray = Object.values(uniqueGrammarWords);
+        console.log(`📚 Grammaire - ${grammarWordsArray.length} mots dus pour révision`);
+        return [...grammarWordsArray, ...sentencesForReview];
       }
     } catch (error) {
-      console.error('Erreur lors de la lecture des phrases:', error);
+      console.error('Erreur lors de la lecture des mots de grammaire:', error);
     }
-    
-    // Pour la grammaire
-    if (isGrammarCategory) {
-      const storageKey = `grammar-progress-${languageCode}`;
-      try {
-        const savedProgress = localStorage.getItem(storageKey);
-        if (savedProgress) {
-          const progress = JSON.parse(savedProgress) as GrammarProgress[];
-          const allGrammarWords = progress.flatMap((p: GrammarProgress) => p.masteredWords);
-          
-          const uniqueGrammarWords: {[key: string]: [string, WordData]} = {};
-          
-          allGrammarWords.forEach(wordData => {
-            const cleanWord = cleanParentheses(wordData.word);
-            
-            if (isWordDueForRevision(cleanWord, category, grammarType) && !uniqueGrammarWords[cleanWord]) {
-              uniqueGrammarWords[cleanWord] = [
-                cleanWord,
-                {
-                  translation: wordData.data.translation,
-                  explanation: wordData.data.explanation || '',
-                  example: wordData.data.example || ''
-                }
-              ];
-            }
-          });
+    return sentencesForReview;
+  }
+  
+  // Pour les mots normaux (inchangé)
+  const categoryWords = languageData.categories[category];
+  if (!categoryWords) {
+    return sentencesForReview;
+  }
 
-          const grammarWordsArray = Object.values(uniqueGrammarWords);
-          return grammarWordsArray;
-        }
-      } catch (error) {
-        console.error('Erreur lors de la lecture des mots de grammaire:', error);
+  const uniqueWords: {[key: string]: [string, WordData]} = {};
+  
+  Object.entries(categoryWords)
+    .filter(([key]) => !key.includes('_'))
+    .forEach(([word, data]) => {
+      const cleanWord = cleanParentheses(word);
+      
+      if (isWordDueForRevision(cleanWord, category) && !uniqueWords[cleanWord]) {
+        uniqueWords[cleanWord] = [cleanWord, data as WordData];
       }
-      return sentencesForReview;
-    }
-    
-    // Pour les mots normaux
-    const categoryWords = languageData.categories[category];
-    if (!categoryWords) {
-      return sentencesForReview;
-    }
-
-    const uniqueWords: {[key: string]: [string, WordData]} = {};
-    
-    Object.entries(categoryWords)
-      .filter(([key]) => !key.includes('_'))
-      .forEach(([word, data]) => {
-        const cleanWord = cleanParentheses(word);
-        
-        if (isWordDueForRevision(cleanWord, category) && !uniqueWords[cleanWord]) {
-          uniqueWords[cleanWord] = [cleanWord, data as WordData];
-        }
-      });
-    
-    const normalWordsArray = Object.values(uniqueWords);
-    return [...normalWordsArray, ...sentencesForReview];
-  }, [
-    languageCode,
-    languageData.categories,
-    isWordDueForRevision,
-    grammarType
-  ]);
+    });
+  
+  const normalWordsArray = Object.values(uniqueWords);
+  return [...normalWordsArray, ...sentencesForReview];
+}, [
+  languageCode,
+  languageData.categories,
+  isWordDueForRevision,
+  grammarType
+]);
 
   // Fonction pour obtenir les catégories filtrées
   const getFilteredCategories = useCallback(() => {
