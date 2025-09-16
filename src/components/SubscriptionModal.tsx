@@ -514,10 +514,7 @@ const handleSubscribe = async () => {
                   <span>Paiement 100% sécurisé</span>
                 </div>
                 <ul className="security-list">
-                  <li>Traitement sécurisé par Stripe</li>
-                  <li>Aucune donnée bancaire stockée</li>
                   <li>Annulation possible à tout moment</li>
-                  <li>Facture envoyée par email</li>
                 </ul>
               </div>
             </motion.div>
