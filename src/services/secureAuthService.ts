@@ -1,6 +1,11 @@
 // ===================================================================
-// services/secureAuthService.ts - VERSION FINALE SANS DUPLICATION
+// services/secureAuthService.ts - VERSION FINALE AVEC ADMIN PREMIUM
 // ===================================================================
+
+// 🔧 NOUVEAU : Liste des emails administrateurs
+const ADMIN_EMAILS = [
+  'badji.denany@gmail.com'
+];
 
 interface User {
   id: string;
@@ -9,6 +14,7 @@ interface User {
   picture?: string;
   createdAt: string;
   lastLogin?: string;
+  isAdmin?: boolean; // 🔧 NOUVEAU : Statut admin
 }
 
 interface AuthResponse {
@@ -96,7 +102,128 @@ class SecureAuthService {
   }
 
   // ===================================================================
-  // AUTHENTIFICATION GOOGLE SÉCURISÉE
+  // 🆕 NOUVELLES MÉTHODES ADMIN
+  // ===================================================================
+
+  // Vérifier si un utilisateur est administrateur
+  private isAdminUser(email: string): boolean {
+    return ADMIN_EMAILS.includes(email.toLowerCase());
+  }
+
+  // Configuration Premium automatique pour les admins
+  private async setupAdminPremiumAccess(email: string): Promise<void> {
+    try {
+      console.log('👑 Configuration accès Premium Admin pour:', email);
+      
+      // Import dynamique pour éviter les dépendances circulaires
+      const { default: subscriptionService, SubscriptionTier } = await import('./subscriptionService');
+      
+      // Créer un abonnement Premium permanent pour l'admin
+      const adminSubscription = {
+        tier: SubscriptionTier.PREMIUM,
+        features: [
+          'learn_unlimited',
+          'quiz_unlimited', 
+          'revision_unlimited',
+          'exercise_unlimited',
+          'progress_stats',
+          'categories_full',
+          'grammar_full',
+          'sentence_construction',
+          'sentence_gap',
+          'exercise_mode',
+          'offline_mode',
+          'progress_stats_advanced',
+          'google_drive_sync',
+          'admin_access' // Fonctionnalité spéciale admin
+        ],
+        startDate: Date.now(),
+        expiresAt: null, // Pas d'expiration pour les admins
+        paymentId: 'admin_premium_permanent',
+        billingPeriod: 'permanent' as any,
+        planId: 'premium_admin'
+      };
+
+      // Sauvegarder l'abonnement admin
+      const adminUserData = {
+        userId: email,
+        subscription: adminSubscription,
+        paymentHistory: [{
+          date: Date.now(),
+          amount: 0,
+          plan: 'Premium Admin',
+          status: 'active'
+        }]
+      };
+
+      localStorage.setItem('user_subscription', JSON.stringify(adminUserData));
+      
+      console.log('👑 Accès Premium Admin configuré automatiquement pour:', email);
+
+      // Notifier les composants du changement d'abonnement
+      window.dispatchEvent(new CustomEvent('subscriptionUpdated', { 
+        detail: { 
+          tier: SubscriptionTier.PREMIUM, 
+          planId: 'premium_admin', 
+          isAdmin: true,
+          permanent: true
+        }
+      }));
+
+    } catch (error) {
+      console.error('❌ Erreur configuration Premium Admin:', error);
+    }
+  }
+
+  // Vérifier si l'utilisateur actuel est admin
+  public isCurrentUserAdmin(): boolean {
+    return this.user ? (this.user.isAdmin || this.isAdminUser(this.user.email)) : false;
+  }
+
+  // Vérifier l'accès admin avec le backend
+  async checkAdminAccess(): Promise<boolean> {
+    if (!this.user) return false;
+    
+    // Vérification locale d'abord
+    if (this.isAdminUser(this.user.email) || this.user.isAdmin) {
+      return true;
+    }
+
+    // Vérification avec le backend si nécessaire
+    try {
+      const response = await this.authenticatedFetch('/api/admin/check-access');
+      if (response.ok) {
+        const data = await response.json();
+        return data.isAdmin || false;
+      }
+    } catch (error) {
+      console.error('❌ Erreur vérification accès admin:', error);
+    }
+
+    return false;
+  }
+
+  // Obtenir les statistiques admin
+  async getAdminStats(): Promise<any> {
+    if (!this.isCurrentUserAdmin()) {
+      throw new Error('Accès administrateur requis');
+    }
+
+    try {
+      const response = await this.authenticatedFetch('/api/admin/stats');
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('❌ Erreur récupération statistiques admin:', error);
+      throw error;
+    }
+  }
+
+  // ===================================================================
+  // AUTHENTIFICATION GOOGLE SÉCURISÉE (MODIFIÉE POUR ADMIN)
   // ===================================================================
 
   async authenticateWithGoogle(googleToken: string): Promise<UserWithToken> {
@@ -113,7 +240,10 @@ class SecureAuthService {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify({ googleToken }),
+        body: JSON.stringify({ 
+          googleToken,
+          isAdminCheck: true // 🆕 NOUVEAU: Indiquer au backend de vérifier le statut admin
+        }),
         mode: 'cors',
         credentials: 'include'
       });
@@ -148,11 +278,24 @@ class SecureAuthService {
       localStorage.setItem('secureToken', data.token);
       localStorage.setItem('secureUser', JSON.stringify(data.user));
 
-      console.log('✅ Authentification réussie:', data.user.email);
+      // 🆕 NOUVEAU: Configuration automatique Premium pour les admins
+      const isUserAdmin = this.isAdminUser(data.user.email) || data.user.isAdmin;
+
+      if (isUserAdmin) {
+        console.log('👑 Utilisateur admin détecté, configuration Premium automatique');
+        await this.setupAdminPremiumAccess(data.user.email);
+      }
+
+      console.log('✅ Authentification réussie:', data.user.email, 
+                  isUserAdmin ? '(ADMIN)' : '(USER)');
 
       // Déclencher un événement pour notifier les composants
       window.dispatchEvent(new CustomEvent('authStatusChanged', { 
-        detail: { isAuthenticated: true, user: data.user }
+        detail: { 
+          isAuthenticated: true, 
+          user: data.user,
+          isAdmin: isUserAdmin
+        }
       }));
 
       // Retourner l'utilisateur avec le token inclus
@@ -510,6 +653,7 @@ class SecureAuthService {
       hasToken: !!this.token,
       hasUser: !!this.user,
       userEmail: this.user?.email,
+      isAdmin: this.isCurrentUserAdmin(), // 🆕 NOUVEAU
       tokenPreview: this.token ? `${this.token.substring(0, 20)}...` : null,
       apiUrl: this.apiUrl,
       environment: process.env.NODE_ENV || 'development'
@@ -546,6 +690,16 @@ class SecureAuthService {
   }
 }
 
+// ===================================================================
+// EXPORTS
+// ===================================================================
+
 // Export singleton
 const secureAuthService = new SecureAuthService();
+
+// 🆕 NOUVEAU : Export fonction de vérification admin
+export const isAdminEmail = (email: string): boolean => {
+  return ADMIN_EMAILS.includes(email?.toLowerCase() || '');
+};
+
 export default secureAuthService;
