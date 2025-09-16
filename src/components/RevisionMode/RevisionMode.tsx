@@ -357,13 +357,13 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
 
   // Si le mot n'a jamais été appris DANS CETTE CATÉGORIE, il ne peut pas être révisé
   if (!isWordLearned) {
-    console.log(`❌ Mot ${cleanWord} non appris dans ${category}`);
+
     return false;
   }
 
   // Si pas d'historique de révision, le mot est dû pour sa première révision
   if (wordHistory.length === 0) {
-    console.log(`✅ Mot ${cleanWord} dû pour première révision`);
+ 
     return true;
   }
 
@@ -372,7 +372,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
   // Vérifier explicitement si le mot a une nextReview programmée
   if (lastReview.nextReview && typeof lastReview.nextReview === 'number') {
     const isDue = lastReview.nextReview <= now;
-    console.log(`🔄 Mot ${cleanWord} - Next review: ${new Date(lastReview.nextReview).toLocaleDateString()}, Due: ${isDue}`);
+   
     return isDue;
   }
   
@@ -413,13 +413,13 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
   }
   
   const isDue = daysSinceLastReview >= revisionInterval;
-  console.log(`📊 Mot ${cleanWord} - ${consecutiveCorrect} succès, ${daysSinceLastReview.toFixed(1)} jours écoulés, interval: ${revisionInterval}, due: ${isDue}`);
+
   return isDue;
 }, [getSessionWords, languageCode]);
 
   // Fonction pour vérifier et corriger les doublons inter-catégories
   const checkAndCleanCrossCategory = useCallback(() => {
-    console.log('🧹 Nettoyage des doublons inter-catégories...');
+ 
     
     // Pour chaque catégorie, vérifier que les mots lui appartiennent vraiment
     Object.keys(languageData.categories).forEach(categoryName => {
@@ -453,18 +453,18 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
             validWords.push(learnedWord);
           } else {
             invalidWords.push(learnedWord);
-            console.log(`❌ Mot "${learnedWord}" supprimé de ${categoryName} (n'appartient pas à cette catégorie)`);
+         
           }
         });
         
         // Sauvegarder seulement les mots valides
         if (invalidWords.length > 0) {
           localStorage.setItem(categoryLearnedKey, JSON.stringify(validWords));
-          console.log(`🧹 ${categoryName}: ${invalidWords.length} mots supprimés, ${validWords.length} mots conservés`);
+     
         }
         
       } catch (error) {
-        console.error(`Erreur lors du nettoyage de ${categoryName}:`, error);
+      
       }
     });
   }, [languageCode, languageData.categories]);
