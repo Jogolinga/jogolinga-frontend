@@ -55,37 +55,118 @@ const RevisionStatsModal: React.FC<RevisionStatsModalProps> = ({
   }, []);
 
   // Grouper les mots par catégorie
-  const groupedWords = useMemo(() => {
-    if (!revisionHistory?.length) return {};
-
-    // Regrouper uniquement les mots les plus récents par catégorie
-    const latestWords = new Map<string, RevisionWordInfo>();
+ const groupedWords = useMemo(() => {
+  if (!revisionHistory?.length) {
+    // Si pas d'historique de révision, chercher dans les données de grammaire
+    const grammarWords: RevisionWordInfo[] = [];
     
-    revisionHistory.forEach(word => {
-      const key = `${word.word}-${word.category}`;
-      const existing = latestWords.get(key);
+    try {
+      // Récupérer les données de grammaire depuis localStorage
+      const grammarStorageKey = `grammar-progress-${languageCode || 'wf'}`; // Fallback sur 'wf'
+      const savedGrammarProgress = localStorage.getItem(grammarStorageKey);
       
-      if (!existing || existing.timestamp < word.timestamp) {
-        latestWords.set(key, word);
+      if (savedGrammarProgress) {
+        const grammarProgress = JSON.parse(savedGrammarProgress) as GrammarProgress[];
+        
+        grammarProgress.forEach((categoryProgress) => {
+          categoryProgress.masteredWords.forEach((wordData) => {
+            // Créer un objet RevisionWordInfo pour chaque mot de grammaire
+            grammarWords.push({
+              word: wordData.word,
+              category: 'Grammaire',
+              isCorrect: true, // Les mots appris sont considérés comme corrects
+              timestamp: categoryProgress.date || Date.now(),
+              nextReview: Date.now() + (24 * 60 * 60 * 1000), // Défaut: dans 1 jour
+              interval: 1,
+              easeFactor: 2.5,
+              translation: wordData.data.translation,
+              grammarType: 'rule', // Défaut
+              subCategory: categoryProgress.subcategory
+            });
+          });
+        });
       }
-    });
-
-    // Regrouper par catégorie
-    const grouped = Array.from(latestWords.values()).reduce<Record<string, RevisionWordInfo[]>>((acc, word) => {
+      
+      console.log(`📚 Grammaire trouvée: ${grammarWords.length} mots`);
+    } catch (error) {
+      console.error('Erreur lors du chargement des données de grammaire:', error);
+    }
+    
+    if (grammarWords.length === 0) return {};
+    
+    // Grouper les mots de grammaire par catégorie
+    return grammarWords.reduce<Record<string, RevisionWordInfo[]>>((acc, word) => {
       if (!acc[word.category]) {
         acc[word.category] = [];
       }
       acc[word.category].push(word);
       return acc;
     }, {});
+  }
 
-    // Trier par timestamp pour chaque catégorie
-    Object.keys(grouped).forEach(category => {
-      grouped[category].sort((a, b) => b.timestamp - a.timestamp);
-    });
+  // Traitement normal de l'historique + ajout des mots de grammaire
+  const latestWords = new Map<string, RevisionWordInfo>();
+  
+  // D'abord, traiter l'historique de révision existant
+  revisionHistory.forEach(word => {
+    const key = `${word.word}-${word.category}`;
+    const existing = latestWords.get(key);
+    
+    if (!existing || existing.timestamp < word.timestamp) {
+      latestWords.set(key, word);
+    }
+  });
+  
+  // Ensuite, ajouter les mots de grammaire qui ne sont PAS dans l'historique
+  try {
+    const grammarStorageKey = `grammar-progress-${languageCode || 'wf'}`;
+    const savedGrammarProgress = localStorage.getItem(grammarStorageKey);
+    
+    if (savedGrammarProgress) {
+      const grammarProgress = JSON.parse(savedGrammarProgress) as GrammarProgress[];
+      
+      grammarProgress.forEach((categoryProgress) => {
+        categoryProgress.masteredWords.forEach((wordData) => {
+          const key = `${wordData.word}-Grammaire`;
+          
+          // Ajouter seulement si pas déjà dans l'historique
+          if (!latestWords.has(key)) {
+            latestWords.set(key, {
+              word: wordData.word,
+              category: 'Grammaire',
+              isCorrect: true,
+              timestamp: categoryProgress.date || Date.now(),
+              nextReview: Date.now() + (24 * 60 * 60 * 1000),
+              interval: 1,
+              easeFactor: 2.5,
+              translation: wordData.data.translation,
+              grammarType: 'rule',
+              subCategory: categoryProgress.subcategory
+            });
+          }
+        });
+      });
+    }
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout des mots de grammaire:', error);
+  }
 
-    return grouped;
-  }, [revisionHistory]);
+  // Regrouper par catégorie
+  const grouped = Array.from(latestWords.values()).reduce<Record<string, RevisionWordInfo[]>>((acc, word) => {
+    if (!acc[word.category]) {
+      acc[word.category] = [];
+    }
+    acc[word.category].push(word);
+    return acc;
+  }, {});
+
+  // Trier par timestamp pour chaque catégorie
+  Object.keys(grouped).forEach(category => {
+    grouped[category].sort((a, b) => b.timestamp - a.timestamp);
+  });
+
+  return grouped;
+}, [revisionHistory, languageCode]);
 
   const categories = Object.keys(groupedWords);
 
