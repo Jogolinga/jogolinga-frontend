@@ -715,7 +715,7 @@ const calculateStats = useCallback((): CalculatedStats => {
                 </div>
                 <div className="progress-stat-content">
                   <h3>{stats.masteredGrammarWords}</h3>
-                  <p>Règles de grammaire</p>
+                  <p>Eléments de grammaire</p>
                   <small style={{ fontSize: '0.7em', color: 'var(--text-secondary)' }}>
                  
                   </small>
