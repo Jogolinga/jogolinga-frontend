@@ -2175,20 +2175,21 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
       </div>
 
       {/* Bouton stats fixe en bas à droite avec gestion z-index */}
-      <motion.button 
-        className="show-stats-button" 
-        onClick={() => setShowStatsModal(true)}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        style={{
-          zIndex: showStatsModal ? 50 : 100,
-          opacity: showStatsModal ? 0.3 : 1,
-          pointerEvents: showStatsModal ? 'none' : 'auto'
-        }}
-      >
-        <RotateCw size={20} />
-        <span>Prochaines révisions</span>
-      </motion.button>
+      {sessionPhase === 'category-selection' && (
+  <motion.button 
+    className="show-stats-button" 
+    onClick={() => setShowStatsModal(true)}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    style={{
+      zIndex: showStatsModal ? 50 : 100,
+      opacity: showStatsModal ? 0.3 : 1,
+      pointerEvents: showStatsModal ? 'none' : 'auto'
+    }}
+  >
+    <RotateCw size={20} />
+    <span>Prochaines révisions</span>
+  </motion.button>
     </div>
   );
 };
