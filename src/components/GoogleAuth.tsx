@@ -17,8 +17,8 @@ interface GoogleAuthProps {
   onLogout: () => void;
   isHeader?: boolean;
   onForceLoginPage?: () => void;
+  isMobile?: boolean; // 🔧 AJOUT
 }
-
 interface UserData {
   id: string;
   name: string;
