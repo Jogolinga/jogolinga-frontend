@@ -1,5 +1,5 @@
 // ===================================================================
-// GoogleAuth.tsx - VERSION PRODUCTION AVEC INTÉGRATION PAYMENTSERVICE
+// GoogleAuth.tsx - VERSION PRODUCTION AVEC NETTOYAGE COMPLET LOCALSTORAGE
 // ===================================================================
 import React, { useState, useEffect } from 'react';
 import { gapi } from 'gapi-script';
@@ -17,8 +17,9 @@ interface GoogleAuthProps {
   onLogout: () => void;
   isHeader?: boolean;
   onForceLoginPage?: () => void;
-  isMobile?: boolean; // 🔧 AJOUT
+  isMobile?: boolean;
 }
+
 interface UserData {
   id: string;
   name: string;
@@ -56,9 +57,11 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
   const safeOnLogin = onLogin || (() => console.warn('onLogin prop non définie'));
   const safeOnLogout = onLogout || (() => console.warn('onLogout prop non définie'));
 
-  // Nettoyage complet
+  // ⭐ FONCTION DE NETTOYAGE COMPLET AMÉLIORÉE
   const handleFullReset = async () => {
     try {
+      console.log('[GoogleAuth] 🧹 Début du nettoyage complet...');
+      
       // Nettoyer Google
       if (gapi.auth2 && gapi.auth2.getAuthInstance()) {
         await gapi.auth2.getAuthInstance().signOut();
@@ -67,20 +70,96 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       // Nettoyer notre backend
       secureAuthService.logout();
       
-      // Nettoyer localStorage complètement
+      // ⭐ NETTOYAGE COMPLET ET SYSTÉMATIQUE DU LOCALSTORAGE
+      console.log('[GoogleAuth] 🗂️ Nettoyage localStorage...');
+      
+      // Option 1: Nettoyage ciblé (recommandé pour la sécurité)
       const keysToRemove = [
+        // Tokens et authentification
         'googleToken', 'tokenExpires', 'googleScopes',
-        'secureToken', 'secureUser', 'user_subscription'
+        'secureToken', 'secureUser', 'user_subscription',
+        
+        // Données utilisateur par langue - Progress
+        'fr-progress', 'en-progress', 'es-progress', 'de-progress',
+        'it-progress', 'pt-progress', 'ru-progress', 'ja-progress',
+        'ko-progress', 'zh-progress', 'ar-progress', 'hi-progress',
+        
+        // Catégories complétées par langue
+        'fr-completedCategories', 'en-completedCategories', 'es-completedCategories',
+        'de-completedCategories', 'it-completedCategories', 'pt-completedCategories',
+        'ru-completedCategories', 'ja-completedCategories', 'ko-completedCategories',
+        'zh-completedCategories', 'ar-completedCategories', 'hi-completedCategories',
+        
+        // XP par langue
+        'fr-totalXP', 'en-totalXP', 'es-totalXP', 'de-totalXP',
+        'it-totalXP', 'pt-totalXP', 'ru-totalXP', 'ja-totalXP',
+        'ko-totalXP', 'zh-totalXP', 'ar-totalXP', 'hi-totalXP',
+        
+        // Données d'exercices grammaire par langue
+        'grammar-progress-fr', 'grammar-progress-en', 'grammar-progress-es',
+        'grammar-progress-de', 'grammar-progress-it', 'grammar-progress-pt',
+        'grammar-progress-ru', 'grammar-progress-ja', 'grammar-progress-ko',
+        'grammar-progress-zh', 'grammar-progress-ar', 'grammar-progress-hi',
+        
+        // Révisions par langue
+        'revision-history-fr', 'revision-history-en', 'revision-history-es',
+        'revision-history-de', 'revision-history-it', 'revision-history-pt',
+        'revision-history-ru', 'revision-history-ja', 'revision-history-ko',
+        'revision-history-zh', 'revision-history-ar', 'revision-history-hi',
+        
+        // Autres données utilisateur
+        'streak', 'lastAnswerCorrect', 'currentLanguage',
+        
+        // Données temporaires et états
+        'lastActiveTab', 'showLanguageSelection', 'isFirstConnection'
       ];
-      keysToRemove.forEach(key => localStorage.removeItem(key));
+      
+      let removedCount = 0;
+      keysToRemove.forEach(key => {
+        try {
+          if (localStorage.getItem(key) !== null) {
+            localStorage.removeItem(key);
+            removedCount++;
+            console.log(`[GoogleAuth] ✅ Supprimé: ${key}`);
+          }
+        } catch (error) {
+          console.warn(`[GoogleAuth] ⚠️ Erreur suppression ${key}:`, error);
+        }
+      });
+      
+      console.log(`[GoogleAuth] 📊 ${removedCount} clés supprimées du localStorage`);
+      
+      // Option 2: Nettoyage alternatif - supprimer tout sauf les préférences UI
+      // (Décommentez si vous préférez cette approche)
+      /*
+      const allKeys = Object.keys(localStorage);
+      const keysToPreserve = [
+        'theme', // Préférences de thème
+        'language-preference', // Langue préférée pour le prochain login
+        'ui-preferences' // Autres préférences UI
+      ];
+      
+      allKeys.forEach(key => {
+        if (!keysToPreserve.includes(key)) {
+          try {
+            localStorage.removeItem(key);
+            console.log(`[GoogleAuth] ✅ Supprimé: ${key}`);
+          } catch (error) {
+            console.warn(`[GoogleAuth] ⚠️ Erreur suppression ${key}:`, error);
+          }
+        }
+      });
+      */
       
       // Réinitialiser les états
       setIsLoggedIn(false);
       setUser(null);
       setError(null);
       
+      console.log('[GoogleAuth] ✅ Nettoyage complet terminé');
+      
     } catch (error) {
-      console.error('Erreur nettoyage:', error);
+      console.error('[GoogleAuth] ❌ Erreur lors du nettoyage:', error);
     }
   };
 
@@ -143,77 +222,65 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
 
   // Initialiser l'API Google avec protection contre les multiples initialisations
   const initializeGoogleAPI = () => {
-    // Protection : Éviter les multiples initialisations
     if (gapiInitialized) {
       setIsLoading(false);
       return;
     }
 
-    const start = () => {
-      gapi.client.init({
-        clientId: clientId,
-        scope: scopes
-      }).then(() => {
-        setGapiInitialized(true);
+    const initGapi = async () => {
+      try {
+        console.log('[GoogleAuth] Initialisation de l\'API Google...');
         
-        // Vérifier si l'utilisateur est connecté côté Google
-        const authInstance = gapi.auth2.getAuthInstance();
-        if (authInstance.isSignedIn.get()) {
-          // Session Google existante détectée
-        }
-        
-        // Écouter les changements d'état Google
-        authInstance.isSignedIn.listen(handleGoogleAuthChange);
+        await gapi.load('auth2', async () => {
+          try {
+            const authInstance = await gapi.auth2.init({
+              client_id: clientId,
+              scope: scopes,
+              fetch_basic_profile: true,
+              ux_mode: 'popup'
+            });
+
+            setGapiInitialized(true);
+            setIsLoading(false);
+            console.log('[GoogleAuth] ✅ API Google initialisée avec succès');
+          } catch (initError) {
+            console.error('[GoogleAuth] ❌ Erreur d\'initialisation Google:', initError);
+            setError('Erreur d\'initialisation Google');
+            setIsLoading(false);
+          }
+        });
+      } catch (error) {
+        console.error('[GoogleAuth] ❌ Erreur lors du chargement de l\'API Google:', error);
+        setError('Impossible de charger l\'API Google');
         setIsLoading(false);
-      }).catch((error: Error) => {
-        console.error('Erreur initialisation Google API:', error);
-        setError('Erreur d\'initialisation de l\'authentification Google');
-        setIsLoading(false);
-        setGapiInitialized(false);
-      });
+      }
     };
 
-    // Protection : Vérifier si gapi est disponible
-    if (typeof gapi !== 'undefined' && gapi.load) {
-      gapi.load('client:auth2', start);
-    } else {
-      console.error('GAPI non disponible');
-      setError('Google API non disponible');
-      setIsLoading(false);
-    }
+    initGapi();
   };
 
-  // Gérer les changements d'état Google
-  const handleGoogleAuthChange = (isSignedIn: boolean) => {
-    if (!isSignedIn && isLoggedIn) {
-      handleSecureLogout();
-    }
-  };
-
-  // Connexion sécurisée
+  // Connexion sécurisée avec Google
   const handleSecureLogin = async () => {
-    if (isProcessing) {
-      return;
-    }
-
-    if (!gapiInitialized) {
-      setError('Service d\'authentification non initialisé');
-      return;
-    }
+    if (isProcessing || !gapiInitialized) return;
 
     setIsProcessing(true);
     setError(null);
 
     try {
-      // 1. Connecter à Google d'abord
+      console.log('[GoogleAuth] 🚀 Début de la connexion sécurisée...');
+
+      // 1. Obtenir l'instance d'authentification Google
       const authInstance = gapi.auth2.getAuthInstance();
       if (!authInstance) {
-        throw new Error('Instance d\'authentification Google non disponible');
+        throw new Error('Instance Google Auth non disponible');
       }
 
-      const googleUser = await authInstance.signIn();
-      
-      // 2. Récupérer le token ID de Google
+      // 2. Connecter l'utilisateur et récupérer le token ID de Google
+      const googleUser = await authInstance.signIn({
+        prompt: 'select_account'
+      });
+
+      // Récupérer le token ID de Google
       let authResponse = googleUser.getAuthResponse(true);
       let googleToken = authResponse.id_token;
 
@@ -226,23 +293,6 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       if (!googleToken) {
         throw new Error('Impossible d\'obtenir un token Google valide');
       }
-
-      // 4. Test de l'API backend avant authentification (commenté temporairement)
-      /*
-      try {
-        console.log('API URL from env:', process.env.NEXT_PUBLIC_API_URL);
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-        console.log('Using API URL:', apiUrl);
-        const healthResponse = await fetch(`${apiUrl}/api/health`);
-        if (!healthResponse.ok) {
-          throw new Error(`Backend inaccessible: ${healthResponse.status}`);
-        }
-      } catch (backendError) {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'localhost:3001';
-        setError(`Le serveur backend n'est pas accessible (${apiUrl}). Vérifiez qu'il est démarré.`);
-        return;
-      }
-      */
 
       // 5. Authentifier via notre backend sécurisé
       const backendUser: BackendUser = await secureAuthService.authenticateWithGoogle(googleToken);
@@ -323,26 +373,27 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
     }
   };
 
-  // Déconnexion sécurisée
+  // ⭐ DÉCONNEXION SÉCURISÉE AVEC NETTOYAGE COMPLET
   const handleSecureLogout = async () => {
     if (isProcessing) return;
 
     setIsProcessing(true);
 
     try {
+      console.log('[GoogleAuth] 🚪 Début de la déconnexion sécurisée...');
+
       // 1. Déconnecter du backend sécurisé
       secureAuthService.logout();
 
-      // NOUVEAU: Nettoyer le token du PaymentService
+      // 2. Nettoyer le token du PaymentService
       console.log('[GoogleAuth] Nettoyage du token PaymentService lors de la déconnexion');
-      // Note: PaymentService n'a pas de méthode clearToken, mais setAuthToken(null) peut être ajouté si nécessaire
       try {
-        paymentService.setAuthToken(''); // ou null selon l'implémentation de paymentService
+        paymentService.setAuthToken('');
       } catch (paymentError) {
         console.warn('[GoogleAuth] Erreur lors du nettoyage du token PaymentService:', paymentError);
       }
 
-      // 2. Déconnecter de Google
+      // 3. Déconnecter de Google
       try {
         if (gapi.auth2 && gapi.auth2.getAuthInstance()) {
           await gapi.auth2.getAuthInstance().signOut();
@@ -351,24 +402,87 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         console.warn('Erreur déconnexion Google (non critique):', googleError);
       }
 
-      // 3. Nettoyer l'état local
+      // 4. ⭐ NETTOYAGE COMPLET DU LOCALSTORAGE ⭐
+      console.log('[GoogleAuth] 🧹 Nettoyage complet du localStorage...');
+      
+      // Liste exhaustive de toutes les clés à supprimer
+      const keysToRemove = [
+        // Tokens et authentification
+        'googleToken', 'tokenExpires', 'googleScopes',
+        'secureToken', 'secureUser', 'user_subscription',
+        
+        // Données utilisateur par langue - Progress
+        'fr-progress', 'en-progress', 'es-progress', 'de-progress',
+        'it-progress', 'pt-progress', 'ru-progress', 'ja-progress',
+        'ko-progress', 'zh-progress', 'ar-progress', 'hi-progress',
+        
+        // Catégories complétées par langue
+        'fr-completedCategories', 'en-completedCategories', 'es-completedCategories',
+        'de-completedCategories', 'it-completedCategories', 'pt-completedCategories',
+        'ru-completedCategories', 'ja-completedCategories', 'ko-completedCategories',
+        'zh-completedCategories', 'ar-completedCategories', 'hi-completedCategories',
+        
+        // XP par langue
+        'fr-totalXP', 'en-totalXP', 'es-totalXP', 'de-totalXP',
+        'it-totalXP', 'pt-totalXP', 'ru-totalXP', 'ja-totalXP',
+        'ko-totalXP', 'zh-totalXP', 'ar-totalXP', 'hi-totalXP',
+        
+        // Données d'exercices grammaire par langue
+        'grammar-progress-fr', 'grammar-progress-en', 'grammar-progress-es',
+        'grammar-progress-de', 'grammar-progress-it', 'grammar-progress-pt',
+        'grammar-progress-ru', 'grammar-progress-ja', 'grammar-progress-ko',
+        'grammar-progress-zh', 'grammar-progress-ar', 'grammar-progress-hi',
+        
+        // Révisions par langue
+        'revision-history-fr', 'revision-history-en', 'revision-history-es',
+        'revision-history-de', 'revision-history-it', 'revision-history-pt',
+        'revision-history-ru', 'revision-history-ja', 'revision-history-ko',
+        'revision-history-zh', 'revision-history-ar', 'revision-history-hi',
+        
+        // Exercices Learn par langue
+        'learn-exercises-fr', 'learn-exercises-en', 'learn-exercises-es',
+        'learn-exercises-de', 'learn-exercises-it', 'learn-exercises-pt',
+        'learn-exercises-ru', 'learn-exercises-ja', 'learn-exercises-ko',
+        'learn-exercises-zh', 'learn-exercises-ar', 'learn-exercises-hi',
+        
+        // Autres données utilisateur
+        'streak', 'lastAnswerCorrect', 'currentLanguage',
+        
+        // Données temporaires et états
+        'lastActiveTab', 'showLanguageSelection', 'isFirstConnection',
+        
+        // Données de progression temporaires
+        'sessionLearnedWords', 'sessionProgress', 'currentSession'
+      ];
+      
+      let removedCount = 0;
+      keysToRemove.forEach(key => {
+        try {
+          if (localStorage.getItem(key) !== null) {
+            localStorage.removeItem(key);
+            removedCount++;
+            console.log(`[GoogleAuth] ✅ Supprimé: ${key}`);
+          }
+        } catch (error) {
+          console.warn(`[GoogleAuth] ⚠️ Erreur suppression ${key}:`, error);
+        }
+      });
+      
+      console.log(`[GoogleAuth] 📊 ${removedCount} clés supprimées du localStorage`);
+
+      // 5. Nettoyer l'état local
       setIsLoggedIn(false);
       setUser(null);
       setError(null);
 
-      // 4. Nettoyer le stockage local
-      localStorage.removeItem('googleToken');
-      localStorage.removeItem('tokenExpires');
-      localStorage.removeItem('googleScopes');
-
-      // Protection : Appel sécurisé de onLogout
+      // 6. Protection : Appel sécurisé de onLogout
       try {
         safeOnLogout();
       } catch (callbackError) {
         console.error('Erreur callback onLogout:', callbackError);
       }
 
-      // 5. Rediriger si nécessaire
+      // 7. Rediriger si nécessaire
       if (onForceLoginPage) {
         try {
           onForceLoginPage();
@@ -377,8 +491,10 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         }
       }
 
+      console.log('[GoogleAuth] ✅ Déconnexion et nettoyage terminés avec succès');
+
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      console.error('[GoogleAuth] ❌ Erreur lors de la déconnexion:', error);
       // Même en cas d'erreur, nettoyer l'état local
       setIsLoggedIn(false);
       setUser(null);
@@ -424,7 +540,6 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         
         {isLoggedIn ? (
           <div className="header-user-info">
-          
             <button 
               onClick={handleSecureLogout}
               disabled={isProcessing}
@@ -488,99 +603,51 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       )}
 
       {isLoggedIn && user ? (
-        <div className="authenticated-user">
-          <div className="user-info" style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            marginBottom: '15px',
-            padding: '15px',
-            background: '#f9f9f9',
-            borderRadius: '8px',
-            border: '1px solid #ddd'
-          }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ marginBottom: '20px' }}>
             {user.picture && (
               <img 
                 src={user.picture} 
-                alt={user.name}
+                alt="Profile" 
                 style={{ 
-                  width: '40px', 
-                  height: '40px', 
+                  width: '50px', 
+                  height: '50px', 
                   borderRadius: '50%', 
-                  marginRight: '12px' 
-                }}
+                  marginBottom: '10px' 
+                }} 
               />
             )}
             <div>
-              <div style={{ fontWeight: 'bold', fontSize: '16px' }}>{user.name}</div>
-              <div style={{ color: '#666', fontSize: '14px' }}>{user.email}</div>
-              <div style={{ color: '#28a745', fontSize: '12px', marginTop: '2px' }}>
-                ✅ Connecté de manière sécurisée
-              </div>
+              <strong>{user.name}</strong>
+              <div style={{ fontSize: '14px', color: '#666' }}>{user.email}</div>
             </div>
           </div>
           
-          <button 
+          <button
             onClick={handleSecureLogout}
             disabled={isProcessing}
             className="google-login-button"
-            type="button"
-            aria-label="Se déconnecter"
-            style={{ 
-              backgroundColor: isProcessing ? '#ccc' : '#dc3545',
+            style={{
+              backgroundColor: '#dc3545',
+              opacity: isProcessing ? 0.6 : 1,
               cursor: isProcessing ? 'not-allowed' : 'pointer'
             }}
           >
-            {isProcessing ? '⏳ Déconnexion...' : '🚪 Se déconnecter'}
+            {isProcessing ? 'Déconnexion...' : 'Se déconnecter'}
           </button>
         </div>
       ) : (
-        <div style={{ width: '100%', maxWidth: '300px' }}>
-          <button 
-            onClick={handleSecureLogin}
-            disabled={isProcessing || !gapiInitialized}
-            className="google-login-button"
-            type="button"
-            aria-label="Se connecter avec Google"
-            style={{
-              backgroundColor: (isProcessing || !gapiInitialized) ? '#ccc' : '#4285f4',
-              cursor: (isProcessing || !gapiInitialized) ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              marginBottom: '10px'
-            }}
-          >
-            {isProcessing ? (
-              '⏳ Connexion en cours...'
-            ) : !gapiInitialized ? (
-              '⏳ Initialisation...'
-            ) : (
-              <>
-                <img 
-                  src="https://developers.google.com/identity/images/g-logo.png" 
-                  alt="Google logo" 
-                  className="google-icon"
-                />
-                <span>Se connecter avec Google</span>
-              </>
-            )}
-          </button>
-          
-          <div style={{ 
-            marginTop: '10px', 
-            fontSize: '12px', 
-            color: '#666', 
-            textAlign: 'center' 
-          }}>
-            🔒 Connexion sécurisée via notre backend
-            {!gapiInitialized && (
-              <div style={{ color: '#f80', marginTop: '5px' }}>
-                ⏳ Initialisation en cours...
-              </div>
-            )}
-          </div>
-        </div>
+        <button
+          onClick={handleSecureLogin}
+          disabled={isProcessing || !gapiInitialized}
+          className="google-login-button"
+          style={{
+            opacity: (isProcessing || !gapiInitialized) ? 0.6 : 1,
+            cursor: (isProcessing || !gapiInitialized) ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {isProcessing ? 'Connexion...' : gapiInitialized ? 'Se connecter avec Google' : 'Initialisation...'}
+        </button>
       )}
     </div>
   );
