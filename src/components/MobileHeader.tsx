@@ -7,6 +7,7 @@ import './MobileHeader.css';
 import { useTheme } from './ThemeContext';
 import GoogleAuth from './GoogleAuth';
 import subscriptionService, { SubscriptionTier } from '../services/subscriptionService';
+import secureAuthService from '../services/secureAuthService';
 
 // Variants d'animation pour les boutons
 const buttonVariants = {
@@ -42,6 +43,40 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
   const isDarkMode = theme === 'dark';
   const headerRef = useRef<HTMLElement>(null);
   const [currentSubscriptionTier, setCurrentSubscriptionTier] = useState<SubscriptionTier>(subscriptionTier);
+  
+  // 🔧 FIX: État pour forcer le re-mount du GoogleAuth
+  const [authKey, setAuthKey] = useState(0);
+  
+  // 🔧 FIX: Debug et surveillance de l'état d'authentification
+  const [debugInfo, setDebugInfo] = useState<any>(null);
+
+  // 🔧 FIX: Debug de l'état d'authentification (à supprimer en production si souhaité)
+  useEffect(() => {
+    const updateDebugInfo = () => {
+      const info = {
+        isAuthenticated: secureAuthService.isAuthenticated(),
+        user: secureAuthService.getCurrentUser()?.email,
+        hasToken: !!secureAuthService.getToken(),
+        authKey: authKey
+      };
+      setDebugInfo(info);
+      console.log('[MobileHeader] Debug Auth:', info);
+    };
+
+    updateDebugInfo();
+    
+    // Surveiller les changements d'authentification
+    const handleAuthDebug = (event: CustomEvent) => {
+      console.log('[MobileHeader] Auth event reçu:', event.detail);
+      updateDebugInfo();
+    };
+
+    window.addEventListener('authStatusChanged', handleAuthDebug as EventListener);
+
+    return () => {
+      window.removeEventListener('authStatusChanged', handleAuthDebug as EventListener);
+    };
+  }, [authKey]);
 
   // Surveiller les changements d'abonnement
   useEffect(() => {
@@ -167,6 +202,34 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     }
   };
 
+  // 🔧 FIX: Gestionnaire de login amélioré
+  const handleLogin = (user: any) => {
+    console.log('[MobileHeader] GoogleAuth onLogin appelé:', user);
+    console.log('[MobileHeader] AuthKey avant login:', authKey);
+    onLogin(user);
+  };
+
+  // 🔧 FIX: Gestionnaire de logout amélioré avec reset du GoogleAuth
+  const handleLogout = () => {
+    console.log('[MobileHeader] GoogleAuth onLogout appelé');
+    console.log('[MobileHeader] AuthKey avant logout:', authKey);
+    
+    // Incrémenter authKey pour forcer le re-mount du GoogleAuth
+    setAuthKey(prev => {
+      const newKey = prev + 1;
+      console.log('[MobileHeader] Nouveau authKey:', newKey);
+      return newKey;
+    });
+    
+    // Appeler le callback parent
+    onLogout();
+    
+    // Petit délai pour s'assurer que le re-mount se fait bien
+    setTimeout(() => {
+      console.log('[MobileHeader] Post-logout, authKey:', authKey + 1);
+    }, 100);
+  };
+
   // Force le header à être visible (système de protection)
   useEffect(() => {
     const forceHeaderVisible = () => {
@@ -227,7 +290,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     }
     
     return () => observer.disconnect();
-  }, [isDarkMode]); // Ajouter isDarkMode comme dépendance
+  }, [isDarkMode, authKey]); // 🔧 FIX: Ajouter authKey comme dépendance
 
   return (
     <header 
@@ -256,6 +319,27 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
         border: 'none'
       }}
     >
+      {/* 🔧 DEBUG: Affichage des infos de debug (à supprimer en production) */}
+      {process.env.NODE_ENV === 'development' && debugInfo && (
+        <div 
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            background: 'rgba(0,0,0,0.8)',
+            color: 'white',
+            padding: '4px 8px',
+            fontSize: '10px',
+            zIndex: 99999,
+            whiteSpace: 'nowrap'
+          }}
+        >
+          Auth: {debugInfo.isAuthenticated ? '✅' : '❌'} | 
+          User: {debugInfo.user || 'None'} | 
+          Key: {debugInfo.authKey}
+        </div>
+      )}
+
       {/* Section gauche - Seulement visible dans le menu principal */}
       {isMainMenu && (
         <div 
@@ -375,7 +459,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           visibility: 'visible'
         }}
       >
-        {/* ✅ CORRECTION: GoogleAuth avec conteneur fixe et styles explicites */}
+        {/* 🔧 FIX: GoogleAuth avec key et gestion mobile améliorée */}
         <div 
           className="mobile-google-auth-container"
           style={{ 
@@ -388,15 +472,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           }}
         >
           <GoogleAuth 
-            onLogin={(user) => {
-              console.log('[MobileHeader] GoogleAuth onLogin appelé:', user);
-              onLogin(user);
-            }}
-            onLogout={() => {
-              console.log('[MobileHeader] GoogleAuth onLogout appelé');
-              onLogout();
-            }}
+            key={`mobile-auth-${authKey}`} // 🔧 FIX: Key unique pour forcer re-mount
+            onLogin={handleLogin} // 🔧 FIX: Gestionnaire amélioré
+            onLogout={handleLogout} // 🔧 FIX: Gestionnaire avec reset
             isHeader={true}
+            isMobile={true} // 🔧 FIX: Indiquer que c'est mobile
           />
         </div>
         
