@@ -290,13 +290,13 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     }
     
     return () => observer.disconnect();
-  }, [isDarkMode, authKey]); // 🔧 FIX: Ajouter authKey comme dépendance
+  }, [isDarkMode, authKey]);
 
   return (
     <header 
       ref={headerRef}
       className={`mobile-header ${isDarkMode ? 'dark' : 'light'} ${isMainMenu ? 'main-menu' : 'component-view'}`}
-              style={{
+      style={{
         display: 'flex',
         position: 'fixed',
         top: 0,
@@ -310,7 +310,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
         opacity: 1,
         visibility: 'visible',
         alignItems: 'center',
-        justifyContent: 'space-between', // Toujours space-between pour une répartition équilibrée
+        justifyContent: 'space-between',
         padding: '0 16px',
         boxShadow: isDarkMode 
           ? '0px 4px 8px rgba(139, 69, 19, 0.3)' 
@@ -364,7 +364,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
               whileHover="hover"
               whileTap="tap"
               aria-label={getTooltipText()}
-              title={getTooltipText()} // Tooltip natif
+              title={getTooltipText()}
               style={{
                 ...getSubscriptionButtonStyles(),
                 width: 40,
@@ -425,7 +425,6 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           )}
         </div>
       ) : (
-        // Section vide pour maintenir la structure flex
         <div style={{ flex: '0 0 auto', width: 0 }} />
       )}
 
@@ -469,7 +468,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           alignItems: 'center', 
           gap: 12,
           flex: '0 0 auto',
-          margin-left: 'auto',
+          marginLeft: 'auto',
           opacity: 1,
           visibility: 'visible',
           minWidth: 'fit-content',
@@ -489,13 +488,14 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           }}
         >
           <GoogleAuth 
-            key={`mobile-auth-${authKey}`} // 🔧 FIX: Key unique pour forcer re-mount
-            onLogin={handleLogin} // 🔧 FIX: Gestionnaire amélioré
-            onLogout={handleLogout} // 🔧 FIX: Gestionnaire avec reset
+            key={`mobile-auth-${authKey}`}
+            onLogin={handleLogin}
+            onLogout={handleLogout}
             isHeader={true}
-            isMobile={true} // 🔧 FIX: Indiquer que c'est mobile
+            isMobile={true}
           />
         </div>
+        
         {/* Bouton changement de thème - seulement dans le menu principal */}
         {isMainMenu && (
           <motion.button 
