@@ -296,7 +296,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     <header 
       ref={headerRef}
       className={`mobile-header ${isDarkMode ? 'dark' : 'light'} ${isMainMenu ? 'main-menu' : 'component-view'}`}
-      style={{
+              style={{
         display: 'flex',
         position: 'fixed',
         top: 0,
@@ -310,7 +310,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
         opacity: 1,
         visibility: 'visible',
         alignItems: 'center',
-        justifyContent: isMainMenu ? 'space-between' : 'flex-end',
+        justifyContent: 'space-between', // Toujours space-between pour une répartition équilibrée
         padding: '0 16px',
         boxShadow: isDarkMode 
           ? '0px 4px 8px rgba(139, 69, 19, 0.3)' 
@@ -341,14 +341,14 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
       )}
 
       {/* Section gauche - Seulement visible dans le menu principal */}
-      {isMainMenu && (
+      {isMainMenu ? (
         <div 
           className="header-left" 
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: 12, // Augmenté pour plus d'espace
-            minWidth: 80,
+            gap: 10,
+            flex: '0 0 auto', // Ne grandit ni ne rétrécit
             opacity: 1,
             visibility: 'visible'
           }}
@@ -406,12 +406,12 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             <div 
               className="language-selector-small" 
               style={{ 
-                minWidth: 110, 
+                minWidth: 100, 
                 height: 36,
                 opacity: 1,
                 visibility: 'visible',
                 display: 'block',
-                flexShrink: 0 // Empêche le rétrécissement
+                flexShrink: 0
               }}
             >
               <LanguageSelector 
@@ -421,6 +421,9 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             </div>
           )}
         </div>
+      ) : (
+        // Section vide pour maintenir la structure flex
+        <div style={{ flex: '0 0 auto', width: 0 }} />
       )}
 
       {/* Section centrale - Titre (seulement dans les composants) */}
@@ -432,7 +435,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             opacity: 1,
             visibility: 'visible',
             flex: 1,
-            textAlign: 'center'
+            textAlign: 'center',
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            pointerEvents: 'none'
           }}
         >
           <h1 style={{ 
@@ -440,7 +447,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             fontSize: '1.25rem', 
             margin: 0,
             opacity: 1,
-            visibility: 'visible'
+            visibility: 'visible',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '200px'
           }}>
             {title}
           </h1>
@@ -453,8 +464,9 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
-          gap: 12, // Augmenté pour plus d'espace
-          minWidth: 'auto',
+          gap: 10,
+          flex: '0 0 auto', // Ne grandit ni ne rétrécit
+          marginLeft: 'auto', // Pousse vers la droite
           opacity: 1,
           visibility: 'visible'
         }}
@@ -479,7 +491,6 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             isMobile={true} // 🔧 FIX: Indiquer que c'est mobile
           />
         </div>
-        
         {/* Bouton changement de thème - seulement dans le menu principal */}
         {isMainMenu && (
           <motion.button 
@@ -504,7 +515,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
               opacity: 1,
               visibility: 'visible',
               transition: 'all 0.2s ease',
-              flexShrink: 0, // Empêche le rétrécissement
+              flexShrink: 0,
               pointerEvents: 'auto',
               zIndex: 100001
             }}
