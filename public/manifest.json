@@ -22,7 +22,7 @@
   "display": "standalone",
   "theme_color": "#4A90E2",
   "background_color": "#ffffff",
-  "description": "Une application pour apprendre le Wolof de manière interactive",
+  "description": "Une application pour apprendre les langues africaines de manière interactive",
   "orientation": "portrait",
   "categories": ["education", "learning"]
 }
