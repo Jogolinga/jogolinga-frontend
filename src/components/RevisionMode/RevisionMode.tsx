@@ -1334,109 +1334,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
     setShuffledTranslations([]); // Reset des traductions mélangées
   }, [resetSession]);
 
-  const handleContinueRevision = useCallback(() => {
-    console.log('🔄 Tentative de continuation de la révision...');
-    
-    // 1. Vérifier s'il y a encore des mots à réviser dans la catégorie actuelle
-    if (selectedCategory) {
-      const currentCategoryDueWords = getDueWordsForCategory(selectedCategory);
-      console.log(`📚 ${currentCategoryDueWords.length} mots dus dans ${selectedCategory}`);
-      
-      if (currentCategoryDueWords.length > 0) {
-        // Il y a encore des mots à réviser dans cette catégorie
-        console.log('✅ Lancement d\'une nouvelle session dans la même catégorie');
-        
-        // Nettoyer l'état actuel
-        setTempSessionData([]);
-        setIsSaving(false);
-        setHasSaved(false);
-        setSelectedAnswer(null);
-        setFeedback(null);
-        setIsTransitioning(false);
-        
-        // Réinitialiser les états d'appariement
-        setMatches(new Map());
-        setSelectedWord(null);
-        setSelectedTranslation(null);
-        setIncorrectMatches(new Set());
-        setMatchAttempts(new Map());
-        setShuffledTranslations([]);
-        
-        // Mettre à jour les mots actuels
-        setCurrentWords(currentCategoryDueWords);
-        
-        // Lancer directement une nouvelle session
-        setTimeout(() => {
-          startRevision();
-        }, 100);
-        
-        return;
-      }
-    }
-    
-    // 2. Si pas de mots dans la catégorie actuelle, chercher dans d'autres catégories
-    console.log('🔍 Recherche de mots dans d\'autres catégories...');
-    const allFilteredCategories = getFilteredCategories();
-    
-    if (allFilteredCategories.length > 0) {
-      // Il y a d'autres catégories avec des mots à réviser
-      const nextCategory = allFilteredCategories[0];
-      console.log(`✅ Basculement vers la catégorie: ${nextCategory}`);
-      
-      // Nettoyer l'état actuel complètement
-      setTempSessionData([]);
-      setIsSaving(false);
-      setHasSaved(false);
-      setSelectedAnswer(null);
-      setFeedback(null);
-      setIsTransitioning(false);
-      
-      // Réinitialiser les états d'appariement
-      setMatches(new Map());
-      setSelectedWord(null);
-      setSelectedTranslation(null);
-      setIncorrectMatches(new Set());
-      setMatchAttempts(new Map());
-      setShuffledTranslations([]);
-      
-      // Sélectionner la nouvelle catégorie et ses mots
-      const nextCategoryWords = getDueWordsForCategory(nextCategory);
-      setSelectedCategory(nextCategory);
-      setCurrentWords(nextCategoryWords);
-      setIsGrammarMode(nextCategory === 'Grammaire');
-      
-      if (nextCategory === 'Grammaire') {
-        setGrammarType('rule');
-        setGrammarSubCategory(null);
-      }
-      
-      // Mettre à jour la map des données
-      const newWordDataMap: Record<string, Record<string, WordData>> = {
-        [nextCategory]: Object.fromEntries(nextCategoryWords.map(([word, data]) => [word, data]))
-      };
-      setWordDataMap(newWordDataMap);
-      
-      // Lancer directement une nouvelle session dans la nouvelle catégorie
-      setTimeout(() => {
-        startRevision();
-      }, 100);
-      
-      return;
-    }
-    
-    // 3. Aucune révision disponible - retour à la sélection de catégorie
-    console.log('ℹ️ Aucune révision disponible - retour à la sélection');
-    handleResetSession();
-    setSelectedCategory(null);
-    setCurrentWords([]);
-  }, [
-    selectedCategory,
-    getDueWordsForCategory,
-    getFilteredCategories,
-    startRevision,
-    handleResetSession,
-    setWordDataMap
-  ]);
+  
 
   // useEffect pour migration et nettoyage au montage
   useEffect(() => {
@@ -2024,47 +1922,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
                 }}
               >
                 
-                <motion.button 
-                  onClick={handleContinueRevision}
-                  className="continue-revision-button primary"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8, duration: 0.4 }}
-                  style={{
-                    padding: '20px 40px',
-                    background: 'linear-gradient(135deg, #4a7c59, #2d5016)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '20px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                    minWidth: '280px',
-                    boxShadow: '0px 8px 24px rgba(74, 124, 89, 0.3)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>🚀</span>
-                    <span>Continuer les révisions</span>
-                  </span>
-                  <span style={{ 
-                    fontSize: '12px', 
-                    fontWeight: '400', 
-                    opacity: '0.8', 
-                    textTransform: 'none', 
-                    letterSpacing: 'normal' 
-                  }}>
-                    Nouvelle session automatique
-                  </span>
-                </motion.button>
+               
                 
                 <motion.button 
                   onClick={() => {
@@ -2174,8 +2032,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
         />
       </div>
 
-      {/* Bouton stats fixe en bas à droite avec gestion z-index */}
-      {sessionPhase === 'category-selection' && (
+     {sessionPhase === 'category-selection' && (
   <motion.button 
     className="show-stats-button" 
     onClick={() => setShowStatsModal(true)}
@@ -2190,6 +2047,7 @@ const isWordDueForRevision = useCallback((word: string, category: string, gramma
     <RotateCw size={20} />
     <span>Prochaines révisions</span>
   </motion.button>
+)}
     </div>
   );
 };
