@@ -237,7 +237,8 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
               client_id: clientId,
               scope: scopes,
               fetch_basic_profile: true,
-              ux_mode: 'popup'
+              ux_mode: 'popup',
+              prompt: 'select_account'
             });
 
             setGapiInitialized(true);
@@ -276,9 +277,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       }
 
       // 2. Connecter l'utilisateur et récupérer le token ID de Google
-      const googleUser = await authInstance.signIn({
-        prompt: 'select_account'
-      });
+      const googleUser = await authInstance.signIn();
 
       // Récupérer le token ID de Google
       let authResponse = googleUser.getAuthResponse(true);
