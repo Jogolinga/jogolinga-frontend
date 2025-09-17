@@ -1,7 +1,7 @@
-/* MobileHeader.css - Version Complète Optimisée avec alignement parfait et icônes visibles */
+/* MobileHeader.css - Layout Fix Complet */
 
 /* ===============================================
-   CONFIGURATION PRINCIPALE DU HEADER MOBILE
+   RESET ET BASE POUR LE HEADER MOBILE
    =============================================== */
 
 .mobile-header {
@@ -14,84 +14,65 @@
   right: 0 !important;
   width: 100% !important;
   height: 60px !important;
-  color: white !important;
   padding: 0 16px !important;
   z-index: 100000 !important;
+  box-sizing: border-box !important;
+  
+  /* Apparence */
   opacity: 1 !important;
   visibility: visible !important;
   transform: none !important;
   margin: 0 !important;
   border: none !important;
+  
+  /* Transitions */
   transition: background 0.3s ease, color 0.3s ease !important;
-  box-sizing: border-box !important;
 }
 
-/* Variantes selon le contexte */
-.mobile-header.main-menu {
-  justify-content: space-between !important;
-}
-
-.mobile-header.component-view {
-  justify-content: space-between !important;
-}
-
-/* MODE SOMBRE - Ocre vers terre cuite/marron */
+/* Thèmes */
 .mobile-header.dark {
   background: linear-gradient(135deg, #cd853f 0%, #8b4513 100%) !important;
   color: white !important;
   box-shadow: 0px 4px 12px rgba(139, 69, 19, 0.4) !important;
 }
 
-/* MODE CLAIR - Ocre clair vers sable/beige */
 .mobile-header.light {
   background: linear-gradient(135deg, #daa520 0%, #f4e4bc 100%) !important;
   color: #654321 !important;
   box-shadow: 0px 4px 12px rgba(218, 165, 32, 0.4) !important;
 }
 
-/* Protection contre les règles CSS externes */
-.mobile-header[style*="display: none"],
-.mobile-header[style*="visibility: hidden"],
-.mobile-header[style*="opacity: 0"] {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Force sur toutes les variantes */
-header.mobile-header {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
 /* ===============================================
-   SECTIONS DU HEADER - ALIGNEMENT PARFAIT
+   STRUCTURE FLEX - SECTIONS PRINCIPALES
    =============================================== */
 
-/* Section gauche */
-.header-left {
+/* Section GAUCHE - Boutons fixes */
+.mobile-header .header-left {
   display: flex !important;
   align-items: center !important;
+  justify-content: flex-start !important;
   gap: 12px !important;
+  
+  /* Positionnement */
   flex: 0 0 auto !important;
+  min-width: 0 !important;
+  max-width: 40% !important;
+  
+  /* Visibilité */
   opacity: 1 !important;
   visibility: visible !important;
-  min-width: fit-content !important;
-  z-index: 2 !important;
+  z-index: 3 !important;
 }
 
-/* Section gauche pour le menu principal */
-.mobile-header.main-menu .header-left {
-  justify-content: flex-start !important;
-}
-
-/* Section titre - Positionnement centré absolu parfait */
-.header-title {
+/* Section CENTRE - Titre centré */
+.mobile-header .header-title {
+  /* Positionnement absolu pour centrage parfait */
   position: absolute !important;
   left: 50% !important;
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
+  
+  /* Apparence */
   font-size: 1.25rem !important;
   font-weight: 600 !important;
   text-align: center !important;
@@ -99,409 +80,269 @@ header.mobile-header {
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   max-width: 200px !important;
+  
+  /* Interaction */
   pointer-events: none !important;
   z-index: 1 !important;
+  
+  /* Visibilité */
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* Titre h1 */
-.mobile-header.dark .header-title,
-.mobile-header.dark .header-title h1 {
-  color: white !important;
-}
-
-.mobile-header.light .header-title,
-.mobile-header.light .header-title h1 {
-  color: #654321 !important;
-}
-
-.header-title h1 {
-  font-size: 1.25rem !important;
+.mobile-header .header-title h1 {
+  font-size: inherit !important;
   margin: 0 !important;
+  color: inherit !important;
   opacity: 1 !important;
   visibility: visible !important;
-  display: block !important;
+}
+
+/* Section DROITE - Actions alignées */
+.mobile-header .header-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  
+  /* Positionnement */
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+  max-width: 50% !important;
+  margin-left: auto !important;
+  
+  /* Visibilité */
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 3 !important;
+}
+
+/* ===============================================
+   BOUTONS - TAILLES ET STYLES UNIFORMES
+   =============================================== */
+
+/* Base pour tous les boutons */
+.mobile-header .theme-toggle-button,
+.mobile-header .subscription-status-button,
+.mobile-header .header-login-button,
+.mobile-header .header-logout-button {
+  /* Taille fixe */
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  
+  /* Style */
+  border: none !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  
+  /* Flex */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  
+  /* Visibilité */
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  
+  /* Z-index */
+  z-index: 100001 !important;
+  position: relative !important;
+  
+  /* Transitions */
+  transition: all 0.3s ease !important;
+}
+
+/* Boutons d'authentification - Style spécial */
+.mobile-header .header-login-button,
+.mobile-header .header-logout-button {
+  width: auto !important;
+  min-width: 80px !important;
+  max-width: 120px !important;
+  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
 
-/* Section actions - Alignement à droite optimisé */
-.header-actions {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  flex: 0 0 auto !important;
-  margin-left: auto !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  min-width: fit-content !important;
-  z-index: 2 !important;
-}
-
-/* Actions pour le menu principal */
-.mobile-header.main-menu .header-actions {
-  justify-content: flex-end !important;
-}
-
-/* Actions pour les composants */
-.mobile-header.component-view .header-actions {
-  position: relative !important;
-  justify-content: flex-end !important;
-}
-
 /* ===============================================
-   BOUTONS - DESIGN UNIFIÉ ET VISIBLE
+   CONTENEUR GOOGLE AUTH - ALIGNEMENT FORCÉ
    =============================================== */
 
-/* Boutons de base avec excellent contraste */
-.theme-toggle-button,
-.subscription-status-button {
-  border: none !important;
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50% !important;
-  cursor: pointer !important;
+.mobile-header .mobile-google-auth-container {
+  /* Structure */
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  justify-content: flex-end !important;
+  
+  /* Positionnement */
+  flex-shrink: 0 !important;
+  min-width: 0 !important;
+  
+  /* Visibilité */
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
   z-index: 100001 !important;
-  font-size: 18px !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  flex-shrink: 0 !important;
+  position: relative !important;
 }
 
-/* MODE SOMBRE - Boutons avec fond semi-transparent et bordure visible */
-.mobile-header.dark .theme-toggle-button,
-.mobile-header.dark .subscription-status-button {
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: #fff !important;
-  border: 2px solid rgba(255, 255, 255, 0.4) !important;
-}
-
-.mobile-header.dark .theme-toggle-button:hover,
-.mobile-header.dark .subscription-status-button:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
-  border-color: rgba(255, 255, 255, 0.6) !important;
-  transform: scale(1.05) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
-}
-
-/* MODE CLAIR - Boutons avec fond semi-transparent et bordure visible */
-.mobile-header.light .theme-toggle-button,
-.mobile-header.light .subscription-status-button {
-  background: rgba(101, 67, 33, 0.2) !important;
-  color: #654321 !important;
-  border: 2px solid rgba(101, 67, 33, 0.4) !important;
-}
-
-.mobile-header.light .theme-toggle-button:hover,
-.mobile-header.light .subscription-status-button:hover {
-  background: rgba(101, 67, 33, 0.3) !important;
-  border-color: rgba(101, 67, 33, 0.6) !important;
-  transform: scale(1.05) !important;
-  box-shadow: 0 4px 12px rgba(101, 67, 33, 0.25) !important;
-}
-
-/* Styles spéciaux pour les icônes Lucide React */
-.theme-toggle-button svg {
-  width: 22px !important;
-  height: 22px !important;
-  stroke-width: 2.5 !important;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2)) !important;
-  fill: none !important;
-  stroke: currentColor !important;
-}
-
-.mobile-header.dark .theme-toggle-button svg {
-  color: #fff !important;
-}
-
-.mobile-header.light .theme-toggle-button svg {
-  color: #654321 !important;
-}
-
-/* Animation du bouton de thème */
-.theme-toggle-button:active {
-  transform: scale(0.95) !important;
+.mobile-header .header-auth-container {
+  /* Structure */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  
+  /* Visibilité */
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 100001 !important;
+  position: relative !important;
 }
 
 /* ===============================================
-   SÉLECTEUR DE LANGUE - DESIGN COHÉRENT
+   SÉLECTEUR DE LANGUE - TAILLE FIXE
    =============================================== */
 
-.language-selector-small {
+.mobile-header .language-selector-small {
+  width: 110px !important;
   min-width: 110px !important;
+  max-width: 110px !important;
   height: 40px !important;
+  flex-shrink: 0 !important;
+  
   opacity: 1 !important;
   visibility: visible !important;
   display: block !important;
-  flex-shrink: 0 !important;
 }
 
-.language-selector-small select {
+.mobile-header .language-selector-small select {
   width: 100% !important;
   height: 100% !important;
   border-radius: 20px !important;
   padding: 0 12px !important;
   font-size: 13px !important;
   font-weight: 600 !important;
-  transition: all 0.3s ease !important;
   cursor: pointer !important;
   outline: none !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
+  box-sizing: border-box !important;
 }
 
-/* MODE SOMBRE - Sélecteur de langue */
+/* ===============================================
+   COULEURS SELON LE THÈME
+   =============================================== */
+
+/* MODE SOMBRE */
+.mobile-header.dark .theme-toggle-button,
+.mobile-header.dark .subscription-status-button {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.mobile-header.dark .header-login-button,
+.mobile-header.dark .header-logout-button {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
 .mobile-header.dark .language-selector-small select {
   background: rgba(255, 255, 255, 0.2) !important;
   color: white !important;
   border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
-.mobile-header.dark .language-selector-small select:hover,
-.mobile-header.dark .language-selector-small select:focus {
-  background: rgba(255, 255, 255, 0.3) !important;
-  border-color: rgba(255, 255, 255, 0.6) !important;
-  transform: scale(1.02) !important;
+/* MODE CLAIR */
+.mobile-header.light .theme-toggle-button,
+.mobile-header.light .subscription-status-button {
+  background: rgba(101, 67, 33, 0.2) !important;
+  color: #654321 !important;
+  border: 2px solid rgba(101, 67, 33, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(101, 67, 33, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
-.mobile-header.dark .language-selector-small select option {
-  background: #2d2d2d !important;
-  color: white !important;
+.mobile-header.light .header-login-button,
+.mobile-header.light .header-logout-button {
+  background: rgba(101, 67, 33, 0.2) !important;
+  color: #654321 !important;
+  border: 2px solid rgba(101, 67, 33, 0.4) !important;
+  box-shadow: 0 2px 6px rgba(101, 67, 33, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
-/* MODE CLAIR - Sélecteur de langue */
 .mobile-header.light .language-selector-small select {
   background: rgba(101, 67, 33, 0.2) !important;
   color: #654321 !important;
   border: 2px solid rgba(101, 67, 33, 0.4) !important;
-}
-
-.mobile-header.light .language-selector-small select:hover,
-.mobile-header.light .language-selector-small select:focus {
-  background: rgba(101, 67, 33, 0.3) !important;
-  border-color: rgba(101, 67, 33, 0.6) !important;
-  transform: scale(1.02) !important;
-}
-
-.mobile-header.light .language-selector-small select option {
-  background: #f9f9f9 !important;
-  color: #654321 !important;
+  box-shadow: 0 2px 6px rgba(101, 67, 33, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
 /* ===============================================
-   GOOGLE AUTH - ALIGNEMENT ET VISIBILITÉ PARFAITS
+   HOVER EFFECTS
    =============================================== */
 
-/* Container principal pour GoogleAuth */
-.mobile-google-auth-container {
-  pointer-events: auto !important;
-  z-index: 100001 !important;
-  position: relative !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  flex-shrink: 0 !important;
-}
-
-/* Styles pour le container d'auth dans le header */
-.mobile-header .header-auth-container {
-  pointer-events: auto !important;
-  z-index: 100001 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  position: relative !important;
-}
-
-/* Boutons de connexion/déconnexion avec design moderne */
-.mobile-header .header-login-button,
-.mobile-header .header-logout-button {
-  pointer-events: auto !important;
-  cursor: pointer !important;
-  z-index: 100002 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  border-radius: 20px !important;
-  padding: 8px 16px !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  white-space: nowrap !important;
-  min-width: 90px !important;
-  height: 40px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border: 2px solid transparent !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  flex-shrink: 0 !important;
-}
-
-/* MODE SOMBRE - Boutons d'authentification */
-.mobile-header.dark .header-login-button,
-.mobile-header.dark .header-logout-button {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 2px solid rgba(255, 255, 255, 0.4) !important;
-}
-
+.mobile-header.dark .theme-toggle-button:hover,
+.mobile-header.dark .subscription-status-button:hover,
 .mobile-header.dark .header-login-button:hover,
 .mobile-header.dark .header-logout-button:hover {
   background: rgba(255, 255, 255, 0.3) !important;
   border-color: rgba(255, 255, 255, 0.6) !important;
-  transform: translateY(-1px) scale(1.02) !important;
+  transform: scale(1.02) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* MODE CLAIR - Boutons d'authentification */
-.mobile-header.light .header-login-button,
-.mobile-header.light .header-logout-button {
-  color: #654321 !important;
-  background: rgba(101, 67, 33, 0.2) !important;
-  border: 2px solid rgba(101, 67, 33, 0.4) !important;
-}
-
+.mobile-header.light .theme-toggle-button:hover,
+.mobile-header.light .subscription-status-button:hover,
 .mobile-header.light .header-login-button:hover,
 .mobile-header.light .header-logout-button:hover {
   background: rgba(101, 67, 33, 0.3) !important;
   border-color: rgba(101, 67, 33, 0.6) !important;
-  transform: translateY(-1px) scale(1.02) !important;
+  transform: scale(1.02) !important;
   box-shadow: 0 4px 12px rgba(101, 67, 33, 0.25) !important;
 }
 
-/* États disabled */
-.mobile-header .header-login-button:disabled,
-.mobile-header .header-logout-button:disabled {
-  opacity: 0.6 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-  pointer-events: auto !important;
-}
-
-/* Animation des boutons auth */
-.mobile-header .header-login-button:active,
-.mobile-header .header-logout-button:active {
-  transform: translateY(0px) scale(0.98) !important;
-}
-
-/* Informations utilisateur */
-.mobile-header .header-user-info {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  pointer-events: auto !important;
-  z-index: 100001 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.mobile-header .header-user-info img {
-  pointer-events: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  width: 32px !important;
-  height: 32px !important;
-  border-radius: 50% !important;
-  border: 2px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-.mobile-header .header-user-info span {
-  pointer-events: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  max-width: 80px !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-/* Messages d'erreur d'auth */
-.mobile-header .auth-error {
-  position: absolute !important;
-  top: 100% !important;
-  right: 0 !important;
-  background: #fee !important;
-  color: #c33 !important;
-  padding: 8px 12px !important;
-  border-radius: 8px !important;
-  font-size: 12px !important;
-  border: 1px solid #fcc !important;
-  z-index: 100003 !important;
-  min-width: 200px !important;
-  max-width: 280px !important;
-  pointer-events: auto !important;
-  cursor: pointer !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-  margin-top: 8px !important;
-  font-weight: 500 !important;
-}
-
 /* ===============================================
-   AJUSTEMENT DU BODY POUR LE HEADER FIXE
+   ICÔNES - VISIBILITÉ PARFAITE
    =============================================== */
 
-body.mobile-view {
-  padding-top: 60px !important;
-  overflow-x: hidden !important;
+.mobile-header .theme-toggle-button svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke-width: 2.5 !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3)) !important;
+  fill: none !important;
+  stroke: currentColor !important;
 }
 
 /* ===============================================
-   PROTECTION CONTRE LES CONFLITS CSS
+   MASQUAGE DU TITRE DANS LE MENU PRINCIPAL
    =============================================== */
 
-/* S'assurer que les boutons GoogleAuth ne sont pas affectés par d'autres règles */
-.mobile-header .header-auth-container *,
-.mobile-header .mobile-google-auth-container * {
-  pointer-events: auto !important;
+.mobile-header.main-menu .header-title {
+  display: none !important;
 }
 
-/* Protection spécifique pour les boutons d'authentification */
-.mobile-header button[class*="header-"],
-.mobile-header .header-auth-container button,
-.mobile-header .mobile-google-auth-container button {
-  pointer-events: auto !important;
-  cursor: pointer !important;
-  z-index: 100002 !important;
-  position: relative !important;
-}
-
-/* Force tous les enfants à être visibles */
-.mobile-header * {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Force les couleurs des enfants selon le thème */
-.mobile-header.dark *:not(.header-login-button):not(.header-logout-button):not(.auth-error):not(svg):not(select):not(option),
-.mobile-header.dark .header-left *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option),
-.mobile-header.dark .header-title *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option),
-.mobile-header.dark .header-actions *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option) {
-  color: white !important;
-}
-
-.mobile-header.light *:not(.header-login-button):not(.header-logout-button):not(.auth-error):not(svg):not(select):not(option),
-.mobile-header.light .header-left *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option),
-.mobile-header.light .header-title *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option),
-.mobile-header.light .header-actions *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option) {
-  color: #654321 !important;
+.mobile-header.component-view .header-title {
+  display: block !important;
 }
 
 /* ===============================================
-   RESPONSIVE - ÉCRANS TRÈS PETITS
+   RESPONSIVE - PETITS ÉCRANS
    =============================================== */
 
 @media (max-width: 480px) {
@@ -510,271 +351,99 @@ body.mobile-view {
     padding: 0 12px !important;
   }
 
-  .header-title {
-    font-size: 1.1rem !important;
-    max-width: 140px !important;
-  }
-
-  .header-title h1 {
-    font-size: 1.1rem !important;
-  }
-
-  .theme-toggle-button,
-  .subscription-status-button {
+  .mobile-header .theme-toggle-button,
+  .mobile-header .subscription-status-button {
     width: 36px !important;
     height: 36px !important;
-    font-size: 16px !important;
-  }
-
-  .theme-toggle-button svg {
-    width: 20px !important;
-    height: 20px !important;
-  }
-
-  .language-selector-small {
-    min-width: 95px !important;
-    height: 36px !important;
-  }
-
-  .language-selector-small select {
-    font-size: 12px !important;
-    padding: 0 10px !important;
+    min-width: 36px !important;
   }
 
   .mobile-header .header-login-button,
   .mobile-header .header-logout-button {
-    min-width: 75px !important;
     height: 36px !important;
+    min-width: 70px !important;
+    max-width: 100px !important;
     font-size: 12px !important;
     padding: 6px 12px !important;
+  }
+
+  .mobile-header .language-selector-small {
+    width: 95px !important;
+    min-width: 95px !important;
+    max-width: 95px !important;
+    height: 36px !important;
+  }
+
+  .mobile-header .header-left,
+  .mobile-header .header-actions {
+    gap: 8px !important;
+  }
+
+  .mobile-header .header-title {
+    max-width: 140px !important;
+    font-size: 1.1rem !important;
   }
 
   body.mobile-view {
     padding-top: 56px !important;
   }
-
-  .header-left,
-  .header-actions {
-    gap: 8px !important;
-  }
 }
 
 /* ===============================================
-   RESPONSIVE - ÉCRANS MOYENS
+   AJUSTEMENT DU BODY
    =============================================== */
 
-@media (max-width: 600px) and (min-width: 481px) {
-  .header-title {
-    max-width: 160px !important;
-  }
-
-  .language-selector-small {
-    min-width: 100px !important;
-  }
-
-  .mobile-header .header-login-button,
-  .mobile-header .header-logout-button {
-    min-width: 80px !important;
-  }
-}
-
-/* ===============================================
-   ANIMATIONS ET TRANSITIONS FLUIDES
-   =============================================== */
-
-.mobile-header,
-.mobile-header *:not(.header-login-button):not(.header-logout-button):not(.theme-toggle-button):not(.subscription-status-button) {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.mobile-header .header-login-button,
-.mobile-header .header-logout-button,
-.theme-toggle-button,
-.subscription-status-button,
-.language-selector-small select {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-/* ===============================================
-   ISOLATION ET PROTECTION MAXIMALE
-   =============================================== */
-
-.mobile-header {
-  isolation: isolate !important;
-}
-
-/* S'assurer que rien n'interfère avec le header */
-.mobile-header {
-  contain: layout style !important;
-}
-
-/* ===============================================
-   CORRECTION POUR ÉCRANS AVEC ENCOCHE (iPhone, etc.)
-   =============================================== */
-
-@supports (padding: env(safe-area-inset-top)) {
-  .mobile-header {
-    padding-top: env(safe-area-inset-top) !important;
-    height: calc(60px + env(safe-area-inset-top)) !important;
-  }
-  
-  body.mobile-view {
-    padding-top: calc(60px + env(safe-area-inset-top)) !important;
-  }
-
-  @media (max-width: 480px) {
-    .mobile-header {
-      height: calc(56px + env(safe-area-inset-top)) !important;
-    }
-    
-    body.mobile-view {
-      padding-top: calc(56px + env(safe-area-inset-top)) !important;
-    }
-  }
-}
-
-/* ===============================================
-   MODE PAYSAGE - OPTIMISATIONS
-   =============================================== */
-
-@media (max-width: 768px) and (orientation: landscape) {
-  .mobile-header {
-    height: 50px !important;
-  }
-  
-  .theme-toggle-button,
-  .subscription-status-button {
-    width: 36px !important;
-    height: 36px !important;
-  }
-
-  .language-selector-small {
-    height: 36px !important;
-  }
-
-  .mobile-header .header-login-button,
-  .mobile-header .header-logout-button {
-    height: 36px !important;
-  }
-  
-  body.mobile-view {
-    padding-top: 50px !important;
-  }
-}
-
-/* ===============================================
-   FIXES SPÉCIFIQUES POUR DIFFÉRENTS NAVIGATEURS
-   =============================================== */
-
-/* Safari iOS */
-@supports (-webkit-touch-callout: none) {
-  .mobile-header .header-login-button,
-  .mobile-header .header-logout-button,
-  .theme-toggle-button,
-  .subscription-status-button {
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    touch-action: manipulation !important;
-  }
-}
-
-/* Chrome Android */
-@media screen and (-webkit-min-device-pixel-ratio: 0) {
-  .mobile-header .header-login-button,
-  .mobile-header .header-logout-button,
-  .theme-toggle-button,
-  .subscription-status-button {
-    -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
-  }
-}
-
-/* Firefox Mobile */
-@-moz-document url-prefix() {
-  .language-selector-small select {
-    -moz-appearance: none !important;
-  }
-}
-
-/* ===============================================
-   ÉTAT VIDE POUR LE MENU PRINCIPAL
-   =============================================== */
-
-/* Masquer le titre dans le menu principal */
-.mobile-header.main-menu .header-title {
-  display: none !important;
-}
-
-/* Afficher le titre seulement dans les composants */
-.mobile-header.component-view .header-title {
-  display: block !important;
+body.mobile-view {
+  padding-top: 60px !important;
+  overflow-x: hidden !important;
 }
 
 /* ===============================================
    PROTECTION MAXIMALE - FORCE L'AFFICHAGE
    =============================================== */
 
-@media screen {
-  .mobile-header {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
+.mobile-header[style*="display: none"],
+.mobile-header[style*="visibility: hidden"],
+.mobile-header[style*="opacity: 0"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-@media (max-width: 768px) {
-  .mobile-header {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: fixed !important;
-    top: 0 !important;
-    z-index: 100000 !important;
-  }
-  
-  /* Mode sombre mobile */
-  .mobile-header.dark {
-    background: linear-gradient(135deg, #cd853f 0%, #8b4513 100%) !important;
-    color: white !important;
-  }
-  
-  /* Mode clair mobile */
-  .mobile-header.light {
-    background: linear-gradient(135deg, #daa520 0%, #f4e4bc 100%) !important;
-    color: #654321 !important;
-  }
+header.mobile-header {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
 
-  /* S'assurer que GoogleAuth fonctionne sur mobile */
-  .mobile-header .header-auth-container,
-  .mobile-header .mobile-google-auth-container {
-    pointer-events: auto !important;
-    z-index: 100001 !important;
-  }
+.mobile-header * {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 
-  .mobile-header .header-login-button,
-  .mobile-header .header-logout-button {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-    z-index: 100002 !important;
-    touch-action: manipulation !important;
-  }
+/* Force les couleurs selon le thème */
+.mobile-header.dark *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option) {
+  color: white !important;
+}
+
+.mobile-header.light *:not(.header-login-button):not(.header-logout-button):not(svg):not(select):not(option) {
+  color: #654321 !important;
 }
 
 /* ===============================================
-   DÉBUG TEMPORAIRE (à supprimer en production)
+   DEBUG VISUEL (à supprimer en production)
    =============================================== */
 
 /*
-.mobile-header::before {
-  content: "MobileHeader Active";
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: red;
-  color: white;
-  padding: 2px 8px;
-  font-size: 10px;
-  border-radius: 4px;
-  z-index: 99999;
+.mobile-header .header-left {
+  border: 2px dashed red !important;
+}
+
+.mobile-header .header-title {
+  border: 2px dashed blue !important;
+}
+
+.mobile-header .header-actions {
+  border: 2px dashed green !important;
 }
 */
