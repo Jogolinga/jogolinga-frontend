@@ -128,6 +128,33 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       });
       
       console.log(`[GoogleAuth] 📊 ${removedCount} clés supprimées du localStorage`);
+
+      // ⭐ DÉCLENCHER DES ÉVÉNEMENTS DE RÉINITIALISATION
+      console.log('[GoogleAuth] 📡 Déclenchement des événements de nettoyage...');
+      
+      // Événement pour réinitialiser l'XP
+      window.dispatchEvent(new CustomEvent('xpReset', { 
+        detail: { 
+          source: 'logout',
+          timestamp: Date.now()
+        }
+      }));
+      
+      // Événement pour réinitialiser les révisions
+      window.dispatchEvent(new CustomEvent('revisionDataCleared', { 
+        detail: { 
+          source: 'logout',
+          timestamp: Date.now()
+        }
+      }));
+      
+      // Événement général de déconnexion
+      window.dispatchEvent(new CustomEvent('userLoggedOut', { 
+        detail: { 
+          source: 'googleauth_logout',
+          timestamp: Date.now()
+        }
+      }));
       
       // Option 2: Nettoyage alternatif - supprimer tout sauf les préférences UI
       // (Décommentez si vous préférez cette approche)
@@ -404,7 +431,7 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
       // 4. ⭐ NETTOYAGE COMPLET DU LOCALSTORAGE ⭐
       console.log('[GoogleAuth] 🧹 Nettoyage complet du localStorage...');
       
-      // Liste exhaustive de toutes les clés à supprimer
+      // Méthode 1: Nettoyage ciblé avec toutes les clés possibles
       const keysToRemove = [
         // Tokens et authentification
         'googleToken', 'tokenExpires', 'googleScopes',
@@ -414,35 +441,50 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         'fr-progress', 'en-progress', 'es-progress', 'de-progress',
         'it-progress', 'pt-progress', 'ru-progress', 'ja-progress',
         'ko-progress', 'zh-progress', 'ar-progress', 'hi-progress',
+        'wf-progress', // Ajout Wolof
         
         // Catégories complétées par langue
         'fr-completedCategories', 'en-completedCategories', 'es-completedCategories',
         'de-completedCategories', 'it-completedCategories', 'pt-completedCategories',
         'ru-completedCategories', 'ja-completedCategories', 'ko-completedCategories',
         'zh-completedCategories', 'ar-completedCategories', 'hi-completedCategories',
+        'wf-completedCategories',
         
-        // XP par langue
+        // ⭐ XP par langue (CRITIQUE pour la barre de progression)
         'fr-totalXP', 'en-totalXP', 'es-totalXP', 'de-totalXP',
         'it-totalXP', 'pt-totalXP', 'ru-totalXP', 'ja-totalXP',
         'ko-totalXP', 'zh-totalXP', 'ar-totalXP', 'hi-totalXP',
+        'wf-totalXP',
         
         // Données d'exercices grammaire par langue
         'grammar-progress-fr', 'grammar-progress-en', 'grammar-progress-es',
         'grammar-progress-de', 'grammar-progress-it', 'grammar-progress-pt',
         'grammar-progress-ru', 'grammar-progress-ja', 'grammar-progress-ko',
         'grammar-progress-zh', 'grammar-progress-ar', 'grammar-progress-hi',
+        'grammar-progress-wf',
+        
+        // Construction de phrases par langue
+        'sentence-construction-progress-fr', 'sentence-construction-progress-en',
+        'sentence-construction-progress-es', 'sentence-construction-progress-de',
+        'sentence-construction-progress-it', 'sentence-construction-progress-pt',
+        'sentence-construction-progress-ru', 'sentence-construction-progress-ja',
+        'sentence-construction-progress-ko', 'sentence-construction-progress-zh',
+        'sentence-construction-progress-ar', 'sentence-construction-progress-hi',
+        'sentence-construction-progress-wf',
         
         // Révisions par langue
         'revision-history-fr', 'revision-history-en', 'revision-history-es',
         'revision-history-de', 'revision-history-it', 'revision-history-pt',
         'revision-history-ru', 'revision-history-ja', 'revision-history-ko',
         'revision-history-zh', 'revision-history-ar', 'revision-history-hi',
+        'revision-history-wf',
         
         // Exercices Learn par langue
         'learn-exercises-fr', 'learn-exercises-en', 'learn-exercises-es',
         'learn-exercises-de', 'learn-exercises-it', 'learn-exercises-pt',
         'learn-exercises-ru', 'learn-exercises-ja', 'learn-exercises-ko',
         'learn-exercises-zh', 'learn-exercises-ar', 'learn-exercises-hi',
+        'learn-exercises-wf',
         
         // Autres données utilisateur
         'streak', 'lastAnswerCorrect', 'currentLanguage',
@@ -453,6 +495,32 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
         // Données de progression temporaires
         'sessionLearnedWords', 'sessionProgress', 'currentSession'
       ];
+      
+      // ⭐ MÉTHODE ALTERNATIVE : Nettoyage par pattern pour être sûr
+      // Récupérer toutes les clés du localStorage
+      const allKeys = Object.keys(localStorage);
+      
+      // Patterns à supprimer
+      const patternsToRemove = [
+        /^[a-z]{2}-progress$/,           // fr-progress, en-progress, etc.
+        /^[a-z]{2}-completedCategories$/, // fr-completedCategories, etc.
+        /^[a-z]{2}-totalXP$/,           // fr-totalXP, en-totalXP, etc.
+        /^grammar-progress-[a-z]{2}$/,   // grammar-progress-fr, etc.
+        /^sentence-construction-progress-[a-z]{2}$/, // sentence-construction-progress-fr, etc.
+        /^revision-history-[a-z]{2}$/,   // revision-history-fr, etc.
+        /^learn-exercises-[a-z]{2}$/,    // learn-exercises-fr, etc.
+        /^google/i,                      // googleToken, etc.
+        /^secure/i,                      // secureToken, etc.
+        /^user_/i                        // user_subscription, etc.
+      ];
+      
+      // Ajouter les clés trouvées par pattern
+      allKeys.forEach(key => {
+        const shouldRemove = patternsToRemove.some(pattern => pattern.test(key));
+        if (shouldRemove && !keysToRemove.includes(key)) {
+          keysToRemove.push(key);
+        }
+      });
       
       let removedCount = 0;
       keysToRemove.forEach(key => {
