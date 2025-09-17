@@ -347,10 +347,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: 10,
-            flex: '0 0 auto', // Ne grandit ni ne rétrécit
+            gap: 12,
+            flex: '0 0 auto',
             opacity: 1,
-            visibility: 'visible'
+            visibility: 'visible',
+            minWidth: 'fit-content'
           }}
         >
           {/* Bouton d'abonnement - Maintenant seulement l'icône */}
@@ -366,19 +367,21 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
               title={getTooltipText()} // Tooltip natif
               style={{
                 ...getSubscriptionButtonStyles(),
-                width: 36, // Taille fixe comme les autres boutons
-                height: 36,
-                borderRadius: '50%', // Bouton rond
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 opacity: 1,
                 visibility: 'visible',
-                transition: 'all 0.2s ease',
-                fontSize: '16px', // Taille de l'icône
-                padding: 0, // Pas de padding pour un bouton rond
-                flexShrink: 0 // Empêche le rétrécissement
+                transition: 'all 0.3s ease',
+                fontSize: '18px',
+                padding: 0,
+                flexShrink: 0,
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                backdropFilter: 'blur(10px)'
               }}
               onMouseEnter={(e) => {
                 if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
@@ -406,8 +409,8 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             <div 
               className="language-selector-small" 
               style={{ 
-                minWidth: 100, 
-                height: 36,
+                minWidth: 110, 
+                height: 40,
                 opacity: 1,
                 visibility: 'visible',
                 display: 'block',
@@ -464,11 +467,13 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
-          gap: 10,
-          flex: '0 0 auto', // Ne grandit ni ne rétrécit
-          marginLeft: 'auto', // Pousse vers la droite
+          gap: 12,
+          flex: '0 0 auto',
+          margin-left: 'auto',
           opacity: 1,
-          visibility: 'visible'
+          visibility: 'visible',
+          minWidth: 'fit-content',
+          zIndex: 2
         }}
       >
         {/* 🔧 FIX: GoogleAuth avec key et gestion mobile améliorée */}
@@ -500,13 +505,18 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             initial="initial"
             whileHover="hover"
             whileTap="tap"
-            aria-label="Changer le thème"
+            aria-label={`Passer en mode ${isDarkMode ? 'clair' : 'sombre'}`}
+            title={`Passer en mode ${isDarkMode ? 'clair' : 'sombre'}`}
             style={{
-              background: getButtonBackground(),
-              border: 'none',
-              color: getTextColor(),
-              width: 36,
-              height: 36,
+              background: isDarkMode 
+                ? 'rgba(255, 255, 255, 0.2)' 
+                : 'rgba(101, 67, 33, 0.15)',
+              border: `2px solid ${isDarkMode 
+                ? 'rgba(255, 255, 255, 0.3)' 
+                : 'rgba(101, 67, 33, 0.3)'}`,
+              color: isDarkMode ? '#fff' : '#654321',
+              width: 40,
+              height: 40,
               borderRadius: '50%',
               cursor: 'pointer',
               display: 'flex',
@@ -514,19 +524,53 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
               justifyContent: 'center',
               opacity: 1,
               visibility: 'visible',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.3s ease',
               flexShrink: 0,
               pointerEvents: 'auto',
-              zIndex: 100001
+              zIndex: 100001,
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              backdropFilter: 'blur(10px)'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = getButtonHoverBackground();
+              e.currentTarget.style.background = isDarkMode 
+                ? 'rgba(255, 255, 255, 0.3)' 
+                : 'rgba(101, 67, 33, 0.25)';
+              e.currentTarget.style.borderColor = isDarkMode 
+                ? 'rgba(255, 255, 255, 0.5)' 
+                : 'rgba(101, 67, 33, 0.5)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = getButtonBackground();
+              e.currentTarget.style.background = isDarkMode 
+                ? 'rgba(255, 255, 255, 0.2)' 
+                : 'rgba(101, 67, 33, 0.15)';
+              e.currentTarget.style.borderColor = isDarkMode 
+                ? 'rgba(255, 255, 255, 0.3)' 
+                : 'rgba(101, 67, 33, 0.3)';
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
             }}
           >
-            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            {isDarkMode ? (
+              <Sun 
+                size={22} 
+                style={{ 
+                  color: '#fff',
+                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))',
+                  strokeWidth: 2
+                }} 
+              />
+            ) : (
+              <Moon 
+                size={22} 
+                style={{ 
+                  color: '#654321',
+                  filter: 'drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1))',
+                  strokeWidth: 2
+                }} 
+              />
+            )}
           </motion.button>
         )}
       </div>
