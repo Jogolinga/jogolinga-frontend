@@ -29,7 +29,7 @@ import ConfirmationModal from './components/ConfirmationModal';
 import RevisionMode from './components/RevisionMode/RevisionMode';
 import LandingPage from './components/LandingPage';
 import ProgressStats from './components/ProgressStats';
-import secureAuthService from './services/secureAuthService';
+
 
 import { 
   getLastUsedLanguage, 
@@ -405,16 +405,13 @@ useEffect(() => {
   }
 }, [isMobileView, mode, selectedCategory, currentLanguage]);
 
- 
+  // ✅ AJOUT : useEffect pour surveiller les changements de revisionProgress
   useEffect(() => {
     console.log('🔄 revisionProgress changé dans App:', {
       wordsToReviewSize: revisionProgress.wordsToReview.size,
       wordsToReviewList: Array.from(revisionProgress.wordsToReview)
     });
   }, [revisionProgress.wordsToReview]);
-
-
-
 
   const [revisionProgressState, setRevisionProgress] = useState({
     wordsToReview: new Set<string>()
@@ -644,81 +641,6 @@ const loadDataFromGoogleDrive = useCallback(async () => {
       
     } else {
       console.log("📭 Aucune donnée générale trouvée sur Google Drive");
-
-      // useEffect pour écouter le chargement forcé Google Drive - VERSION CORRIGÉE
-useEffect(() => {
-  const handleForceLoad = (event: Event) => {
-    const customEvent = event as CustomEvent;
-    console.log("📡 Événement forceGoogleDriveLoad reçu:", customEvent.detail);
-    
-    const token = localStorage.getItem('googleToken');
-    if (token && currentLanguage) {
-      console.log("☁️ Chargement Google Drive forcé depuis GoogleAuth...");
-      
-      // Attendre que SecureAuthService soit complètement initialisé
-      const waitForSecureService = () => {
-        const isSecureServiceReady = secureAuthService.isAuthenticated() && secureAuthService.getCurrentUser();
-        
-        if (isSecureServiceReady) {
-          console.log("✅ SecureAuthService prêt, démarrage chargement Google Drive");
-          setTimeout(async () => {
-            try {
-              await loadDataFromGoogleDrive();
-              console.log("✅ Chargement Google Drive forcé terminé");
-            } catch (error) {
-              console.error("❌ Erreur chargement Google Drive forcé:", error);
-            }
-          }, 500);
-        } else {
-          console.log("⏳ SecureAuthService pas encore prêt, nouvelle tentative dans 1s...");
-          setTimeout(waitForSecureService, 1000);
-        }
-      };
-      
-      waitForSecureService();
-    } else {
-      console.log("⚠️ Conditions non remplies pour le chargement forcé:", {
-        hasToken: !!token,
-        hasLanguage: !!currentLanguage
-      });
-    }
-  };
-
-  window.addEventListener('forceGoogleDriveLoad', handleForceLoad);
-  
-  return () => {
-    window.removeEventListener('forceGoogleDriveLoad', handleForceLoad);
-  };
-}, [currentLanguage, loadDataFromGoogleDrive]);
-
-      useEffect(() => {
-  const handleAuthStatusChange = (event: Event) => {
-    const customEvent = event as CustomEvent;
-    const { isAuthenticated, user: authUser } = customEvent.detail;
-    
-    console.log("🔐 AuthStatusChanged reçu:", { isAuthenticated, userEmail: authUser?.email });
-    
-    if (isAuthenticated && authUser && currentLanguage) {
-      console.log("☁️ Utilisateur authentifié détecté, déclenchement automatique Google Drive");
-      
-      // Délai pour s'assurer que tout est bien initialisé
-      setTimeout(async () => {
-        try {
-          await loadDataFromGoogleDrive();
-          console.log("✅ Chargement automatique Google Drive terminé");
-        } catch (error) {
-          console.error("❌ Erreur chargement automatique Google Drive:", error);
-        }
-      }, 2000);
-    }
-  };
-
-  window.addEventListener('authStatusChanged', handleAuthStatusChange);
-  
-  return () => {
-    window.removeEventListener('authStatusChanged', handleAuthStatusChange);
-  };
-}, [currentLanguage, loadDataFromGoogleDrive]);
       
       // ✅ INITIALISATION VIDE pour nouveau navigateur
       const initialProgress: UserProgress = {
@@ -2156,48 +2078,18 @@ useEffect(() => {
   };
   
   // Charger local d'abord
- loadLocalFirst();
-
-// Puis charger depuis Google Drive si connecté - AVEC DÉLAI
-setTimeout(() => {
-  if ((user || localStorage.getItem('userEmail')) && localStorage.getItem('googleToken')) {
+  loadLocalFirst();
+  
+  // Puis charger depuis Google Drive si connecté
+  if (user && localStorage.getItem('googleToken')) {
     console.log("☁️ Chargement Google Drive...");
     loadDataFromGoogleDrive();
   } else {
     console.log("📱 Pas de connexion Google - mode local uniquement");
   }
-}, 1500); // Attendre 1.5 seconde pour l'initialisation
-}, [user, currentLanguage, loadDataFromGoogleDrive]);
+}, [user, currentLanguage, loadDataFromGoogleDrive]); // ✅ loadUserProgress retiré
 
-// useEffect séparé pour Google Drive - NOUVEAU
-useEffect(() => {
-  const checkAndLoadGoogleDrive = async () => {
-    const token = localStorage.getItem('googleToken');
-    const userEmail = localStorage.getItem('userEmail');
-    
-    console.log('🔍 Vérification Google Drive:', {
-      hasToken: !!token,
-      hasEmail: !!userEmail,
-      hasCurrentLanguage: !!currentLanguage,
-      userState: !!user
-    });
-    
-    if (token && currentLanguage && (user || userEmail)) {
-      console.log("☁️ Chargement Google Drive (useEffect séparé)...");
-      try {
-        await loadDataFromGoogleDrive();
-      } catch (error) {
-        console.error("Erreur chargement Google Drive:", error);
-      }
-    } else {
-      console.log("⏸️ Conditions non remplies pour Google Drive");
-    }
-  };
 
-  // Délai pour s'assurer que tous les états sont initialisés
-  const timer = setTimeout(checkAndLoadGoogleDrive, 800);
-  return () => clearTimeout(timer);
-}, [currentLanguage, user, loadDataFromGoogleDrive]); // Dépendances
 
 
 
@@ -3422,8 +3314,6 @@ useEffect(() => {
     console.log('⚠️ useEffect sync: Pas de langue sélectionnée, skip');
     return;
   }
-
-  
   
   // Toujours charger les données locales d'abord
   const loadLocalFirst = async () => {
