@@ -413,6 +413,39 @@ useEffect(() => {
     });
   }, [revisionProgress.wordsToReview]);
 
+
+  // useEffect pour écouter le chargement forcé Google Drive
+useEffect(() => {
+  const handleForceLoad = async (event: CustomEvent) => {
+    console.log("📡 Événement forceGoogleDriveLoad reçu:", event.detail);
+    
+    const token = localStorage.getItem('googleToken');
+    if (token && currentLanguage) {
+      console.log("☁️ Chargement Google Drive forcé depuis GoogleAuth...");
+      try {
+        // Ajouter un délai supplémentaire pour être sûr
+        setTimeout(async () => {
+          await loadDataFromGoogleDrive();
+          console.log("✅ Chargement Google Drive forcé terminé");
+        }, 1000);
+      } catch (error) {
+        console.error("❌ Erreur chargement Google Drive forcé:", error);
+      }
+    } else {
+      console.log("⚠️ Conditions non remplies pour le chargement forcé:", {
+        hasToken: !!token,
+        hasLanguage: !!currentLanguage
+      });
+    }
+  };
+
+  window.addEventListener('forceGoogleDriveLoad', handleForceLoad as EventListener);
+  
+  return () => {
+    window.removeEventListener('forceGoogleDriveLoad', handleForceLoad as EventListener);
+  };
+}, [currentLanguage, loadDataFromGoogleDrive]);
+
   const [revisionProgressState, setRevisionProgress] = useState({
     wordsToReview: new Set<string>()
   });
