@@ -9,7 +9,7 @@ import {
   RotateCw,
   ChevronRight,
   X,
-  ArrowLeft, // ✅ AJOUT: Import d'ArrowLeft pour le bouton mobile
+  ArrowLeft, // ✅ Import d'ArrowLeft pour le bouton mobile
 } from 'lucide-react';
 import { WordData } from '../types/types';
 import { useTheme } from './ThemeContext';
@@ -31,7 +31,7 @@ interface WordListPreviewProps {
 
 type SortOrder = 'default' | 'alphabetical' | 'learned' | 'progress';
 
-// ✅ NOUVEAU: Composant AdaptiveBackButton comme dans GrammarMode
+// ✅ Composant AdaptiveBackButton comme dans GrammarMode
 const AdaptiveBackButton: React.FC<{
   onBack: () => void;
   isMobileView?: boolean;
@@ -101,7 +101,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('default');
-  const [touchStart, setTouchStart] = useState<number | null>(null);
   const [audioLoading, setAudioLoading] = useState<string | null>(null);
   const [isChangingPage, setIsChangingPage] = useState(false);
   
@@ -130,7 +129,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
           learnedWords.add(word);
           learnedWords.add(cleanWord(word)); // Ajouter aussi la version nettoyée
         });
-       
       }
       
       // 2. Charger les mots de la session locale
@@ -143,7 +141,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
           learnedWords.add(word);
           learnedWords.add(cleanWord(word));
         });
-    
       }
       
       // 3. Fallback: liste globale (pour compatibilité)
@@ -162,7 +159,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
       console.error('❌ Erreur lors du chargement des mots appris:', error);
     }
     
-  
     return learnedWords;
   }, [languageCode, title, cleanWord]);
   
@@ -179,8 +175,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
         event.key.includes(`${languageCode}-${title}-`) ||
         event.key.includes(`${languageCode}-allLearnedWords`)
       )) {
-     
-        
         // Recharger les mots appris
         const newLearnedWords = loadLearnedWordsFromStorage();
         setLocalLearnedWords(newLearnedWords);
@@ -199,7 +193,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
       
       // Comparer avec l'état actuel
       if (currentLearnedWords.size !== localLearnedWords.size) {
-       
         setLocalLearnedWords(currentLearnedWords);
         setLearnedWordsRefreshTrigger(prev => prev + 1);
       }
@@ -213,7 +206,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
   
   // RÉINITIALISER UNIQUEMENT quand la catégorie change vraiment
   useEffect(() => {
-
     setExpandedWord(null);
     setCurrentPage(0);
     setSearchQuery('');
@@ -293,20 +285,21 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
     return sorted;
   }, [words, searchQuery, sortOrder, isWordLearned, cleanWord]);
   
-  // Pagination
-  const totalPages = Math.ceil(processedWords.length / itemsPerPage);
+  // Pagination - CORRECTION: Calculs sécurisés
+  const totalPages = Math.max(1, Math.ceil(processedWords.length / itemsPerPage));
   const startIndex = currentPage * itemsPerPage;
   const visibleWords = processedWords.slice(startIndex, startIndex + itemsPerPage);
   
   // Calcul du pourcentage de progression
   const progressPercentage = words.length > 0 ? Math.round((effectiveCompletedWordsCount / words.length) * 100) : 0;
   
-  // GESTION DE PAGINATION CORRIGÉE - Évite le déploiement infini
+  // ✅ CORRECTION MAJEURE: Fonction de changement de page sécurisée
   const changePage = useCallback((newPage: number) => {
-    
-    
-   
-    
+    // VALIDATION STRICTE: Vérifier les limites
+    if (newPage < 0 || newPage >= totalPages || isChangingPage) {
+      console.warn(`🚫 Tentative de navigation vers page invalide: ${newPage} (limites: 0-${totalPages - 1})`);
+      return;
+    }
     
     // Marquer qu'un changement est en cours
     setIsChangingPage(true);
@@ -314,9 +307,9 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
     // Fermer les détails lors du changement de page
     setExpandedWord(null);
     
-    // Changer la page après un court délai pour éviter les conflits
+    // Changer la page de manière sécurisée
     setTimeout(() => {
-      setCurrentPage(newPage);
+      setCurrentPage(Math.max(0, Math.min(newPage, totalPages - 1)));
       
       // Scroll doux vers le haut
       if (contentRef.current) {
@@ -332,30 +325,10 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
       }, 300);
     }, 50);
     
-  }, [totalPages, currentPage, isChangingPage]);
+  }, [totalPages, isChangingPage]);
   
-  // Gestion des gestes tactiles
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (isChangingPage) return;
-    setTouchStart(e.touches[0].clientX);
-  }, [isChangingPage]);
-  
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    if (touchStart === null || isChangingPage) return;
-    
-    const touchEnd = e.changedTouches[0].clientX;
-    const diff = touchStart - touchEnd;
-    
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        changePage(currentPage + 1);
-      } else {
-        changePage(currentPage - 1);
-      }
-    }
-    
-    setTouchStart(null);
-  }, [touchStart, currentPage, changePage, isChangingPage]);
+  // ❌ SUPPRESSION COMPLÈTE DU SYSTÈME DE SWIPE
+  // (Suppression des fonctions handleTouchStart et handleTouchEnd)
   
   // Gestion de l'audio avec état de chargement
   const handleAudioPlay = useCallback(async (audioSrc: string, word: string) => {
@@ -381,6 +354,14 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
     setExpandedWord(null);
     setIsChangingPage(false);
   }, [searchQuery, sortOrder]);
+  
+  // ✅ CORRECTION: S'assurer que currentPage reste dans les limites
+  useEffect(() => {
+    if (currentPage >= totalPages) {
+      console.log(`📄 Page actuelle ${currentPage} dépasse les limites, correction vers ${Math.max(0, totalPages - 1)}`);
+      setCurrentPage(Math.max(0, totalPages - 1));
+    }
+  }, [currentPage, totalPages]);
   
   // VARIANTS D'ANIMATION OPTIMISÉS pour éviter les conflits
   const containerVariants = {
@@ -454,7 +435,7 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
     }
   };
   
-  // Génération des numéros de page à afficher
+  // Génération des numéros de page à afficher - CORRIGÉE
   const getPageNumbers = useCallback(() => {
     const maxVisible = 5;
     const pages: number[] = [];
@@ -465,15 +446,15 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
       }
     } else {
       if (currentPage < 3) {
-        for (let i = 0; i < maxVisible; i++) {
+        for (let i = 0; i < Math.min(maxVisible, totalPages); i++) {
           pages.push(i);
         }
-      } else if (currentPage > totalPages - 3) {
-        for (let i = totalPages - maxVisible; i < totalPages; i++) {
+      } else if (currentPage >= totalPages - 3) {
+        for (let i = Math.max(0, totalPages - maxVisible); i < totalPages; i++) {
           pages.push(i);
         }
       } else {
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+        for (let i = currentPage - 2; i <= Math.min(currentPage + 2, totalPages - 1); i++) {
           pages.push(i);
         }
       }
@@ -496,14 +477,15 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
     <motion.div 
       className="word-list-preview"
       ref={contentRef}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
+      // ❌ SUPPRESSION: Plus de gestionnaires de swipe
+      // onTouchStart={handleTouchStart}
+      // onTouchEnd={handleTouchEnd}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      {/* ✅ MODIFIÉ: Header avec le nouveau composant AdaptiveBackButton */}
+      {/* Header avec le nouveau composant AdaptiveBackButton */}
       <motion.div 
         className="header-section"
         initial={{ opacity: 0, y: -10 }}
@@ -516,7 +498,7 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
           title={isMobileView ? title : undefined}
         />
         
-        {/* ✅ MODIFIÉ: Titre conditionnel pour mobile */}
+        {/* Titre conditionnel pour mobile */}
         {!isMobileView && (
           <motion.h2 
             className="page-title"
@@ -756,7 +738,7 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
         </motion.div>
       )}
 
-      {/* Pagination améliorée */}
+      {/* Pagination améliorée avec validation stricte */}
       {totalPages > 1 && (
         <motion.div 
           className="pagination-section"
@@ -805,7 +787,7 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
           </div>
           
           <div className="page-indicator">
-            Page {currentPage + 1} sur {totalPages}
+            Page {Math.min(currentPage + 1, totalPages)} sur {totalPages}
             {processedWords.length !== words.length && (
               <span style={{ opacity: 0.7, marginLeft: 'var(--spacing-sm)' }}>
                 (filtré)
@@ -866,8 +848,6 @@ const WordListPreview: React.FC<WordListPreviewProps> = ({
             <span>Réviser les mots appris ({effectiveCompletedWordsCount})</span>
           </motion.button>
         )}
-        
-        {/* ✅ SUPPRIMÉ: Le bouton retour mobile ici car maintenant c'est dans le header */}
       </motion.div>
     </motion.div>
   );
