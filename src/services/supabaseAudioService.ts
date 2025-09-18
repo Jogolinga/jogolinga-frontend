@@ -1,3 +1,4 @@
+// services/supabaseAudioService.ts - Version simplifiée SANS recherche élargie
 import { createClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL!
@@ -8,7 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 class SupabaseAudioService {
   private cache = new Map<string, string>()
   private readonly AUDIO_BUCKET = 'jogolinga-audio'
-  private readonly SUPPORTED_FORMATS = ['wav', 'ogg', 'mp3']
+  private readonly SUPPORTED_FORMATS = ['wav', 'mp3', 'ogg']
 
   getPublicUrl(filePath: string): string {
     if (this.cache.has(filePath)) {
@@ -23,10 +24,10 @@ class SupabaseAudioService {
     return data.publicUrl
   }
 
-  // Recherche multi-format pour .wav, .mp3 et .ogg
+  // 🎯 VERSION SIMPLIFIÉE : CORRESPONDANCE EXACTE UNIQUEMENT
   async getWordAudioUrl(languageCode: string, word: string): Promise<string | null> {
     try {
-      console.log(`🔍 Recherche: "${word}" (${languageCode})`)
+      console.log(`🔍 Recherche exacte: "${word}" (${languageCode})`)
 
       // Nettoyer le nom du fichier
       let cleanWord = word
@@ -34,112 +35,68 @@ class SupabaseAudioService {
         const parts = word.split('/')
         cleanWord = parts[parts.length - 1]
       }
-      cleanWord = cleanWord.replace(/\.(mp3|wav|ogg)$/i, '')
+      cleanWord = cleanWord
+        .replace(/\.(mp3|wav|ogg)$/i, '')
+        .replace(/^(Wf-|Bm-|Li-)/, '')
 
       console.log(`🎯 Mot nettoyé: ${cleanWord}`)
 
-      // 1. Recherche exacte pour chaque format supporté
+      // 🔒 ÉTAPE 1 : Recherche exacte pour chaque format
       for (const format of this.SUPPORTED_FORMATS) {
         const exactPattern = `${cleanWord}.${format}`
         console.log(`🔍 Recherche format ${format.toUpperCase()}: ${exactPattern}`)
 
-        const { data: audioFiles } = await supabase
+        const { data: audioFiles, error } = await supabase
           .from('audio_files')
           .select('*')
           .eq('language_code', languageCode)
           .ilike('file_path', `%/${exactPattern}`)
           .limit(5)
 
+        if (error) {
+          console.error(`❌ Erreur recherche ${format}:`, error)
+          continue
+        }
+
         if (audioFiles && audioFiles.length > 0) {
-          console.log(`✅ Trouvé en ${format.toUpperCase()}: ${audioFiles.length} fichier(s)`)
-          
-          const selectedFile = audioFiles[0]
-          console.log(`🎵 Fichier sélectionné: ${selectedFile.file_path}`)
-          
-          return await this.createAudioUrl(selectedFile.file_path)
+          console.log(`✅ Trouvé en ${format.toUpperCase()}: ${audioFiles[0].file_path}`)
+          return await this.createAudioUrl(audioFiles[0].file_path)
         }
       }
 
-      // 2. Recherche fallback sans extension spécifique
-      console.log(`🔄 Fallback: recherche générale`)
-      const { data: fallbackFiles } = await supabase
-        .from('audio_files')
-        .select('*')
-        .eq('language_code', languageCode)
-        .ilike('file_path', `%/${cleanWord}.%`)
-        .limit(10)
+      // 🔒 ÉTAPE 2 : Recherche avec préfixe langue (si pas trouvé en étape 1)
+      const wordWithPrefix = `${languageCode}-${cleanWord}`
+      console.log(`🔍 Recherche avec préfixe: ${wordWithPrefix}`)
 
-      if (fallbackFiles && fallbackFiles.length > 0) {
-        console.log(`📊 Fallback trouvé: ${fallbackFiles.length} fichier(s)`)
-        
-        // Trier par priorité de format (wav > mp3 > ogg)
-        const sortedFiles = fallbackFiles.sort((a, b) => {
-          const aExt = a.file_path.split('.').pop()?.toLowerCase() || ''
-          const bExt = b.file_path.split('.').pop()?.toLowerCase() || ''
-          
-          const formatPriority = { wav: 3, ogg: 2, mp3: 1 }
-          const aPriority = formatPriority[aExt as keyof typeof formatPriority] || 0
-          const bPriority = formatPriority[bExt as keyof typeof formatPriority] || 0
-          
-          if (aPriority !== bPriority) {
-            return bPriority - aPriority // Plus haute priorité en premier
-          }
-          
-          // Si même format, prendre le chemin le plus court
-          return a.file_path.length - b.file_path.length
-        })
+      for (const format of this.SUPPORTED_FORMATS) {
+        const prefixPattern = `${wordWithPrefix}.${format}`
+        console.log(`🔍 Recherche préfixe ${format.toUpperCase()}: ${prefixPattern}`)
 
-        const selectedFile = sortedFiles[0]
-        console.log(`🎵 Fichier sélectionné (fallback): ${selectedFile.file_path}`)
-        
-        return await this.createAudioUrl(selectedFile.file_path)
+        const { data: audioFiles, error } = await supabase
+          .from('audio_files')
+          .select('*')
+          .eq('language_code', languageCode)
+          .ilike('file_path', `%/${prefixPattern}`)
+          .limit(5)
+
+        if (error) {
+          console.error(`❌ Erreur recherche préfixe ${format}:`, error)
+          continue
+        }
+
+        if (audioFiles && audioFiles.length > 0) {
+          console.log(`✅ Trouvé avec préfixe en ${format.toUpperCase()}: ${audioFiles[0].file_path}`)
+          return await this.createAudioUrl(audioFiles[0].file_path)
+        }
       }
 
-      // 3. Recherche très large (contient le nom)
-      console.log(`🔄 Fallback élargi: recherche contenant "${cleanWord}"`)
-      const { data: wideFiles } = await supabase
-        .from('audio_files')
-        .select('*')
-        .eq('language_code', languageCode)
-        .ilike('file_path', `%${cleanWord}%`)
-        .limit(10)
-
-      if (wideFiles && wideFiles.length > 0) {
-        console.log(`📊 Recherche élargie: ${wideFiles.length} fichier(s)`)
-        wideFiles.forEach((file, index) => {
-          console.log(`  ${index + 1}. ${file.file_path}`)
-        })
-
-        // Même logique de tri
-        const sortedWideFiles = wideFiles.sort((a, b) => {
-          const aFileName = a.file_path.split('/').pop()?.replace(/\.[^.]+$/, '') || ''
-          const bFileName = b.file_path.split('/').pop()?.replace(/\.[^.]+$/, '') || ''
-          
-          // Priorité aux correspondances exactes du nom
-          const aExact = aFileName === cleanWord
-          const bExact = bFileName === cleanWord
-          
-          if (aExact && !bExact) return -1
-          if (!aExact && bExact) return 1
-          
-          // Puis par format
-          const aExt = a.file_path.split('.').pop()?.toLowerCase() || ''
-          const bExt = b.file_path.split('.').pop()?.toLowerCase() || ''
-          
-          const formatPriority = { wav: 3, mp3: 2, ogg: 1 }
-          const aPriority = formatPriority[aExt as keyof typeof formatPriority] || 0
-          const bPriority = formatPriority[bExt as keyof typeof formatPriority] || 0
-          
-          return bPriority - aPriority
-        })
-
-        const selectedFile = sortedWideFiles[0]
-        console.log(`🎵 Fichier sélectionné (élargi): ${selectedFile.file_path}`)
-        
-        return await this.createAudioUrl(selectedFile.file_path)
-      }
-
-      console.log(`❌ Aucun fichier trouvé pour: "${word}"`)
+      // 🚫 PAS DE RECHERCHE ÉLARGIE - Retourner null si pas trouvé
+      console.log(`❌ Aucun fichier trouvé pour: "${cleanWord}" (${languageCode})`)
+      console.log(`🔍 Recherches effectuées:`)
+      console.log(`   - ${cleanWord}.wav/mp3/ogg`)
+      console.log(`   - ${wordWithPrefix}.wav/mp3/ogg`)
+      console.log(`✋ ARRÊT: Pas de recherche élargie pour éviter les confusions`)
+      
       return null
 
     } catch (error) {
@@ -148,24 +105,61 @@ class SupabaseAudioService {
     }
   }
 
-  // Méthode utilitaire pour créer l'URL audio
+  // Création d'URL optimisée
   private async createAudioUrl(filePath: string): Promise<string> {
+    if (this.cache.has(filePath)) {
+      console.log(`🚀 Cache hit: ${filePath}`)
+      return this.cache.get(filePath)!
+    }
+
     try {
       const { data: signedUrlData, error: urlError } = await supabase.storage
         .from(this.AUDIO_BUCKET)
         .createSignedUrl(filePath, 3600)
 
       if (!urlError && signedUrlData?.signedUrl) {
-        console.log(`🔗 URL signée générée`)
+        console.log(`🔗 URL signée générée: ${filePath}`)
+        this.cache.set(filePath, signedUrlData.signedUrl)
         return signedUrlData.signedUrl
       }
 
-      console.log(`⚠️ Fallback vers URL publique`)
+      console.log(`⚠️ Fallback URL publique: ${filePath}`)
       return this.getPublicUrl(filePath)
     } catch (error) {
       console.error('Erreur création URL:', error)
       return this.getPublicUrl(filePath)
     }
+  }
+
+  // Test de diagnostic
+  async diagnosticSearch(languageCode: string, word: string): Promise<void> {
+    console.log(`\n🔍 === DIAGNOSTIC pour "${word}" (${languageCode}) ===`)
+    
+    const cleanWord = word.replace(/^(Wf-|Bm-|Li-)/, '').replace(/\.(mp3|wav|ogg)$/i, '')
+    const patterns = [
+      `${cleanWord}.wav`,
+      `${cleanWord}.mp3`, 
+      `${cleanWord}.ogg`,
+      `${languageCode}-${cleanWord}.wav`,
+      `${languageCode}-${cleanWord}.mp3`,
+      `${languageCode}-${cleanWord}.ogg`
+    ]
+
+    for (const pattern of patterns) {
+      const { data, error } = await supabase
+        .from('audio_files')
+        .select('file_path')
+        .eq('language_code', languageCode)
+        .ilike('file_path', `%/${pattern}`)
+        .limit(1)
+
+      const status = error ? '❌ Erreur' : 
+                    (data && data.length > 0) ? `✅ Trouvé: ${data[0].file_path}` : 
+                    '❌ Non trouvé'
+      
+      console.log(`  ${pattern}: ${status}`)
+    }
+    console.log(`=== FIN DIAGNOSTIC ===\n`)
   }
 
   async preloadCategoryAudios(languageCode: string, category: string): Promise<number> {
@@ -179,12 +173,14 @@ class SupabaseAudioService {
         .from('audio_files')
         .select('file_path')
         .eq('language_code', 'wf')
-        .limit(10)
+        .limit(5)
 
-      console.log(`🔌 Test connexion - Échantillon:`)
-      data?.forEach((f, i) => console.log(`  ${i+1}. ${f.file_path}`))
+      console.log(`🔌 Test connexion:`)
+      if (data) {
+        data.forEach((f, i) => console.log(`  ${i+1}. ${f.file_path}`))
+      }
       
-      return !error
+      return !error && !!data
     } catch (error) {
       console.error('Test connexion échoué:', error)
       return false
