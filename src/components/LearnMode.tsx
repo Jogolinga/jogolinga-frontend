@@ -396,6 +396,7 @@ const LearnMode: React.FC<LearnModeExtendedProps> = ({
       setStableOptions(options);
       
       
+    
       }
     }
     
