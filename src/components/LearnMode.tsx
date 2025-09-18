@@ -356,66 +356,54 @@ const LearnMode: React.FC<LearnModeExtendedProps> = ({
     return shuffleArray([correctTranslation, ...wrongOptions]);
   }, []);
 
- const startTest = useCallback(() => {
-  console.log('🎮 Starting Test Session');
-  console.log('Words to learn:', currentWords.map(([word]) => word));
-  console.log('Tests required per word:', TESTS_PER_WORD);
-  
-  if (currentWords.length === 0) {
-    console.error('Impossible de démarrer le test : aucun mot disponible');
-    return;
-  }
-  
-  // Réinitialisation au début du test
-  console.log('🧹 Réinitialisation au début du test...');
-  setSelectedAnswer(null);
-  
-  // Figer les mots de la session
-  sessionWordsRef.current = [...currentWords];
-  sessionStartedRef.current = true;
-  
-  // Initialiser la ref des scores
-  testScoresRef.current = { ...testScores };
-  
-  setMode('test');
-  
-  // Créer la file de test
-  const queue = currentWords.flatMap(([word]) => {
-    const alreadyCorrect = testScores[word] || 0;
-    const testsNeeded = Math.max(0, TESTS_PER_WORD - alreadyCorrect);
-    return Array(testsNeeded).fill(word);
-  });
-  
-  const shuffledQueue = shuffleArray(queue);
-  console.log('Queue de test générée:', shuffledQueue);
-  setTestQueue(shuffledQueue);
-  
-  if (shuffledQueue.length > 0) {
-    const firstWord = shuffledQueue[0];
-    const options = generateStableOptions(firstWord, currentWords);
-    setStableOptions(options);
+  const startTest = useCallback(() => {
+    console.log('🎮 Starting Test Session');
+    console.log('Words to learn:', currentWords.map(([word]) => word));
+    console.log('Tests required per word:', TESTS_PER_WORD);
     
-    console.log('🎯 Premier mot du test:', firstWord);
-    console.log('🔇 Pas de lecture automatique - utilisateur contrôle l\'audio');
-  }
-  
-  // Sauvegarde temporaire pour reprise de session
-  const sessionData = {
-    words: currentWords.map(([word]) => word),
-    scores: testScores,
-    timestamp: Date.now(),
-    mode: 'test',
-    currentIndex: 0,
-  };
-  
-  try {
-    const inProgressKey = `${languageCode}-${category}-inProgress`;
-    localStorage.setItem(inProgressKey, JSON.stringify(sessionData));
-  } catch (error) {
-    console.error('Erreur lors de la sauvegarde de la session de test:', error);
-  }
-}, [currentWords, generateStableOptions, testScores, languageCode, category]);
-
+    if (currentWords.length === 0) {
+      console.error('Impossible de démarrer le test : aucun mot disponible');
+      return;
+    }
+    
+    // Réinitialisation au début du test
+    console.log('🧹 Réinitialisation au début du test...');
+    setSelectedAnswer(null);
+    
+    // Figer les mots de la session
+    sessionWordsRef.current = [...currentWords];
+    sessionStartedRef.current = true;
+    
+    // Initialiser la ref des scores
+    testScoresRef.current = { ...testScores };
+    
+    setMode('test');
+    
+    // Créer la file de test
+    const queue = currentWords.flatMap(([word]) => {
+      const alreadyCorrect = testScores[word] || 0;
+      const testsNeeded = Math.max(0, TESTS_PER_WORD - alreadyCorrect);
+      return Array(testsNeeded).fill(word);
+    });
+    
+    const shuffledQueue = shuffleArray(queue);
+    console.log('Queue de test générée:', shuffledQueue);
+    setTestQueue(shuffledQueue);
+    
+    if (shuffledQueue.length > 0) {
+      const firstWord = shuffledQueue[0];
+      const options = generateStableOptions(firstWord, currentWords);
+      setStableOptions(options);
+      /*
+      const firstWordData = currentWords.find(([word]) => word === firstWord)?.[1];
+      if (firstWordData?.audio) {
+        setTimeout(() => {
+         playWord(firstWordData.audio!).catch(error => 
+            console.error('Erreur lors de la lecture audio:', error)
+          );
+        }, 500);
+      }*/
+    }
     
     // Sauvegarde temporaire pour reprise de session
     const sessionData = {
