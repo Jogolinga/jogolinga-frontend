@@ -2896,25 +2896,101 @@ const saveProgressOnSummary = useCallback(async (
   isMobileView
 ]);
 
-  const handleLogin = useCallback((response: any) => {
-    try {
-      if (response?.credential) {
-        console.log("Connexion Google réussie, sauvegarde du token");
-        localStorage.setItem('googleToken', response.credential);
-        
-        // S'assurer que le user est bien défini
-        const decodedToken = response.decodedToken || {};
-        console.log("Configuration de l'état user avec:", decodedToken);
-        setUser(decodedToken);
-        
-        // Charger les données depuis Google Drive
-        loadDataFromGoogleDrive();
-        setShowLandingPage(false);
+ const handleLogin = useCallback((response: any) => {
+  try {
+    console.log('=== 📥 RÉCEPTION DONNÉES LOGIN DANS APP.TX ===');
+    console.log('🔍 [App] Données reçues complètes:', {
+      response,
+      responseType: typeof response,
+      responseKeys: response ? Object.keys(response) : 'null',
+      hasCredential: !!response?.credential,
+      hasGoogleToken: !!response?.googleToken,
+      hasAccessToken: !!response?.accessToken,
+      hasJwtToken: !!response?.jwtToken,
+      hasBackendToken: !!response?.backendToken
+    });
+
+    // Chercher le token dans tous les endroits possibles
+    const possibleTokens = {
+      credential: response?.credential,
+      googleToken: response?.googleToken,
+      accessToken: response?.accessToken,
+      jwtToken: response?.jwtToken,
+      backendToken: response?.backendToken,
+      access_token: response?.access_token,
+      localStorageToken: localStorage.getItem('googleToken')
+    };
+
+    console.log('🔑 [App] Analyse des tokens disponibles:', possibleTokens);
+
+    // Prendre le premier token valide trouvé
+    const finalToken = possibleTokens.credential || 
+                      possibleTokens.googleToken || 
+                      possibleTokens.accessToken ||
+                      possibleTokens.localStorageToken;
+
+    console.log('🎯 [App] Token final sélectionné:', {
+      tokenFound: !!finalToken,
+      tokenPreview: finalToken?.substring(0, 20) + '...',
+      tokenSource: possibleTokens.credential ? 'credential' :
+                   possibleTokens.googleToken ? 'googleToken' :
+                   possibleTokens.accessToken ? 'accessToken' :
+                   possibleTokens.localStorageToken ? 'localStorage' : 'none'
+    });
+
+    if (finalToken) {
+      console.log('💾 [App] Sauvegarde du token dans localStorage...');
+      localStorage.setItem('googleToken', finalToken);
+      
+      // S'assurer que le user est bien défini
+      const decodedToken = response || {};
+      console.log('👤 [App] Configuration de l\'état user avec:', {
+        userId: decodedToken.id,
+        userName: decodedToken.name,
+        userEmail: decodedToken.email,
+        hasPicture: !!decodedToken.picture
+      });
+      
+      setUser(decodedToken);
+
+      // 🔥 POINT CLÉ : Déclencher le chargement Google Drive
+      console.log('☁️ [App] Déclenchement du chargement Google Drive...');
+      console.log('🔍 [App] État avant chargement:', {
+        currentLanguage,
+        hasUser: !!decodedToken,
+        hasToken: !!finalToken
+      });
+
+      // Vérifier que les prérequis sont OK
+      if (!currentLanguage) {
+        console.warn('⚠️ [App] currentLanguage non défini, le chargement Google Drive pourrait échouer');
       }
-    } catch (error) {
-      console.error('Error handling login:', error);
+
+      try {
+        loadDataFromGoogleDrive();
+        console.log('✅ [App] loadDataFromGoogleDrive appelé avec succès');
+      } catch (loadError) {
+        console.error('❌ [App] Erreur lors de l\'appel loadDataFromGoogleDrive:', loadError);
+      }
+
+      // Masquer la landing page
+      setShowLandingPage(false);
+      console.log('🏠 [App] Landing page masquée');
+
+      console.log('✅ [App] Processus handleLogin terminé avec succès');
+    } else {
+      console.error('❌ [App] Aucun token valide trouvé dans la réponse');
+      console.error('🔍 [App] Tokens recherchés:', Object.keys(possibleTokens));
+      console.error('🔍 [App] Réponse complète:', JSON.stringify(response, null, 2));
     }
-  }, [loadDataFromGoogleDrive]);
+
+  } catch (error) {
+    console.error('❌ [App] Erreur dans handleLogin:', error);
+    console.error('🔍 [App] Stack trace:', error instanceof Error ? error.stack : 'No stack');
+  }
+  
+  console.log('=== 📥 FIN TRAITEMENT LOGIN DANS APP.TSX ===');
+}, [loadDataFromGoogleDrive, currentLanguage]);
 
   const handleLogout = useCallback(() => {
     setUser(null);
