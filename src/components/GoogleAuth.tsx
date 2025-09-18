@@ -288,117 +288,159 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
   };
 
   // Connexion sécurisée avec Google
-  const handleSecureLogin = async () => {
-    if (isProcessing || !gapiInitialized) return;
+ // Connexion sécurisée avec déclenchement Google Drive
+const handleSecureLogin = async () => {
+  if (isProcessing) {
+    return;
+  }
 
-    setIsProcessing(true);
-    setError(null);
+  if (!gapiInitialized) {
+    setError('Service d\'authentification non initialisé');
+    return;
+  }
 
-    try {
-      console.log('[GoogleAuth] 🚀 Début de la connexion sécurisée...');
+  setIsProcessing(true);
+  setError(null);
 
-      // 1. Obtenir l'instance d'authentification Google
-      const authInstance = gapi.auth2.getAuthInstance();
-      if (!authInstance) {
-        throw new Error('Instance Google Auth non disponible');
-      }
-
-      // 2. Connecter l'utilisateur et récupérer le token ID de Google
-      const googleUser = await authInstance.signIn();
-
-      // Récupérer le token ID de Google
-      let authResponse = googleUser.getAuthResponse(true);
-      let googleToken = authResponse.id_token;
-
-      // 3. Vérifier l'expiration et rafraîchir si nécessaire
-      if (Date.now() >= authResponse.expires_at) {
-        authResponse = await googleUser.reloadAuthResponse();
-        googleToken = authResponse.id_token;
-      }
-
-      if (!googleToken) {
-        throw new Error('Impossible d\'obtenir un token Google valide');
-      }
-
-      // 5. Authentifier via notre backend sécurisé
-      const backendUser: BackendUser = await secureAuthService.authenticateWithGoogle(googleToken);
-
-      // Log pour diagnostic (à supprimer en production si souhaité)
-      console.log('[GoogleAuth] Réponse backend complète:', backendUser);
-      console.log('[GoogleAuth] Propriétés disponibles:', Object.keys(backendUser));
-
-      // NOUVEAU: Configurer le token pour les paiements - VERSION ROBUSTE
-      const { jwtToken, token, accessToken, access_token } = backendUser;
-      const authToken = jwtToken || token || accessToken || access_token;
-
-      if (authToken) {
-        console.log('[GoogleAuth] Configuration du token pour PaymentService');
-        paymentService.setAuthToken(authToken);
-      } else {
-        console.warn('[GoogleAuth] Aucun token JWT trouvé dans la réponse backend');
-        console.warn('[GoogleAuth] Propriétés de token recherchées: jwtToken, token, accessToken, access_token');
-      }
-
-      // 6. Mettre à jour l'état local
-      const userData = {
-        id: backendUser.id,
-        name: backendUser.name,
-        email: backendUser.email,
-        picture: backendUser.picture
-      };
-      
-      setUser(userData);
-      setIsLoggedIn(true);
-      
-      // Protection : Appel sécurisé de onLogin
-      try {
-        safeOnLogin(backendUser);
-      } catch (callbackError) {
-        console.error('Erreur callback onLogin:', callbackError);
-      }
-
-      // 7. Stocker aussi les infos Google pour compatibilité
-      localStorage.setItem('googleToken', authResponse.access_token);
-      localStorage.setItem('tokenExpires', String(authResponse.expires_at));
-      localStorage.setItem('googleScopes', authResponse.scope);
-
-    } catch (error) {
-      console.error('Erreur connexion sécurisée:', error);
-      
-      // Diagnostic détaillé de l'erreur
-      if (error instanceof Error) {
-        if (error.message.includes('popup_closed_by_user')) {
-          setError('Connexion annulée par l\'utilisateur');
-        } else if (error.message.includes('network')) {
-          setError('Erreur de réseau - vérifiez votre connexion');
-        } else if (error.message.includes('401')) {
-          setError('Token Google invalide - reconnectez-vous');
-          await handleFullReset();
-        } else if (error.message.includes('Backend inaccessible')) {
-          setError('Serveur non disponible');
-        } else {
-          setError(`Erreur: ${error.message}`);
-        }
-      } else {
-        setError('Erreur de connexion inconnue');
-      }
-      
-      // En cas d'erreur backend, déconnecter Google aussi
-      try {
-        if (gapi.auth2 && gapi.auth2.getAuthInstance()) {
-          await gapi.auth2.getAuthInstance().signOut();
-        }
-      } catch (googleError) {
-        console.error('Erreur déconnexion Google:', googleError);
-      }
-
-      setIsLoggedIn(false);
-      setUser(null);
-    } finally {
-      setIsProcessing(false);
+  try {
+    // 1. Connecter à Google d'abord
+    const authInstance = gapi.auth2.getAuthInstance();
+    if (!authInstance) {
+      throw new Error('Instance d\'authentification Google non disponible');
     }
-  };
 
+    const googleUser = await authInstance.signIn();
+    
+    // 2. Récupérer le token ID de Google
+    let authResponse = googleUser.getAuthResponse(true);
+    let googleToken = authResponse.id_token;
+
+    // 3. Vérifier l'expiration et rafraîchir si nécessaire
+    if (Date.now() >= authResponse.expires_at) {
+      authResponse = await googleUser.reloadAuthResponse();
+      googleToken = authResponse.id_token;
+    }
+
+    if (!googleToken) {
+      throw new Error('Impossible d\'obtenir un token Google valide');
+    }
+
+    // 4. Test de l'API backend avant authentification (optionnel)
+    /*
+    try {
+      console.log('API URL from env:', process.env.NEXT_PUBLIC_API_URL);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      console.log('Using API URL:', apiUrl);
+      const healthResponse = await fetch(`${apiUrl}/api/health`);
+      if (!healthResponse.ok) {
+        throw new Error(`Backend inaccessible: ${healthResponse.status}`);
+      }
+    } catch (backendError) {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'localhost:3001';
+      setError(`Le serveur backend n'est pas accessible (${apiUrl}). Vérifiez qu'il est démarré.`);
+      return;
+    }
+    */
+
+    // 5. Authentifier via notre backend sécurisé
+    const backendUser: BackendUser = await secureAuthService.authenticateWithGoogle(googleToken);
+
+    // Log pour diagnostic (à supprimer en production si souhaité)
+    console.log('[GoogleAuth] Réponse backend complète:', backendUser);
+    console.log('[GoogleAuth] Propriétés disponibles:', Object.keys(backendUser));
+
+    // NOUVEAU: Configurer le token pour les paiements - VERSION ROBUSTE
+    const { jwtToken, token, accessToken, access_token } = backendUser;
+    const authToken = jwtToken || token || accessToken || access_token;
+
+    if (authToken) {
+      console.log('[GoogleAuth] Configuration du token pour PaymentService');
+      paymentService.setAuthToken(authToken);
+    } else {
+      console.warn('[GoogleAuth] Aucun token JWT trouvé dans la réponse backend');
+      console.warn('[GoogleAuth] Propriétés de token recherchées: jwtToken, token, accessToken, access_token');
+    }
+
+    // 6. Mettre à jour l'état local
+    const userData = {
+      id: backendUser.id,
+      name: backendUser.name,
+      email: backendUser.email,
+      picture: backendUser.picture
+    };
+    
+    setUser(userData);
+    setIsLoggedIn(true);
+    
+    // Protection : Appel sécurisé de onLogin
+    try {
+      safeOnLogin(backendUser);
+    } catch (callbackError) {
+      console.error('Erreur callback onLogin:', callbackError);
+    }
+
+    // ✅ NOUVEAU : Déclencher le chargement Google Drive avec un délai
+    console.log('[GoogleAuth] Déclenchement du chargement Google Drive post-connexion');
+    setTimeout(() => {
+      console.log("🚀 Événement forceGoogleDriveLoad envoyé");
+      
+      // Déclencher un événement personnalisé pour forcer le rechargement
+      window.dispatchEvent(new CustomEvent('forceGoogleDriveLoad', {
+        detail: { 
+          userEmail: backendUser.email,
+          userName: backendUser.name,
+          userId: backendUser.id,
+          timestamp: Date.now(),
+          source: 'post_login'
+        }
+      }));
+      
+    }, 2500); // Délai de 2.5 secondes pour s'assurer que tout est initialisé
+
+    // 7. Stocker aussi les infos Google pour compatibilité
+    localStorage.setItem('googleToken', authResponse.access_token);
+    localStorage.setItem('tokenExpires', String(authResponse.expires_at));
+    localStorage.setItem('googleScopes', authResponse.scope);
+    
+    // ✅ NOUVEAU : Stocker l'email pour les vérifications
+    localStorage.setItem('userEmail', backendUser.email);
+
+  } catch (error) {
+    console.error('Erreur connexion sécurisée:', error);
+    
+    // Diagnostic détaillé de l'erreur
+    if (error instanceof Error) {
+      if (error.message.includes('popup_closed_by_user')) {
+        setError('Connexion annulée par l\'utilisateur');
+      } else if (error.message.includes('network')) {
+        setError('Erreur de réseau - vérifiez votre connexion');
+      } else if (error.message.includes('401')) {
+        setError('Token Google invalide - reconnectez-vous');
+        await handleFullReset();
+      } else if (error.message.includes('Backend inaccessible')) {
+        setError('Serveur non disponible');
+      } else {
+        setError(`Erreur: ${error.message}`);
+      }
+    } else {
+      setError('Erreur de connexion inconnue');
+    }
+    
+    // En cas d'erreur backend, déconnecter Google aussi
+    try {
+      if (gapi.auth2 && gapi.auth2.getAuthInstance()) {
+        await gapi.auth2.getAuthInstance().signOut();
+      }
+    } catch (googleError) {
+      console.error('Erreur déconnexion Google:', googleError);
+    }
+
+    setIsLoggedIn(false);
+    setUser(null);
+  } finally {
+    setIsProcessing(false);
+  }
+};
   // ⭐ DÉCONNEXION SÉCURISÉE AVEC NETTOYAGE COMPLET
   const handleSecureLogout = async () => {
     if (isProcessing) return;
