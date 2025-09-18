@@ -414,23 +414,25 @@ useEffect(() => {
   }, [revisionProgress.wordsToReview]);
 
 
-  // useEffect pour écouter le chargement forcé Google Drive
+// useEffect pour écouter le chargement forcé Google Drive - VERSION CORRIGÉE
 useEffect(() => {
-  const handleForceLoad = async (event: CustomEvent) => {
-    console.log("📡 Événement forceGoogleDriveLoad reçu:", event.detail);
+  const handleForceLoad = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    console.log("📡 Événement forceGoogleDriveLoad reçu:", customEvent.detail);
     
     const token = localStorage.getItem('googleToken');
     if (token && currentLanguage) {
       console.log("☁️ Chargement Google Drive forcé depuis GoogleAuth...");
-      try {
-        // Ajouter un délai supplémentaire pour être sûr
-        setTimeout(async () => {
+      
+      // Ajouter un délai supplémentaire pour être sûr
+      setTimeout(async () => {
+        try {
           await loadDataFromGoogleDrive();
           console.log("✅ Chargement Google Drive forcé terminé");
-        }, 1000);
-      } catch (error) {
-        console.error("❌ Erreur chargement Google Drive forcé:", error);
-      }
+        } catch (error) {
+          console.error("❌ Erreur chargement Google Drive forcé:", error);
+        }
+      }, 1000);
     } else {
       console.log("⚠️ Conditions non remplies pour le chargement forcé:", {
         hasToken: !!token,
@@ -439,10 +441,10 @@ useEffect(() => {
     }
   };
 
-  window.addEventListener('forceGoogleDriveLoad', handleForceLoad as EventListener);
+  window.addEventListener('forceGoogleDriveLoad', handleForceLoad);
   
   return () => {
-    window.removeEventListener('forceGoogleDriveLoad', handleForceLoad as EventListener);
+    window.removeEventListener('forceGoogleDriveLoad', handleForceLoad);
   };
 }, [currentLanguage, loadDataFromGoogleDrive]);
 
