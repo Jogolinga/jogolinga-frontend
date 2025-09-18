@@ -2078,18 +2078,48 @@ useEffect(() => {
   };
   
   // Charger local d'abord
-  loadLocalFirst();
-  
-  // Puis charger depuis Google Drive si connecté
-  if (user && localStorage.getItem('googleToken')) {
+ loadLocalFirst();
+
+// Puis charger depuis Google Drive si connecté - AVEC DÉLAI
+setTimeout(() => {
+  if ((user || localStorage.getItem('userEmail')) && localStorage.getItem('googleToken')) {
     console.log("☁️ Chargement Google Drive...");
     loadDataFromGoogleDrive();
   } else {
     console.log("📱 Pas de connexion Google - mode local uniquement");
   }
-}, [user, currentLanguage, loadDataFromGoogleDrive]); // ✅ loadUserProgress retiré
+}, 1500); // Attendre 1.5 seconde pour l'initialisation
+}, [user, currentLanguage, loadDataFromGoogleDrive]);
 
+// useEffect séparé pour Google Drive - NOUVEAU
+useEffect(() => {
+  const checkAndLoadGoogleDrive = async () => {
+    const token = localStorage.getItem('googleToken');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    console.log('🔍 Vérification Google Drive:', {
+      hasToken: !!token,
+      hasEmail: !!userEmail,
+      hasCurrentLanguage: !!currentLanguage,
+      userState: !!user
+    });
+    
+    if (token && currentLanguage && (user || userEmail)) {
+      console.log("☁️ Chargement Google Drive (useEffect séparé)...");
+      try {
+        await loadDataFromGoogleDrive();
+      } catch (error) {
+        console.error("Erreur chargement Google Drive:", error);
+      }
+    } else {
+      console.log("⏸️ Conditions non remplies pour Google Drive");
+    }
+  };
 
+  // Délai pour s'assurer que tous les états sont initialisés
+  const timer = setTimeout(checkAndLoadGoogleDrive, 800);
+  return () => clearTimeout(timer);
+}, [currentLanguage, user, loadDataFromGoogleDrive]); // Dépendances
 
 
 
@@ -3314,6 +3344,8 @@ useEffect(() => {
     console.log('⚠️ useEffect sync: Pas de langue sélectionnée, skip');
     return;
   }
+
+  
   
   // Toujours charger les données locales d'abord
   const loadLocalFirst = async () => {
