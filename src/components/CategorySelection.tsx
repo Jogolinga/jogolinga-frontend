@@ -321,17 +321,7 @@ const CategorySelection: React.FC<CategorySelectionProps> = ({
           {/* Titre principal */}
           <h2>Choisissez une catégorie</h2>
           
-          {/* Description introductive */}
-          <div className="category-description" style={{
-            textAlign: 'center',
-            marginBottom: 'var(--spacing-xl)',
-            padding: 'var(--spacing-lg)',
-            background: 'rgba(139, 69, 19, 0.1)',
-            borderRadius: 'var(--radius-md)',
-            border: '2px solid var(--category-dark-border)'
-          }}>
-            Choisissez une situation et apprenez à construire des phrases utiles.
-          </div>
+        
 
           {/* Grille des catégories style SentenceConstruction - POUR TOUS LES ÉCRANS */}
           <div className="unified-categories-grid">
