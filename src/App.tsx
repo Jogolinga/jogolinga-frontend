@@ -414,39 +414,7 @@ useEffect(() => {
   }, [revisionProgress.wordsToReview]);
 
 
-// useEffect pour écouter le chargement forcé Google Drive - VERSION CORRIGÉE
-useEffect(() => {
-  const handleForceLoad = (event: Event) => {
-    const customEvent = event as CustomEvent;
-    console.log("📡 Événement forceGoogleDriveLoad reçu:", customEvent.detail);
-    
-    const token = localStorage.getItem('googleToken');
-    if (token && currentLanguage) {
-      console.log("☁️ Chargement Google Drive forcé depuis GoogleAuth...");
-      
-      // Ajouter un délai supplémentaire pour être sûr
-      setTimeout(async () => {
-        try {
-          await loadDataFromGoogleDrive();
-          console.log("✅ Chargement Google Drive forcé terminé");
-        } catch (error) {
-          console.error("❌ Erreur chargement Google Drive forcé:", error);
-        }
-      }, 1000);
-    } else {
-      console.log("⚠️ Conditions non remplies pour le chargement forcé:", {
-        hasToken: !!token,
-        hasLanguage: !!currentLanguage
-      });
-    }
-  };
 
-  window.addEventListener('forceGoogleDriveLoad', handleForceLoad);
-  
-  return () => {
-    window.removeEventListener('forceGoogleDriveLoad', handleForceLoad);
-  };
-}, [currentLanguage, loadDataFromGoogleDrive]);
 
   const [revisionProgressState, setRevisionProgress] = useState({
     wordsToReview: new Set<string>()
@@ -676,6 +644,40 @@ const loadDataFromGoogleDrive = useCallback(async () => {
       
     } else {
       console.log("📭 Aucune donnée générale trouvée sur Google Drive");
+
+      // useEffect pour écouter le chargement forcé Google Drive - VERSION CORRIGÉE
+useEffect(() => {
+  const handleForceLoad = (event: Event) => {
+    const customEvent = event as CustomEvent;
+    console.log("📡 Événement forceGoogleDriveLoad reçu:", customEvent.detail);
+    
+    const token = localStorage.getItem('googleToken');
+    if (token && currentLanguage) {
+      console.log("☁️ Chargement Google Drive forcé depuis GoogleAuth...");
+      
+      // Ajouter un délai supplémentaire pour être sûr
+      setTimeout(async () => {
+        try {
+          await loadDataFromGoogleDrive();
+          console.log("✅ Chargement Google Drive forcé terminé");
+        } catch (error) {
+          console.error("❌ Erreur chargement Google Drive forcé:", error);
+        }
+      }, 1000);
+    } else {
+      console.log("⚠️ Conditions non remplies pour le chargement forcé:", {
+        hasToken: !!token,
+        hasLanguage: !!currentLanguage
+      });
+    }
+  };
+
+  window.addEventListener('forceGoogleDriveLoad', handleForceLoad);
+  
+  return () => {
+    window.removeEventListener('forceGoogleDriveLoad', handleForceLoad);
+  };
+}, [currentLanguage, loadDataFromGoogleDrive]);
       
       // ✅ INITIALISATION VIDE pour nouveau navigateur
       const initialProgress: UserProgress = {
