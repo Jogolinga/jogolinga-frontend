@@ -395,13 +395,7 @@ const LearnMode: React.FC<LearnModeExtendedProps> = ({
       const options = generateStableOptions(firstWord, currentWords);
       setStableOptions(options);
       
-      const firstWordData = currentWords.find(([word]) => word === firstWord)?.[1];
-      if (firstWordData?.audio) {
-        setTimeout(() => {
-         playWord(firstWordData.audio!).catch(error => 
-            console.error('Erreur lors de la lecture audio:', error)
-          );
-        }, 500);
+      
       }
     }
     
