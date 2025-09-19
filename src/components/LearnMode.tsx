@@ -1188,38 +1188,31 @@ useEffect(() => {
     }
   }, [mode, currentWords, currentWordIndex, languageCode, category]);
 
-  useEffect(() => {
+useEffect(() => {
+  console.log(`🔍 [AUDIO DEBUG] Mode: ${mode}, Index: ${currentWordIndex}, Words: ${currentWords.length}`);
+  
   if (mode === 'preview' && currentWords.length > 0 && currentWordIndex < currentWords.length) {
     const [currentWord, currentWordData] = currentWords[currentWordIndex]
     
-    // 🚫 Guard: Éviter les lectures multiples du même mot
-    const audioKey = `${currentWord}-${currentWordIndex}`
-    if (!currentWordData?.audio || lastPlayedWordRef.current === audioKey) {
+    console.log(`🎵 [AUDIO DEBUG] Checking "${currentWord}", audio: ${!!currentWordData?.audio}`);
+    
+    if (!currentWordData?.audio) {
+      console.log(`⏭️ Pas d'audio pour "${currentWord}"`);
       return
     }
     
-    console.log(`🎵 Planning audio for word: ${currentWord}`)
-    lastPlayedWordRef.current = audioKey
+    // Simplifier la logique - pas de vérification de lastPlayedWordRef pour le debug
+    console.log(`🎬 [AUDIO DEBUG] Playing "${currentWord}"`);
     
-    // Délai pour éviter les appels trop rapprochés
     const timer = setTimeout(() => {
-      if (lastPlayedWordRef.current === audioKey) {
-        playWord(currentWordData.audio!).catch(error => {
-          console.error('Erreur lecture audio:', error)
-        })
-        
-        // Reset après la lecture
-        setTimeout(() => {
-          if (lastPlayedWordRef.current === audioKey) {
-            lastPlayedWordRef.current = null
-          }
-        }, 2000)
-      }
-    }, 500)
+      playWord(currentWordData.audio!).then(() => {
+        console.log(`✅ [AUDIO DEBUG] Success "${currentWord}"`);
+      }).catch(error => {
+        console.error(`❌ [AUDIO DEBUG] Error "${currentWord}":`, error);
+      });
+    }, 300) // Délai réduit
     
-    return () => {
-      clearTimeout(timer)
-    }
+    return () => clearTimeout(timer)
   }
 }, [mode, currentWordIndex, currentWords, playWord])
 
