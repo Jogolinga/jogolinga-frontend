@@ -2252,3 +2252,8 @@ iframe[src*="gstatic"] {
 [data-theme="light"] .subscription-modal::-webkit-scrollbar-thumb:hover {
   background: var(--subscription-light-secondary);
 }
+
+/* ===============================================
+   FIN DU FICHIER SUBSCRIPTIONMODAL.CSS COMPLET ET HARMONISÉ
+   AVEC BOUTONS DYNAMIQUES ET CORRECTIONS MOBILES + SUPERPOSITION
+   =============================================== */
