@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageSelector from './LanguageSelector';
 import { LanguageCode, AppMode } from '../types/types';
+import './MobileHeader.css';
 import { useTheme } from './ThemeContext';
 import GoogleAuth from './GoogleAuth';
 import subscriptionService, { SubscriptionTier } from '../services/subscriptionService';
@@ -10,8 +10,8 @@ import subscriptionService, { SubscriptionTier } from '../services/subscriptionS
 // Variants d'animation pour les boutons
 const buttonVariants = {
   initial: {},
-  hover: { scale: 1.05 },
-  tap: { scale: 0.95 }
+  hover: { scale: 1.1 },
+  tap: { scale: 0.9 }
 };
 
 interface MobileHeaderProps {
@@ -37,11 +37,10 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
   onOpenSubscription,
   subscriptionTier = SubscriptionTier.FREE
 }) => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   const headerRef = useRef<HTMLElement>(null);
   const [currentSubscriptionTier, setCurrentSubscriptionTier] = useState<SubscriptionTier>(subscriptionTier);
-  const [authKey, setAuthKey] = useState(0);
 
   // Surveiller les changements d'abonnement
   useEffect(() => {
@@ -50,12 +49,16 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
       setCurrentSubscriptionTier(tier);
     };
 
+    // Écouter les événements de mise à jour d'abonnement
     const handleSubscriptionUpdate = (event: CustomEvent) => {
-      console.log('[MobileHeader] Subscription update:', event.detail);
+      console.log('[MobileHeader] Événement subscription update reçu:', event.detail);
       updateSubscriptionTier();
     };
 
+    // Mise à jour initiale
     updateSubscriptionTier();
+
+    // Écouter les événements
     window.addEventListener('subscriptionUpdated', handleSubscriptionUpdate as EventListener);
 
     return () => {
@@ -63,169 +66,269 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     };
   }, []);
 
-  // Déterminer les états d'affichage
+  // Déterminer si on est dans le menu principal
   const isMainMenu = currentMode === 'menu';
+  
+  // Déterminer si on doit afficher le titre
   const shouldShowTitle = !isMainMenu;
+  
+  // Déterminer si on doit afficher le sélecteur de langue (seulement dans le menu principal)
   const shouldShowLanguageSelector = isMainMenu && showLanguageSelector && languageCode && onLanguageChange;
 
-  // Gestionnaires d'événements
-  const handleLogin = (user: any) => {
-    console.log('[MobileHeader] Login:', user);
-    onLogin(user);
+  // Styles réactifs au thème
+  const getHeaderBackground = () => {
+    if (isDarkMode) {
+      // Mode sombre : Ocre vers terre cuite/marron
+      return 'linear-gradient(to right, #cd853f, #8b4513)';
+    } else {
+      // Mode clair : Ocre clair vers sable/beige
+      return 'linear-gradient(to right, #daa520, #f4e4bc)';
+    }
   };
 
-  const handleLogout = () => {
-    console.log('[MobileHeader] Logout');
-    setAuthKey(prev => prev + 1);
-    onLogout();
+  const getTextColor = () => {
+    if (isDarkMode) {
+      return 'white'; // Texte blanc en mode sombre
+    } else {
+      return '#654321'; // Texte brun foncé en mode clair
+    }
   };
 
+  const getButtonBackground = () => {
+    if (isDarkMode) {
+      return 'rgba(255, 255, 255, 0.15)'; // Boutons transparents blancs en mode sombre
+    } else {
+      return 'rgba(101, 67, 33, 0.15)'; // Boutons transparents bruns en mode clair
+    }
+  };
+
+  const getButtonHoverBackground = () => {
+    if (isDarkMode) {
+      return 'rgba(255, 255, 255, 0.25)';
+    } else {
+      return 'rgba(101, 67, 33, 0.25)';
+    }
+  };
+
+  // Styles spéciaux pour le bouton d'abonnement (icône seulement)
+  const getSubscriptionButtonStyles = () => {
+    if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
+      // Utilisateur Premium - bouton doré
+      return {
+        background: isDarkMode 
+          ? 'linear-gradient(45deg, #ffd700, #ffed4e)' 
+          : 'linear-gradient(45deg, #f59e0b, #fbbf24)',
+        color: isDarkMode ? '#8b4513' : '#654321',
+        border: `2px solid ${isDarkMode ? '#ffd700' : '#f59e0b'}`,
+        boxShadow: `0 2px 8px ${isDarkMode ? 'rgba(255, 215, 0, 0.4)' : 'rgba(245, 158, 11, 0.4)'}`,
+        fontWeight: '700'
+      };
+    } else {
+      // Utilisateur gratuit - bouton normal
+      return {
+        background: getButtonBackground(),
+        color: getTextColor(),
+        border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.3)' : 'rgba(101, 67, 33, 0.3)'}`,
+        boxShadow: 'none',
+        fontWeight: '600'
+      };
+    }
+  };
+
+  // Obtenir le texte du tooltip
+  const getTooltipText = () => {
+    if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
+      const planInfo = subscriptionService.getCurrentPlanInfo();
+      if (planInfo.billingPeriod === 'yearly') {
+        return 'Premium Annuel';
+      } else {
+        return 'Premium';
+      }
+    } else {
+      return 'Version Gratuite';
+    }
+  };
+
+  // Obtenir l'icône du bouton d'abonnement
+  const getSubscriptionIcon = () => {
+    if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
+      return '⭐';
+    } else {
+      return '🆓';
+    }
+  };
+
+  // Gérer le clic sur le bouton d'abonnement
   const handleSubscriptionClick = () => {
+    console.log('[MobileHeader] Clic sur bouton d\'abonnement');
     if (onOpenSubscription) {
       onOpenSubscription();
     }
   };
 
-  // Styles selon le thème
-  const getSubscriptionIcon = () => {
-    return currentSubscriptionTier === SubscriptionTier.PREMIUM ? '⭐' : '🆓';
-  };
+  // Force le header à être visible (système de protection)
+  useEffect(() => {
+    const forceHeaderVisible = () => {
+      const header = headerRef.current || document.querySelector('.mobile-header');
+      if (header) {
+        const headerElement = header as HTMLElement;
+        
+        // Force les styles essentiels avec les bonnes couleurs
+        headerElement.style.setProperty('display', 'flex', 'important');
+        headerElement.style.setProperty('visibility', 'visible', 'important');
+        headerElement.style.setProperty('opacity', '1', 'important');
+        headerElement.style.setProperty('position', 'fixed', 'important');
+        headerElement.style.setProperty('top', '0', 'important');
+        headerElement.style.setProperty('z-index', '100000', 'important');
+        headerElement.style.setProperty('background', getHeaderBackground(), 'important');
+        headerElement.style.setProperty('color', getTextColor(), 'important');
+        
+        // Force la visibilité des enfants
+        const children = headerElement.querySelectorAll('*');
+        children.forEach(child => {
+          const childElement = child as HTMLElement;
+          childElement.style.setProperty('opacity', '1', 'important');
+          childElement.style.setProperty('visibility', 'visible', 'important');
+          childElement.style.setProperty('color', getTextColor(), 'important');
+        });
 
-  const getTooltipText = () => {
-    if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
-      const planInfo = subscriptionService.getCurrentPlanInfo();
-      return planInfo.billingPeriod === 'yearly' ? 'Premium Annuel' : 'Premium';
+        // Forcer les pointer-events pour GoogleAuth
+        const googleAuthElements = headerElement.querySelectorAll('.header-auth-container, .header-login-button, .header-logout-button, .header-user-info button');
+        googleAuthElements.forEach(element => {
+          const el = element as HTMLElement;
+          el.style.setProperty('pointer-events', 'auto', 'important');
+          el.style.setProperty('cursor', 'pointer', 'important');
+          el.style.setProperty('z-index', '100001', 'important');
+        });
+      }
+    };
+
+    // Application initiale
+    forceHeaderVisible();
+    setTimeout(forceHeaderVisible, 100);
+    
+    // Observer pour maintenir la visibilité
+    const observer = new MutationObserver(() => {
+      const header = headerRef.current || document.querySelector('.mobile-header');
+      if (header) {
+        const computed = getComputedStyle(header);
+        if (computed.display === 'none' || computed.visibility === 'hidden') {
+          forceHeaderVisible();
+        }
+      }
+    });
+    
+    if (headerRef.current) {
+      observer.observe(headerRef.current, {
+        attributes: true,
+        attributeFilter: ['style', 'class']
+      });
     }
-    return 'Version Gratuite';
-  };
-
-  // Styles dynamiques basés sur le thème
-  const headerStyles = {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    width: '100%',
-    height: '60px',
-    padding: '0 16px',
-    zIndex: 100000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    boxSizing: 'border-box' as const,
-    background: isDarkMode 
-      ? 'linear-gradient(135deg, #cd853f 0%, #8b4513 100%)' 
-      : 'linear-gradient(135deg, #daa520 0%, #f4e4bc 100%)',
-    color: isDarkMode ? 'white' : '#654321',
-    boxShadow: isDarkMode
-      ? '0px 4px 12px rgba(139, 69, 19, 0.4)'
-      : '0px 4px 12px rgba(218, 165, 32, 0.4)',
-    transition: 'background 0.3s ease, color 0.3s ease'
-  };
-
-  const buttonBaseStyles = {
-    border: 'none',
-    borderRadius: '50%',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-    position: 'relative' as const,
-    transition: 'all 0.3s ease',
-    width: '40px',
-    height: '40px',
-    background: isDarkMode 
-      ? 'rgba(255, 255, 255, 0.2)' 
-      : 'rgba(101, 67, 33, 0.2)',
-    color: isDarkMode ? '#fff' : '#654321',
-    border: `2px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.4)' : 'rgba(101, 67, 33, 0.4)'}`,
-    boxShadow: `0 2px 6px ${isDarkMode ? 'rgba(0, 0, 0, 0.15)' : 'rgba(101, 67, 33, 0.15)'}`,
-    backdropFilter: 'blur(10px)'
-  };
-
-  const authButtonStyles = {
-    ...buttonBaseStyles,
-    width: 'auto',
-    minWidth: '80px',
-    maxWidth: '120px',
-    borderRadius: '20px',
-    padding: '8px 16px',
-    fontSize: '13px',
-    fontWeight: '600',
-    whiteSpace: 'nowrap' as const,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis'
-  };
+    
+    return () => observer.disconnect();
+  }, [isDarkMode]); // Ajout de isDarkMode comme dépendance
 
   return (
     <header 
       ref={headerRef}
-      style={headerStyles}
+      className={`mobile-header ${isDarkMode ? 'dark' : 'light'} ${isMainMenu ? 'main-menu' : 'component-view'}`}
+      style={{
+        display: 'flex',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        height: 60,
+        background: getHeaderBackground(),
+        color: getTextColor(),
+        zIndex: 100000,
+        opacity: 1,
+        visibility: 'visible',
+        alignItems: 'center',
+        justifyContent: isMainMenu ? 'space-between' : 'flex-end',
+        padding: '0 16px',
+        boxShadow: isDarkMode 
+          ? '0px 4px 8px rgba(139, 69, 19, 0.3)' 
+          : '0px 4px 8px rgba(218, 165, 32, 0.3)',
+        margin: 0,
+        border: 'none'
+      }}
     >
-      {/* SECTION GAUCHE - Spacer vide */}
-      <div style={{ width: '40px' }} />
-
-      {/* SECTION CENTRE - Titre OU Éléments centrés */}
-      {shouldShowTitle ? (
-        <div style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          fontSize: '1.25rem',
-          fontWeight: '600',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          maxWidth: '200px',
-          pointerEvents: 'none'
-        }}>
-          <h1 style={{
-            fontSize: 'inherit',
-            margin: 0,
-            color: 'inherit'
-          }}>
-            {title}
-          </h1>
-        </div>
-      ) : (
-        /* Éléments centrés pour le menu principal */
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}>
-          {/* Bouton d'abonnement */}
+      {/* Section gauche - Seulement visible dans le menu principal */}
+      {isMainMenu && (
+        <div 
+          className="header-left" 
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 12,
+            minWidth: 80,
+            opacity: 1,
+            visibility: 'visible'
+          }}
+        >
+          {/* Bouton d'abonnement - Maintenant seulement l'icône */}
           {onOpenSubscription && (
             <motion.button 
               onClick={handleSubscriptionClick}
-              style={buttonBaseStyles}
+              className="subscription-status-button"
               variants={buttonVariants}
               initial="initial"
               whileHover="hover"
               whileTap="tap"
               aria-label={getTooltipText()}
               title={getTooltipText()}
+              style={{
+                ...getSubscriptionButtonStyles(),
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: 1,
+                visibility: 'visible',
+                transition: 'all 0.2s ease',
+                fontSize: '16px',
+                padding: 0,
+                flexShrink: 0
+              }}
+              onMouseEnter={(e) => {
+                if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
+                  e.currentTarget.style.transform = 'scale(1.1)';
+                  e.currentTarget.style.boxShadow = `0 4px 12px ${isDarkMode ? 'rgba(255, 215, 0, 0.6)' : 'rgba(245, 158, 11, 0.6)'}`;
+                } else {
+                  e.currentTarget.style.background = getButtonHoverBackground();
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (currentSubscriptionTier === SubscriptionTier.PREMIUM) {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = `0 2px 8px ${isDarkMode ? 'rgba(255, 215, 0, 0.4)' : 'rgba(245, 158, 11, 0.4)'}`;
+                } else {
+                  const styles = getSubscriptionButtonStyles();
+                  e.currentTarget.style.background = styles.background;
+                }
+              }}
             >
               {getSubscriptionIcon()}
             </motion.button>
           )}
 
-          {/* Sélecteur de langue */}
           {shouldShowLanguageSelector && (
-            <div style={{
-              width: '110px',
-              minWidth: '110px',
-              maxWidth: '110px',
-              height: '40px',
-              flexShrink: 0
-            }}>
+            <div 
+              className="language-selector-small" 
+              style={{ 
+                minWidth: 110, 
+                height: 36,
+                opacity: 1,
+                visibility: 'visible',
+                display: 'block',
+                flexShrink: 0
+              }}
+            >
               <LanguageSelector 
                 value={languageCode!}
                 onChange={onLanguageChange!}
@@ -234,28 +337,65 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
           )}
         </div>
       )}
+
+      {/* Section centrale - Titre (seulement dans les composants) */}
+      {shouldShowTitle && (
+        <div 
+          className="header-title" 
+          style={{ 
+            color: getTextColor(),
+            opacity: 1,
+            visibility: 'visible',
+            flex: 1,
+            textAlign: 'center'
+          }}
+        >
+          <h1 style={{ 
+            color: getTextColor(), 
+            fontSize: '1.25rem', 
+            margin: 0,
+            opacity: 1,
+            visibility: 'visible'
+          }}>
+            {title}
+          </h1>
+        </div>
+      )}
       
-      {/* SECTION DROITE - GoogleAuth seulement */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        flex: '0 0 auto',
-        maxWidth: '50%',
-        marginLeft: 'auto'
-      }}>
-        {/* GoogleAuth */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          position: 'relative'
-        }}>
+      {/* Section droite - Actions */}
+      <div 
+        className="header-actions" 
+        style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 12,
+          minWidth: 'auto',
+          opacity: 1,
+          visibility: 'visible'
+        }}
+      >
+        {/* GoogleAuth avec conteneur fixe et styles explicites */}
+        <div 
+          className="mobile-google-auth-container"
+          style={{ 
+            opacity: 1, 
+            visibility: 'visible', 
+            flexShrink: 0,
+            pointerEvents: 'auto',
+            zIndex: 100001,
+            position: 'relative'
+          }}
+        >
           <GoogleAuth 
-            key={`mobile-auth-${authKey}`}
-            onLogin={handleLogin}
-            onLogout={handleLogout}
+            onLogin={(user) => {
+              console.log('[MobileHeader] GoogleAuth onLogin appelé:', user);
+              onLogin(user);
+            }}
+            onLogout={() => {
+              console.log('[MobileHeader] GoogleAuth onLogout appelé');
+              onLogout();
+            }}
             isHeader={true}
-            isMobile={true}
           />
         </div>
       </div>
