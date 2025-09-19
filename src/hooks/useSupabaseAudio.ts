@@ -1,5 +1,11 @@
+// hooks/useSupabaseAudio.ts - Version complète avec gestion des erreurs TypeScript
 import { useState, useCallback, useRef, useEffect } from 'react'
 import SupabaseAudioService from '../services/supabaseAudioService'
+
+// ✅ Fonction utilitaire pour vérifier les AbortError
+function isAbortError(error: unknown): error is DOMException {
+  return error instanceof DOMException && error.name === 'AbortError'
+}
 
 export const useSupabaseAudio = (languageCode: string = 'wf') => {
   const [isPlaying, setIsPlaying] = useState(false)
@@ -10,18 +16,24 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
   // 🔧 REF pour éviter les re-créations multiples
   const currentWordRef = useRef<string | null>(null)
   const audioInstanceRef = useRef<HTMLAudioElement | null>(null)
-  const playingPromiseRef = useRef<Promise<any> | null>(null)
+  const playingPromiseRef = useRef<Promise<void> | null>(null)
 
   // 🧹 Nettoyage à la destruction du composant
   useEffect(() => {
     return () => {
       if (audioInstanceRef.current) {
-        audioInstanceRef.current.pause()
+        try {
+          audioInstanceRef.current.pause()
+          audioInstanceRef.current.currentTime = 0
+        } catch (e) {
+          console.warn('Erreur lors du nettoyage audio:', e)
+        }
         audioInstanceRef.current = null
       }
       if (playingPromiseRef.current) {
         playingPromiseRef.current = null
       }
+      currentWordRef.current = null
     }
   }, [])
 
@@ -56,27 +68,39 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
     try {
       // 🧹 Nettoyage minimal du mot
       let cleanWord = word
+      
+      // Supprimer seulement les anciens préfixes de chemin obsolètes
       if (cleanWord.startsWith('/audio/')) {
         cleanWord = cleanWord.replace('/audio/', '')
       }
+      
+      // Supprimer SEULEMENT les préfixes de langue en début (Wf-, Bm-, Li-)
       if (cleanWord.match(/^(Wf-|Bm-|Li-)/)) {
         cleanWord = cleanWord.substring(3)
       }
       
       console.log(`🎵 Tentative de lecture: "${cleanWord}" en ${languageCode}`)
+      console.log(`📝 Mot original: "${word}" → Mot nettoyé: "${cleanWord}"`)
 
       // 🔍 Recherche audio
       const audioUrl = await SupabaseAudioService.getWordAudioUrl(languageCode, cleanWord)
       
       if (!audioUrl) {
-        console.warn(`❌ Aucun audio trouvé pour: "${cleanWord}"`)
+        console.warn(`❌ Aucun audio trouvé pour: "${cleanWord}" (${languageCode})`)
         setLastError(`Audio non disponible pour "${cleanWord}"`)
         setLoading(false)
         currentWordRef.current = null
+        
+        // Optionnel : diagnostic en mode développement
+        if (process.env.NODE_ENV === 'development') {
+          await SupabaseAudioService.diagnosticSearch(languageCode, cleanWord)
+        }
+        
         return false
       }
 
       // 🎵 Création de l'instance audio
+      console.log(`✅ Audio trouvé, création lecteur...`)
       const audio = new Audio(audioUrl)
       audioInstanceRef.current = audio
       setCurrentAudio(audio)
@@ -127,8 +151,8 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
           setIsPlaying(true)
           return true
         } catch (playError) {
-          // 🚫 Gestion spécifique de l'AbortError
-          if (playError.name === 'AbortError') {
+          // ✅ Gestion sécurisée des erreurs TypeScript
+          if (isAbortError(playError)) {
             console.log(`⏹️ Lecture interrompue pour: ${cleanWord} (normal si changement rapide)`)
           } else {
             console.error(`❌ Erreur démarrage lecture: ${cleanWord}`, playError)
@@ -156,7 +180,7 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
       audioInstanceRef.current = null
       return false
     }
-  }, [languageCode]) // ⚠️ Retirer isPlaying et currentAudio des dépendances
+  }, [languageCode]) // ⚠️ Retirer isPlaying et currentAudio des dépendances pour éviter les boucles
 
   const stopAudio = useCallback(() => {
     if (audioInstanceRef.current) {
@@ -181,12 +205,39 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
     setLastError(null)
   }, [])
 
+  // 🧪 Fonction de diagnostic (utile pour le développement)
+  const diagnoseWord = useCallback(async (word: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      const cleanWord = word.replace(/^(Wf-|Bm-|Li-)/, '').replace(/\.(mp3|wav|ogg)$/i, '')
+      await SupabaseAudioService.diagnosticSearch(languageCode, cleanWord)
+    }
+  }, [languageCode])
+
   return { 
     playWord, 
     stopAudio,
     clearError,
+    diagnoseWord,
     isPlaying, 
     loading,
     lastError
+  }
+}
+
+// Hook utilitaire pour les composants qui ont besoin d'info sur l'état audio global
+export const useAudioState = () => {
+  const [globalAudioState, setGlobalAudioState] = useState({
+    currentlyPlaying: null as string | null,
+    isAnyPlaying: false
+  })
+
+  return {
+    ...globalAudioState,
+    setCurrentlyPlaying: (word: string | null) => {
+      setGlobalAudioState({
+        currentlyPlaying: word,
+        isAnyPlaying: !!word
+      })
+    }
   }
 }
