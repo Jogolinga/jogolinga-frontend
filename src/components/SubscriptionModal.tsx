@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
   Check, 
-  ChevronRight, 
+  ChevronRight,
 } from 'lucide-react';
 import { 
   Lock,
@@ -78,28 +78,19 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   // Validation avec logs détaillés
   const validatePriceId = useCallback((plan: SubscriptionPlan): boolean => {
-    console.log('=== VALIDATION PRICE ID ===');
-    console.log('Plan à valider:', plan.id, plan.name);
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('Toutes les variables env disponibles:', Object.keys(process.env));
+   
     
     if (plan.id === 'premium_monthly') {
       const monthlyPriceId = process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY;
-      console.log('REACT_APP_STRIPE_PRICE_ID_MONTHLY:', monthlyPriceId);
-      console.log('Type:', typeof monthlyPriceId);
-      console.log('Longueur:', monthlyPriceId?.length);
-      console.log('Commence par price_:', monthlyPriceId?.startsWith('price_'));
+     
       return !!monthlyPriceId;
     } else if (plan.id === 'premium_yearly') {
       const annualPriceId = process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL;
-      console.log('REACT_APP_STRIPE_PRICE_ID_ANNUAL:', annualPriceId);
-      console.log('Type:', typeof annualPriceId);
-      console.log('Longueur:', annualPriceId?.length);
-      console.log('Commence par price_:', annualPriceId?.startsWith('price_'));
+      
       return !!annualPriceId;
     }
     
-    console.log('Plan stripePriceId:', plan.stripePriceId);
+   
     return !!plan.stripePriceId;
   }, []);
 
@@ -173,9 +164,7 @@ const handleSubscribe = async () => {
     setIsLoading(true);
     setError(null);
 
-    console.log('🎯 === DÉBUT PROCESSUS ABONNEMENT ===');
-    console.log('📋 Plan sélectionné:', selectedPlan);
-    console.log('📧 Email utilisateur:', userEmail);
+ 
 
     // Validation simplifiée
     if (!validatePriceId(selectedPlan)) {
@@ -184,7 +173,7 @@ const handleSubscribe = async () => {
     }
 
     // Vérifier que le service de paiement est initialisé
-    console.log('⚙️ Initialisation du service de paiement...');
+    
     const isInitialized = await paymentService.initialize();
     if (!isInitialized) {
       throw new Error('Impossible d\'initialiser le service de paiement. Vérifiez votre connexion et vos variables d\'environnement.');
@@ -195,24 +184,22 @@ const handleSubscribe = async () => {
     const token = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('secureToken');
     if (token) {
       paymentService.setAuthToken(token);
-      console.log('🔐 Token d\'authentification configuré');
+      
     } else {
-      console.warn('⚠️ Aucun token d\'authentification trouvé');
+      
     }
 
-    console.log('🚀 Lancement du processus de paiement...');
-    console.log('   → Ceci va créer une session de paiement sur votre backend');
-    console.log('   → Puis rediriger vers Stripe Checkout');
+  
     
     // ← CHANGEMENT PRINCIPAL : Utiliser la nouvelle méthode combinée
     await paymentService.createCheckoutSessionAndRedirect(selectedPlan, userEmail);
     
     // Si on arrive ici sans redirection, c'est qu'il y a eu un problème
-    console.log('⚠️ Aucune redirection effectuée - possible erreur');
+ 
     setError('La redirection vers le paiement n\'a pas fonctionné. Veuillez réessayer.');
 
   } catch (error) {
-    console.error('💥 Erreur lors de l\'abonnement:', error);
+  
     
     // Messages d'erreur plus spécifiques
     let errorMessage = 'Erreur inconnue lors du paiement';
@@ -234,7 +221,7 @@ const handleSubscribe = async () => {
     setError(errorMessage);
   } finally {
     setIsLoading(false);
-    console.log('🏁 === FIN PROCESSUS ABONNEMENT ===');
+   
   }
 };
 
