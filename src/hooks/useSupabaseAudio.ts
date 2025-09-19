@@ -1,5 +1,4 @@
-// hooks/useSupabaseAudio.ts - Version simplifiée avec gestion propre des null
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import SupabaseAudioService from '../services/supabaseAudioService'
 
 export const useSupabaseAudio = (languageCode: string = 'wf') => {
@@ -7,97 +6,145 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null)
   const [loading, setLoading] = useState(false)
   const [lastError, setLastError] = useState<string | null>(null)
+  
+  // 🔧 REF pour éviter les re-créations multiples
+  const currentWordRef = useRef<string | null>(null)
+  const audioInstanceRef = useRef<HTMLAudioElement | null>(null)
+  const playingPromiseRef = useRef<Promise<any> | null>(null)
+
+  // 🧹 Nettoyage à la destruction du composant
+  useEffect(() => {
+    return () => {
+      if (audioInstanceRef.current) {
+        audioInstanceRef.current.pause()
+        audioInstanceRef.current = null
+      }
+      if (playingPromiseRef.current) {
+        playingPromiseRef.current = null
+      }
+    }
+  }, [])
 
   const playWord = useCallback(async (word: string): Promise<boolean> => {
-    // Arrêter l'audio en cours
-    if (isPlaying && currentAudio) {
-      currentAudio.pause()
-      setIsPlaying(false)
-      setCurrentAudio(null)
+    // 🚫 GUARD: Éviter de jouer le même mot plusieurs fois
+    if (currentWordRef.current === word && isPlaying) {
+      console.log(`⚠️ Mot "${word}" déjà en cours de lecture - ignoré`)
+      return true
+    }
+
+    // 🛑 Arrêter proprement l'audio précédent
+    if (audioInstanceRef.current) {
+      try {
+        audioInstanceRef.current.pause()
+        audioInstanceRef.current.currentTime = 0
+      } catch (e) {
+        console.warn('Erreur lors de l\'arrêt de l\'audio précédent:', e)
+      }
+      audioInstanceRef.current = null
+    }
+
+    // 🚫 Annuler la promesse de lecture précédente si elle existe
+    if (playingPromiseRef.current) {
+      playingPromiseRef.current = null
     }
 
     setLoading(true)
     setLastError(null)
+    setIsPlaying(false)
+    currentWordRef.current = word
     
     try {
-      // 🧹 Nettoyage minimal du mot (garder l'intégralité)
+      // 🧹 Nettoyage minimal du mot
       let cleanWord = word
-      
-      // Supprimer seulement les anciens préfixes de chemin obsolètes
       if (cleanWord.startsWith('/audio/')) {
         cleanWord = cleanWord.replace('/audio/', '')
       }
-      
-      // Supprimer SEULEMENT les préfixes de langue en début (Wf-, Bm-, Li-)
       if (cleanWord.match(/^(Wf-|Bm-|Li-)/)) {
         cleanWord = cleanWord.substring(3)
       }
       
       console.log(`🎵 Tentative de lecture: "${cleanWord}" en ${languageCode}`)
-      console.log(`📝 Mot original: "${word}" → Mot nettoyé: "${cleanWord}"`)
 
-      // 🔍 Recherche EXACTE uniquement
+      // 🔍 Recherche audio
       const audioUrl = await SupabaseAudioService.getWordAudioUrl(languageCode, cleanWord)
       
       if (!audioUrl) {
-        // 🚫 PAS D'AUDIO TROUVÉ - Gestion propre
-        console.warn(`❌ Aucun audio trouvé pour: "${cleanWord}" (${languageCode})`)
+        console.warn(`❌ Aucun audio trouvé pour: "${cleanWord}"`)
         setLastError(`Audio non disponible pour "${cleanWord}"`)
         setLoading(false)
-        
-        // Optionnel : diagnostic en mode développement
-        if (process.env.NODE_ENV === 'development') {
-          await SupabaseAudioService.diagnosticSearch(languageCode, cleanWord)
-        }
-        
+        currentWordRef.current = null
         return false
       }
 
-      // 🎵 AUDIO TROUVÉ - Lecture
-      console.log(`✅ Audio trouvé, création lecteur...`)
+      // 🎵 Création de l'instance audio
       const audio = new Audio(audioUrl)
+      audioInstanceRef.current = audio
       setCurrentAudio(audio)
-      setIsPlaying(true)
 
-      // 🎧 Gestionnaires d'événements
-      audio.onended = () => {
-        console.log(`🔚 Lecture terminée: ${cleanWord}`)
-        setIsPlaying(false)
-        setCurrentAudio(null)
-        setLoading(false)
+      // 🎧 Configuration des gestionnaires AVANT le play()
+      const setupEventListeners = () => {
+        if (!audio) return
+
+        audio.onended = () => {
+          console.log(`🔚 Lecture terminée: ${cleanWord}`)
+          setIsPlaying(false)
+          setCurrentAudio(null)
+          setLoading(false)
+          currentWordRef.current = null
+          audioInstanceRef.current = null
+        }
+
+        audio.onerror = (e) => {
+          console.error(`❌ Erreur lecture audio: ${cleanWord}`, e)
+          setLastError(`Erreur de lecture pour "${cleanWord}"`)
+          setIsPlaying(false)
+          setCurrentAudio(null)
+          setLoading(false)
+          currentWordRef.current = null
+          audioInstanceRef.current = null
+        }
+
+        audio.onloadeddata = () => {
+          console.log(`📥 Audio chargé: ${cleanWord}`)
+        }
+
+        audio.oncanplay = () => {
+          console.log(`▶️ Audio prêt: ${cleanWord}`)
+          setLoading(false)
+        }
       }
 
-      audio.onerror = (e) => {
-        console.error(`❌ Erreur lecture audio: ${cleanWord}`, e)
-        setLastError(`Erreur de lecture pour "${cleanWord}"`)
-        setIsPlaying(false)
-        setCurrentAudio(null)
-        setLoading(false)
+      setupEventListeners()
+
+      // 🚀 Tentative de lecture avec gestion des promesses
+      const playPromise = audio.play()
+      playingPromiseRef.current = playPromise
+
+      if (playPromise !== undefined) {
+        try {
+          await playPromise
+          console.log(`🎵 Lecture démarrée: ${cleanWord}`)
+          setIsPlaying(true)
+          return true
+        } catch (playError) {
+          // 🚫 Gestion spécifique de l'AbortError
+          if (playError.name === 'AbortError') {
+            console.log(`⏹️ Lecture interrompue pour: ${cleanWord} (normal si changement rapide)`)
+          } else {
+            console.error(`❌ Erreur démarrage lecture: ${cleanWord}`, playError)
+            setLastError(`Impossible de lire "${cleanWord}"`)
+          }
+          
+          setIsPlaying(false)
+          setCurrentAudio(null)
+          setLoading(false)
+          currentWordRef.current = null
+          audioInstanceRef.current = null
+          return false
+        }
       }
 
-      audio.onloadeddata = () => {
-        console.log(`📥 Audio chargé: ${cleanWord}`)
-        setLoading(false)
-      }
-
-      audio.oncanplay = () => {
-        console.log(`▶️ Audio prêt: ${cleanWord}`)
-        setLoading(false)
-      }
-
-      // 🚀 Démarrage de la lecture
-      try {
-        await audio.play()
-        console.log(`🎵 Lecture démarrée: ${cleanWord}`)
-        return true
-      } catch (playError) {
-        console.error(`❌ Erreur démarrage lecture: ${cleanWord}`, playError)
-        setLastError(`Impossible de lire "${cleanWord}"`)
-        setIsPlaying(false)
-        setCurrentAudio(null)
-        setLoading(false)
-        return false
-      }
+      return true
 
     } catch (error) {
       console.error(`💥 Erreur générale: ${word}`, error)
@@ -105,58 +152,41 @@ export const useSupabaseAudio = (languageCode: string = 'wf') => {
       setIsPlaying(false)
       setCurrentAudio(null)
       setLoading(false)
+      currentWordRef.current = null
+      audioInstanceRef.current = null
       return false
     }
-  }, [isPlaying, currentAudio, languageCode])
+  }, [languageCode]) // ⚠️ Retirer isPlaying et currentAudio des dépendances
 
   const stopAudio = useCallback(() => {
-    if (currentAudio) {
-      currentAudio.pause()
-      currentAudio.currentTime = 0
-      setIsPlaying(false)
-      setCurrentAudio(null)
+    if (audioInstanceRef.current) {
+      try {
+        audioInstanceRef.current.pause()
+        audioInstanceRef.current.currentTime = 0
+      } catch (e) {
+        console.warn('Erreur lors de l\'arrêt:', e)
+      }
+      audioInstanceRef.current = null
     }
+    
+    setIsPlaying(false)
+    setCurrentAudio(null)
     setLoading(false)
     setLastError(null)
-  }, [currentAudio])
+    currentWordRef.current = null
+    playingPromiseRef.current = null
+  }, [])
 
   const clearError = useCallback(() => {
     setLastError(null)
   }, [])
 
-  // 🧪 Fonction de diagnostic (utile pour le développement)
-  const diagnoseWord = useCallback(async (word: string) => {
-    if (process.env.NODE_ENV === 'development') {
-      const cleanWord = word.replace(/^(Wf-|Bm-|Li-)/, '').replace(/\.(mp3|wav|ogg)$/i, '')
-      await SupabaseAudioService.diagnosticSearch(languageCode, cleanWord)
-    }
-  }, [languageCode])
-
   return { 
     playWord, 
     stopAudio,
     clearError,
-    diagnoseWord,
     isPlaying, 
     loading,
     lastError
-  }
-}
-
-// Hook utilitaire pour les composants qui ont besoin d'info sur l'état audio
-export const useAudioState = () => {
-  const [globalAudioState, setGlobalAudioState] = useState({
-    currentlyPlaying: null as string | null,
-    isAnyPlaying: false
-  })
-
-  return {
-    ...globalAudioState,
-    setCurrentlyPlaying: (word: string | null) => {
-      setGlobalAudioState({
-        currentlyPlaying: word,
-        isAnyPlaying: !!word
-      })
-    }
   }
 }
