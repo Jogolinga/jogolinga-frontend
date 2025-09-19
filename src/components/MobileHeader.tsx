@@ -3,7 +3,6 @@ import { Moon, Sun } from 'lucide-react';
 import { motion } from 'framer-motion';
 import LanguageSelector from './LanguageSelector';
 import { LanguageCode, AppMode } from '../types/types';
-import './MobileHeader.css';
 import { useTheme } from './ThemeContext';
 import GoogleAuth from './GoogleAuth';
 import subscriptionService, { SubscriptionTier } from '../services/subscriptionService';
@@ -100,19 +99,113 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
     return 'Version Gratuite';
   };
 
+  // Styles dynamiques basés sur le thème
+  const headerStyles = {
+    position: 'fixed' as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    height: '60px',
+    padding: '0 16px',
+    zIndex: 100000,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    boxSizing: 'border-box' as const,
+    background: isDarkMode 
+      ? 'linear-gradient(135deg, #cd853f 0%, #8b4513 100%)' 
+      : 'linear-gradient(135deg, #daa520 0%, #f4e4bc 100%)',
+    color: isDarkMode ? 'white' : '#654321',
+    boxShadow: isDarkMode
+      ? '0px 4px 12px rgba(139, 69, 19, 0.4)'
+      : '0px 4px 12px rgba(218, 165, 32, 0.4)',
+    transition: 'background 0.3s ease, color 0.3s ease'
+  };
+
+  const buttonBaseStyles = {
+    border: 'none',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+    position: 'relative' as const,
+    transition: 'all 0.3s ease',
+    width: '40px',
+    height: '40px',
+    background: isDarkMode 
+      ? 'rgba(255, 255, 255, 0.2)' 
+      : 'rgba(101, 67, 33, 0.2)',
+    color: isDarkMode ? '#fff' : '#654321',
+    border: `2px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.4)' : 'rgba(101, 67, 33, 0.4)'}`,
+    boxShadow: `0 2px 6px ${isDarkMode ? 'rgba(0, 0, 0, 0.15)' : 'rgba(101, 67, 33, 0.15)'}`,
+    backdropFilter: 'blur(10px)'
+  };
+
+  const authButtonStyles = {
+    ...buttonBaseStyles,
+    width: 'auto',
+    minWidth: '80px',
+    maxWidth: '120px',
+    borderRadius: '20px',
+    padding: '8px 16px',
+    fontSize: '13px',
+    fontWeight: '600',
+    whiteSpace: 'nowrap' as const,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+  };
+
   return (
     <header 
       ref={headerRef}
-      className={`mobile-header ${isDarkMode ? 'dark' : 'light'} ${isMainMenu ? 'main-menu' : 'component-view'}`}
+      style={headerStyles}
     >
-      {/* SECTION GAUCHE - Elements fixes */}
-      {isMainMenu ? (
-        <div className="header-left">
+      {/* SECTION GAUCHE - Spacer vide */}
+      <div style={{ width: '40px' }} />
+
+      {/* SECTION CENTRE - Titre OU Éléments centrés */}
+      {shouldShowTitle ? (
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: '1.25rem',
+          fontWeight: '600',
+          textAlign: 'center',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          maxWidth: '200px',
+          pointerEvents: 'none'
+        }}>
+          <h1 style={{
+            fontSize: 'inherit',
+            margin: 0,
+            color: 'inherit'
+          }}>
+            {title}
+          </h1>
+        </div>
+      ) : (
+        /* Éléments centrés pour le menu principal */
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)'
+        }}>
           {/* Bouton d'abonnement */}
           {onOpenSubscription && (
             <motion.button 
               onClick={handleSubscriptionClick}
-              className="subscription-status-button"
+              style={buttonBaseStyles}
               variants={buttonVariants}
               initial="initial"
               whileHover="hover"
@@ -126,7 +219,13 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
 
           {/* Sélecteur de langue */}
           {shouldShowLanguageSelector && (
-            <div className="language-selector-small">
+            <div style={{
+              width: '110px',
+              minWidth: '110px',
+              maxWidth: '110px',
+              height: '40px',
+              flexShrink: 0
+            }}>
               <LanguageSelector 
                 value={languageCode!}
                 onChange={onLanguageChange!}
@@ -134,21 +233,23 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             </div>
           )}
         </div>
-      ) : (
-        <div style={{ width: 0 }} />
-      )}
-
-      {/* SECTION CENTRE - Titre (composants seulement) */}
-      {shouldShowTitle && (
-        <div className="header-title">
-          <h1>{title}</h1>
-        </div>
       )}
       
-      {/* SECTION DROITE - Actions */}
-      <div className="header-actions">
+      {/* SECTION DROITE - GoogleAuth seulement */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        flex: '0 0 auto',
+        maxWidth: '50%',
+        marginLeft: 'auto'
+      }}>
         {/* GoogleAuth */}
-        <div className="mobile-google-auth-container">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          position: 'relative'
+        }}>
           <GoogleAuth 
             key={`mobile-auth-${authKey}`}
             onLogin={handleLogin}
@@ -157,26 +258,6 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({
             isMobile={true}
           />
         </div>
-        
-        {/* Bouton de thème (menu principal seulement) */}
-        {isMainMenu && (
-          <motion.button 
-            onClick={toggleTheme}
-            className="theme-toggle-button"
-            variants={buttonVariants}
-            initial="initial"
-            whileHover="hover"
-            whileTap="tap"
-            aria-label={`Passer en mode ${isDarkMode ? 'clair' : 'sombre'}`}
-            title={`Passer en mode ${isDarkMode ? 'clair' : 'sombre'}`}
-          >
-            {isDarkMode ? (
-              <Sun size={22} strokeWidth={2.5} />
-            ) : (
-              <Moon size={22} strokeWidth={2.5} />
-            )}
-          </motion.button>
-        )}
       </div>
     </header>
   );
