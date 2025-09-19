@@ -1522,24 +1522,54 @@ const checkAndSelectModule = async (tabId: MainTab, moduleId: SubModule, module:
       )}
       
       {/* Navigation inférieure - UNIQUEMENT SUR MOBILE */}
-      {isMobileView && (
-        <div 
-          className="bottom-navigation"
-          style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            width: '100%',
-            height: '70px',
-            background: '#1e293b',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            zIndex: 1000,
-            borderTop: '1px solid #374151',
-            boxSizing: 'border-box'
-          }}
+     {isMobileView && (
+  <motion.button 
+    onClick={toggleTheme}
+    className="mobile-theme-toggle-button"
+    variants={getVariants()}
+    initial="initial"
+    animate="animate"
+    whileHover="hover"
+    whileTap="tap"
+    aria-label={`Passer en mode ${theme === 'dark' ? 'clair' : 'sombre'}`}
+    style={{
+      width: '100%',
+      height: '50px',
+      margin: '15px 0',
+      borderRadius: '12px',
+      border: 'none',
+      background: theme === 'dark' 
+        ? 'linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))' 
+        : 'linear-gradient(45deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.02))',
+      color: theme === 'dark' ? 'white' : '#333',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '12px',
+      fontSize: '16px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      boxShadow: theme === 'dark'
+        ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+        : '0 4px 12px rgba(0, 0, 0, 0.1)',
+      border: `2px solid ${theme === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'}`,
+      backdropFilter: 'blur(10px)'
+    }}
+  >
+    {theme === 'dark' ? (
+      <>
+        <Sun size={24} strokeWidth={2.5} />
+        <span>Mode Clair</span>
+      </>
+    ) : (
+      <>
+        <Moon size={24} strokeWidth={2.5} />
+        <span>Mode Sombre</span>
+      </>
+    )}
+  </motion.button>
+)}
         >
           <div className="bottom-nav-container">
             <button 
