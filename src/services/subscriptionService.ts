@@ -328,7 +328,12 @@ class SubscriptionService {
     }
   }
 
-
+  // Réinitialiser l'abonnement (pour les tests)
+  public resetSubscription(): void {
+    localStorage.removeItem('user_subscription');
+    this.initializeFreeSubscription();
+    console.log('[SubscriptionService] Abonnement réinitialisé');
+  }
 
   // 🆕 NOUVELLE MÉTHODE: Migrer d'un plan à un autre
   public changePlan(newPlanId: string, billingPeriod: 'monthly' | 'yearly'): void {
