@@ -5,7 +5,7 @@ import {
   X, 
   Check, 
   ChevronRight,
-  ExternalLink,
+  External,
 } from 'lucide-react';
 import { 
   Lock,
@@ -495,7 +495,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     type="button"
                   >
                     Conditions d'utilisation
-                    <ExternalLink size={14} />
+                    <External size={14} />
                   </button>
                   {' '}et notre{' '}
                   <button 
@@ -504,7 +504,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     type="button"
                   >
                     Politique de confidentialité
-                    <ExternalLink size={14} />
+                    <External size={14} />
                   </button>
                   . Vous pouvez annuler votre abonnement à tout moment.
                 </p>
