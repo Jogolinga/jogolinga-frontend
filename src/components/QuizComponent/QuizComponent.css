@@ -214,7 +214,7 @@ body:has(.quiz-force-center) .bottom-navigation {
 }
 
 .quiz-force-center .quiz-description {
-  color: var(--grammar-dark-text-secondary) !important;
+  color: #ffffff !important; /* Blanc en mode sombre */
   text-align: center !important;
   margin-bottom: var(--spacing-2xl) !important;
   font-size: 17px !important;
@@ -223,6 +223,8 @@ body:has(.quiz-force-center) .bottom-navigation {
   max-width: 600px !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  /* Optionnel : légère ombre pour la lisibilité */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Mode Clair */
