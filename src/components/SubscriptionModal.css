@@ -2252,7 +2252,170 @@ iframe[src*="gstatic"] {
 [data-theme="light"] .subscription-modal::-webkit-scrollbar-thumb:hover {
   background: var(--subscription-light-secondary);
 }
+/* ===============================================
+   STYLES POUR LES LIENS LÉGAUX - À ajouter à SubscriptionModal.css
+   =============================================== */
 
+/* Section des conditions */
+.terms-section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.terms-text {
+  font-size: 13px;
+  color: var(--subscription-dark-text-secondary) !important;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+@media (max-width: 480px) {
+  .terms-text {
+    font-size: 12px !important;
+  }
+}
+
+.light .terms-text,
+[data-theme="light"] .terms-text {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 400;
+}
+
+/* Liens cliquables */
+.legal-link {
+  color: var(--subscription-dark-primary) !important;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  font-family: inherit;
+  padding: 2px 4px;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition-normal);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.legal-link:hover {
+  color: var(--subscription-dark-accent) !important;
+  text-decoration: none;
+  background: rgba(210, 105, 30, 0.1);
+  transform: translateY(-1px);
+}
+
+.legal-link:focus {
+  outline: 3px solid var(--subscription-dark-primary) !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.legal-link:active {
+  transform: translateY(0);
+}
+
+/* Mode clair */
+.light .legal-link,
+[data-theme="light"] .legal-link {
+  color: var(--subscription-light-primary) !important;
+  font-weight: 600;
+}
+
+.light .legal-link:hover,
+[data-theme="light"] .legal-link:hover {
+  color: var(--subscription-light-secondary) !important;
+  background: rgba(139, 69, 19, 0.1);
+}
+
+.light .legal-link:focus,
+[data-theme="light"] .legal-link:focus {
+  outline-color: var(--subscription-light-primary) !important;
+}
+
+/* Animation pour les icônes */
+.legal-link svg {
+  transition: transform var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.legal-link:hover svg {
+  transform: translateX(2px) scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .terms-section {
+    margin: 16px 0;
+  }
+  
+  .legal-link {
+    padding: 4px 6px;
+    gap: 3px;
+  }
+  
+  .legal-link svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .legal-link {
+    padding: 3px 5px;
+    gap: 2px;
+  }
+  
+  .legal-link svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .legal-link,
+  .legal-link svg {
+    transition: none !important;
+  }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+  .legal-link {
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    border: 1px solid currentColor;
+  }
+  
+  .light .legal-link,
+  [data-theme="light"] .legal-link {
+    color: #8b4513 !important;
+  }
+}
+
+/* Support tactile */
+@media (hover: none) and (pointer: coarse) {
+  .legal-link:hover {
+    transform: none;
+    background: none;
+  }
+  
+  .legal-link:active {
+    transform: scale(0.98);
+    background: rgba(210, 105, 30, 0.2);
+  }
+  
+  .light .legal-link:active,
+  [data-theme="light"] .legal-link:active {
+    background: rgba(139, 69, 19, 0.2);
+  }
+}
 /* ===============================================
    FIN DU FICHIER SUBSCRIPTIONMODAL.CSS COMPLET ET HARMONISÉ
    AVEC BOUTONS DYNAMIQUES ET CORRECTIONS MOBILES + SUPERPOSITION
