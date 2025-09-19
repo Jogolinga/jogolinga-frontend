@@ -1010,7 +1010,7 @@ const checkAndSelectModule = async (tabId: MainTab, moduleId: SubModule, module:
         </header>
       )}
 
-      {/* Logo et informations utilisateur */}
+    {/* Logo et informations utilisateur */}
       <div 
         className="modern-logo-container"
         style={{
@@ -1048,21 +1048,85 @@ const checkAndSelectModule = async (tabId: MainTab, moduleId: SubModule, module:
           />
         </motion.div>
         
-        <motion.h1 
-          className="modern-logo-title"
-          variants={getVariants()}
-          initial="initial"
-          animate="animate"
+        {/* Conteneur titre + bouton thème */}
+        <div 
+          className="logo-title-container"
           style={{
-            ...(isMobileView ? {
-              fontSize: '24px',
-              margin: '0',
-              color: 'white'
-            } : {})
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '15px',
+            position: 'relative'
           }}
         >
-          JogoLinga
-        </motion.h1>
+          <motion.h1 
+            className="modern-logo-title"
+            variants={getVariants()}
+            initial="initial"
+            animate="animate"
+            style={{
+              ...(isMobileView ? {
+                fontSize: '24px',
+                margin: '0',
+                color: 'white'
+              } : {
+                margin: '0'
+              })
+            }}
+          >
+            JogoLinga
+          </motion.h1>
+          
+          {/* Bouton thème comme logo à droite du titre */}
+          {isMobileView && (
+            <motion.button 
+              onClick={toggleTheme}
+              className="logo-theme-button"
+              variants={getVariants()}
+              initial="initial"
+              animate="animate"
+              whileHover="hover"
+              whileTap="tap"
+              aria-label={`Passer en mode ${theme === 'dark' ? 'clair' : 'sombre'}`}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                border: 'none',
+                background: theme === 'dark' 
+                  ? 'linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.08))' 
+                  : 'linear-gradient(45deg, rgba(101, 67, 33, 0.12), rgba(101, 67, 33, 0.06))',
+                color: theme === 'dark' ? '#ffd700' : '#4a5568',
+                display: 'flex !important' as any,
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: theme === 'dark'
+                  ? '0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                  : '0 4px 12px rgba(101, 67, 33, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                backdropFilter: 'blur(10px)',
+                position: 'relative',
+                overflow: 'hidden',
+                opacity: 1,
+                visibility: 'visible',
+                zIndex: 1005,
+                flexShrink: 0
+              }}
+            >
+              {theme === 'dark' ? (
+                <Sun size={20} strokeWidth={2.5} style={{ 
+                  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))'
+                }} />
+              ) : (
+                <Moon size={20} strokeWidth={2.5} style={{ 
+                  filter: 'drop-shadow(0 2px 4px rgba(101, 67, 33, 0.3))'
+                }} />
+              )}
+            </motion.button>
+          )}
+        </div>
+        
         
         {/* Bouton d'abonnement unifié - UNIQUEMENT en vue desktop */}
         {!isMobileView && onOpenSubscription && (
@@ -1217,100 +1281,10 @@ const checkAndSelectModule = async (tabId: MainTab, moduleId: SubModule, module:
         </div>
       </motion.div>
 
-      {/* ✅ COLLEZ LE BOUTON DE THÈME ICI - JUSTE APRÈS LA FERMETURE DE motion.div PRÉCÉDENTE */}
-      {isMobileView && (
-        <motion.button 
-          onClick={toggleTheme}
-          className="mobile-theme-toggle-button"
-          variants={getVariants()}
-          initial="initial"
-          animate="animate"
-          whileHover="hover"
-          whileTap="tap"
-          aria-label={`Passer en mode ${theme === 'dark' ? 'clair' : 'sombre'}`}
-          style={{
-            width: '100%',
-            height: '55px',
-            margin: '15px 0 20px 0',
-            borderRadius: '15px',
-            border: 'none',
-            background: theme === 'dark' 
-              ? 'linear-gradient(45deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06))' 
-              : 'linear-gradient(45deg, rgba(101, 67, 33, 0.08), rgba(101, 67, 33, 0.04))',
-            color: theme === 'dark' ? '#ffffff' : '#654321',
-            display: 'flex !important' as any,
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '15px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: theme === 'dark'
-              ? '0 6px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-              : '0 6px 20px rgba(101, 67, 33, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+     
+          
          
-            backdropFilter: 'blur(10px)',
-            position: 'relative',
-            overflow: 'hidden',
-            opacity: 1,
-            visibility: 'visible',
-            zIndex: 1005,
-            backgroundSize: '200% 200%'
-          }}
-        >
-          {/* Effet de brillance subtil */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '-100%',
-            width: '100%',
-            height: '100%',
-            background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
-            zIndex: -1
-          }} />
-          
-          {/* Icône et texte */}
-          {theme === 'dark' ? (
-            <>
-              <Sun size={26} strokeWidth={2.5} style={{ 
-                filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
-                color: '#ffd700' 
-              }} />
-              <span style={{ 
-                textShadow: '0 1px 3px rgba(0, 0, 0, 0.3)',
-                letterSpacing: '0.5px'
-              }}>
-                Mode Clair
-              </span>
-            </>
-          ) : (
-            <>
-              <Moon size={26} strokeWidth={2.5} style={{ 
-                filter: 'drop-shadow(0 2px 4px rgba(101, 67, 33, 0.3))',
-                color: '#4a5568' 
-              }} />
-              <span style={{ 
-                textShadow: '0 1px 2px rgba(101, 67, 33, 0.2)',
-                letterSpacing: '0.5px'
-              }}>
-                Mode Sombre
-              </span>
-            </>
-          )}
-          
-          {/* Indicateur d'état */}
-          <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            background: theme === 'dark' ? '#ffd700' : '#4a5568',
-            marginLeft: 'auto',
-            marginRight: '5px',
-            boxShadow: `0 0 8px ${theme === 'dark' ? '#ffd700' : '#4a5568'}`
-          }} />
-        </motion.button>
-      )}
+         
 
 
       {/* Onglets pour navigation desktop - UNIQUEMENT sur desktop */}
