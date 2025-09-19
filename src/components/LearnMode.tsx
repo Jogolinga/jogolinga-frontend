@@ -141,7 +141,8 @@ const LearnMode: React.FC<LearnModeExtendedProps> = ({
   
   const storageKey = `${languageCode}-${category}-completed`;
 
-
+const audioPlayedRef = useRef<Set<string>>(new Set())
+const lastPlayedWordRef = useRef<string | null>(null)
   const { playSummaryAudio } = useSummaryAudio();
 
   // 🔧 NOUVEAU : Fonction pour charger les mots appris PAR CATÉGORIE
@@ -1188,13 +1189,39 @@ useEffect(() => {
   }, [mode, currentWords, currentWordIndex, languageCode, category]);
 
   useEffect(() => {
-    if (mode === 'preview' && currentWords[currentWordIndex]) {
-      const [, { audio }] = currentWords[currentWordIndex];
-      if (audio) {
-        playWord(audio).catch(console.error);
-      }
+  if (mode === 'preview' && currentWords.length > 0 && currentWordIndex < currentWords.length) {
+    const [currentWord, currentWordData] = currentWords[currentWordIndex]
+    
+    // 🚫 Guard: Éviter les lectures multiples du même mot
+    const audioKey = `${currentWord}-${currentWordIndex}`
+    if (!currentWordData?.audio || lastPlayedWordRef.current === audioKey) {
+      return
     }
-  }, [mode, currentWordIndex, currentWords, playWord]);
+    
+    console.log(`🎵 Planning audio for word: ${currentWord}`)
+    lastPlayedWordRef.current = audioKey
+    
+    // Délai pour éviter les appels trop rapprochés
+    const timer = setTimeout(() => {
+      if (lastPlayedWordRef.current === audioKey) {
+        playWord(currentWordData.audio!).catch(error => {
+          console.error('Erreur lecture audio:', error)
+        })
+        
+        // Reset après la lecture
+        setTimeout(() => {
+          if (lastPlayedWordRef.current === audioKey) {
+            lastPlayedWordRef.current = null
+          }
+        }, 2000)
+      }
+    }, 500)
+    
+    return () => {
+      clearTimeout(timer)
+    }
+  }
+}, [mode, currentWordIndex, currentWords, playWord])
 
   useEffect(() => {
     setSessionLearnedWords(new Set());
