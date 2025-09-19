@@ -1,4 +1,4 @@
-// SubscriptionModal.tsx - Version minimale sans erreurs TypeScript
+// SubscriptionModal.tsx - Version avec ChevronRight
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -78,19 +78,13 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
 
   // Validation avec logs détaillés
   const validatePriceId = useCallback((plan: SubscriptionPlan): boolean => {
-   
-    
     if (plan.id === 'premium_monthly') {
       const monthlyPriceId = process.env.REACT_APP_STRIPE_PRICE_ID_MONTHLY;
-     
       return !!monthlyPriceId;
     } else if (plan.id === 'premium_yearly') {
       const annualPriceId = process.env.REACT_APP_STRIPE_PRICE_ID_ANNUAL;
-      
       return !!annualPriceId;
     }
-    
-   
     return !!plan.stripePriceId;
   }, []);
 
@@ -154,76 +148,62 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
     setSelectedPlan(plan);
   };
 
-
-const handleSubscribe = async () => {
-  if (!selectedPlan || selectedPlan.tier === SubscriptionTier.FREE) {
-    return;
-  }
-
-  try {
-    setIsLoading(true);
-    setError(null);
-
- 
-
-    // Validation simplifiée
-    if (!validatePriceId(selectedPlan)) {
-      setError('Configuration Stripe manquante. Vérifiez vos variables d\'environnement.');
+  const handleSubscribe = async () => {
+    if (!selectedPlan || selectedPlan.tier === SubscriptionTier.FREE) {
       return;
     }
 
-    // Vérifier que le service de paiement est initialisé
-    
-    const isInitialized = await paymentService.initialize();
-    if (!isInitialized) {
-      throw new Error('Impossible d\'initialiser le service de paiement. Vérifiez votre connexion et vos variables d\'environnement.');
-    }
-    console.log('✅ Service de paiement initialisé');
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    // Définir le token d'authentification si disponible
-    const token = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('secureToken');
-    if (token) {
-      paymentService.setAuthToken(token);
-      
-    } else {
-      
-    }
-
-  
-    
-    // ← CHANGEMENT PRINCIPAL : Utiliser la nouvelle méthode combinée
-    await paymentService.createCheckoutSessionAndRedirect(selectedPlan, userEmail);
-    
-    // Si on arrive ici sans redirection, c'est qu'il y a eu un problème
- 
-    setError('La redirection vers le paiement n\'a pas fonctionné. Veuillez réessayer.');
-
-  } catch (error) {
-  
-    
-    // Messages d'erreur plus spécifiques
-    let errorMessage = 'Erreur inconnue lors du paiement';
-    
-    if (error instanceof Error) {
-      if (error.message.includes('Price ID manquant')) {
-        errorMessage = 'Configuration des prix manquante. Contactez le support.';
-      } else if (error.message.includes('Backend inaccessible')) {
-        errorMessage = 'Service temporairement indisponible. Veuillez réessayer.';
-      } else if (error.message.includes('Stripe n\'est pas disponible')) {
-        errorMessage = 'Erreur de configuration du paiement. Contactez le support.';
-      } else if (error.message.includes('Session ID manquant')) {
-        errorMessage = 'Erreur lors de la création de la session de paiement.';
-      } else {
-        errorMessage = error.message;
+      // Validation simplifiée
+      if (!validatePriceId(selectedPlan)) {
+        setError('Configuration Stripe manquante. Vérifiez vos variables d\'environnement.');
+        return;
       }
+
+      // Vérifier que le service de paiement est initialisé
+      const isInitialized = await paymentService.initialize();
+      if (!isInitialized) {
+        throw new Error('Impossible d\'initialiser le service de paiement. Vérifiez votre connexion et vos variables d\'environnement.');
+      }
+
+      // Définir le token d'authentification si disponible
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token') || localStorage.getItem('secureToken');
+      if (token) {
+        paymentService.setAuthToken(token);
+      }
+      
+      // Utiliser la nouvelle méthode combinée
+      await paymentService.createCheckoutSessionAndRedirect(selectedPlan, userEmail);
+      
+      // Si on arrive ici sans redirection, c'est qu'il y a eu un problème
+      setError('La redirection vers le paiement n\'a pas fonctionné. Veuillez réessayer.');
+
+    } catch (error) {
+      // Messages d'erreur plus spécifiques
+      let errorMessage = 'Erreur inconnue lors du paiement';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Price ID manquant')) {
+          errorMessage = 'Configuration des prix manquante. Contactez le support.';
+        } else if (error.message.includes('Backend inaccessible')) {
+          errorMessage = 'Service temporairement indisponible. Veuillez réessayer.';
+        } else if (error.message.includes('Stripe n\'est pas disponible')) {
+          errorMessage = 'Erreur de configuration du paiement. Contactez le support.';
+        } else if (error.message.includes('Session ID manquant')) {
+          errorMessage = 'Erreur lors de la création de la session de paiement.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setError(errorMessage);
-  } finally {
-    setIsLoading(false);
-   
-  }
-};
+  };
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -289,6 +269,16 @@ const handleSubscribe = async () => {
         setIsLoading(false);
       }
     }
+  };
+
+  // Fonction pour ouvrir les conditions d'utilisation
+  const openTerms = () => {
+    window.open('/terms', '_blank', 'noopener,noreferrer');
+  };
+
+  // Fonction pour ouvrir la politique de confidentialité
+  const openPrivacy = () => {
+    window.open('/privacy', '_blank', 'noopener,noreferrer');
   };
 
   if (!isOpen) return null;
@@ -490,10 +480,30 @@ const handleSubscribe = async () => {
                 )}
               </motion.button>
               
-              <p className="terms-text">
-                En vous abonnant, vous acceptez nos Conditions Générales et notre Politique de Confidentialité. 
-                Vous pouvez annuler votre abonnement à tout moment.
-              </p>
+              {/* Section avec les liens cliquables vers les conditions */}
+              <div className="terms-section">
+                <p className="terms-text">
+                  En vous abonnant, vous acceptez nos{' '}
+                  <button 
+                    className="legal-link" 
+                    onClick={openTerms}
+                    type="button"
+                  >
+                    Conditions d'utilisation
+                    <ChevronRight size={14} />
+                  </button>
+                  {' '}et notre{' '}
+                  <button 
+                    className="legal-link" 
+                    onClick={openPrivacy}
+                    type="button"
+                  >
+                    Politique de confidentialité
+                    <ChevronRight size={14} />
+                  </button>
+                  . Vous pouvez annuler votre abonnement à tout moment.
+                </p>
+              </div>
               
               <div className="security-info">
                 <div className="security-header">
