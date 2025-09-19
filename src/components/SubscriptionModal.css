@@ -1,9 +1,2262 @@
 /* ===============================================
-   CSS SIMPLE POUR LES LIENS LÉGAUX
-   À ajouter à la fin de votre SubscriptionModal.css
+   SUBSCRIPTIONMODAL.CSS - VERSION COMPLÈTE CORRIGÉE POUR SUPERPOSITION
+   Harmonisé avec CategorySelection.css pour une cohérence visuelle parfaite
+   CORRIGÉ POUR PROBLÈME DE TRONCATURE MOBILE + MODE SOMBRE LUMINEUX + MODE CLAIR CONTRASTÉ
+   AVEC BOUTONS DYNAMIQUES + CORRECTION SUPERPOSITION Z-INDEX
    =============================================== */
 
-/* Section des conditions d'utilisation */
+/* ===============================================
+   CORRECTIONS CRITIQUES POUR PROBLÈME DE SUPERPOSITION
+   =============================================== */
+
+/* Augmenter drastiquement le z-index */
+.subscription-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 999999 !important; /* Augmenté de 9999 à 999999 */
+  background: rgba(0, 0, 0, 0.95) !important; /* Background plus opaque */
+  backdrop-filter: blur(20px) !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  overflow-y: auto !important;
+  padding: 80px 10px 20px 10px !important;
+  box-sizing: border-box !important;
+  /* Nouvelles propriétés pour forcer l'affichage */
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  /* Isolation du contexte de pile */
+  isolation: isolate !important;
+}
+
+.subscription-modal {
+  position: relative !important;
+  z-index: 1000000 !important; /* Encore plus élevé */
+  background: var(--subscription-dark-card) !important;
+  backdrop-filter: blur(15px) !important;
+  border-radius: var(--radius-2xl) !important;
+  width: 100% !important;
+  max-width: 1000px !important;
+  padding: var(--spacing-3xl) !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8) !important; /* Ombre plus marquée */
+  border: 2px solid var(--subscription-dark-border) !important;
+  margin: 0 auto !important;
+  color: var(--subscription-dark-text) !important;
+  overflow: visible !important;
+  /* Nouvelles propriétés */
+  transform: translateZ(0) !important; /* Force hardware acceleration */
+  will-change: transform !important;
+  /* Isolation du contexte de pile */
+  isolation: isolate !important;
+}
+
+/* Masquer ou réduire z-index des éléments problématiques */
+iframe:not(.subscription-modal iframe),
+#root > *:not(.subscription-modal-overlay),
+.app-container > *:not(.subscription-modal-overlay),
+body > *:not(.subscription-modal-overlay) {
+  z-index: 1 !important;
+}
+
+/* Force la visibilité du modal par-dessus tout */
+.subscription-modal-overlay.force-display {
+  z-index: 2147483647 !important; /* Maximum z-index possible */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  background: rgba(0, 0, 0, 0.95) !important;
+}
+
+.subscription-modal.force-display {
+  z-index: 2147483646 !important;
+  position: relative !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Désactiver les interactions avec les éléments en arrière-plan */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+body.modal-open > *:not(.subscription-modal-overlay) {
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Styles spécifiques pour contrer les iframes Google */
+iframe[src*="google"],
+iframe[src*="accounts.google"],
+iframe[src*="gstatic"] {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+/* Masquer spécifiquement les éléments Google qui peuvent interférer */
+[id*="google"],
+[class*="google"]:not(.subscription-modal *),
+[data-google]:not(.subscription-modal *) {
+  z-index: 1 !important;
+}
+
+/* Classes utilitaires pour forcer l'affichage */
+.modal-force-front {
+  z-index: 2147483647 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Support pour les navigateurs anciens */
+@supports not (z-index: 2147483647) {
+  .subscription-modal-overlay {
+    z-index: 99999 !important;
+  }
+  
+  .subscription-modal {
+    z-index: 100000 !important;
+  }
+}
+
+/* ===============================================
+   VARIABLES COULEURS - THÈME TERRE CUITE/CRÈME AMÉLIORÉ
+   =============================================== */
+:root {
+  /* Mode Sombre - Couleurs plus lumineuses et contrastées */
+  --subscription-dark-primary: #d2691e;        /* Orange terre cuite plus clair */
+  --subscription-dark-secondary: #8b4513;      /* Marron moyen */
+  --subscription-dark-accent: #cd853f;         /* Ocre doré */
+  --subscription-dark-bg: rgba(210, 105, 30, 0.15);     /* Orange transparent */
+  --subscription-dark-card: rgba(30, 41, 59, 0.95);     /* Ardoise sombre mais lisible */
+  --subscription-dark-border: rgba(210, 105, 30, 0.4);  /* Bordure orange visible */
+  --subscription-dark-text: #f1f5f9;          /* Blanc cassé pour le texte */
+  --subscription-dark-text-secondary: #cbd5e1; /* Gris clair pour texte secondaire */
+  --subscription-dark-overlay: rgba(0, 0, 0, 0.75); /* Overlay moins opaque */
+  
+  /* Mode Clair - Couleurs Sable/Beige CONTRASTÉES */
+  --subscription-light-primary: #b8860b;        /* Ocre foncé (plus sombre) */
+  --subscription-light-secondary: #8b4513;      /* Terre cuite (ajouté) */
+  --subscription-light-accent: #a0522d;         /* Sienna (plus foncé) */
+  --subscription-light-bg: rgba(139, 69, 19, 0.08);      /* Background terre cuite très léger */
+  --subscription-light-card: rgba(250, 248, 240, 0.95);  /* Crème cassé plus opaque */
+  --subscription-light-border: rgba(139, 69, 19, 0.3);   /* Bordure terre cuite visible */
+  --subscription-light-text: #2d1810;           /* Brun très foncé (quasi noir) */
+  --subscription-light-text-secondary: #5d2f1a; /* Brun moyen (plus contrasté) */
+  --subscription-light-text-muted: #8b4513;     /* Terre cuite pour texte discret */
+  
+  /* Espacements harmonisés */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  
+  /* Rayons */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 50%;
+  
+  /* Ombres harmonisées */
+  --shadow-xs: 0 1px 2px rgba(139, 69, 19, 0.1);
+  --shadow-sm: 0 1px 3px rgba(139, 69, 19, 0.15);
+  --shadow-md: 0 4px 6px rgba(139, 69, 19, 0.2);
+  --shadow-lg: 0 10px 15px rgba(139, 69, 19, 0.25);
+  --shadow-xl: 0 20px 25px rgba(139, 69, 19, 0.3);
+  --shadow-2xl: 0 25px 50px rgba(139, 69, 19, 0.35);
+  
+  /* Transitions harmonisées */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.25s ease-out;
+  --transition-slow: 0.35s ease-in-out;
+  --transition-bounce: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Couleurs spéciales */
+  --success-color: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --warning-color: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --error-color: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.1);
+}
+
+.subscription-modal.dark-mode {
+  background: var(--subscription-dark-card) !important;
+  color: var(--subscription-dark-text) !important;
+  border-color: var(--subscription-dark-border) !important;
+}
+
+.light .subscription-modal,
+[data-theme="light"] .subscription-modal {
+  background: var(--subscription-light-card) !important;
+  color: var(--subscription-light-text) !important;
+  border-color: var(--subscription-light-border) !important;
+  box-shadow: 0px 20px 40px rgba(139, 69, 19, 0.25) !important;
+}
+
+/* Overlay plus doux en mode clair */
+.light .subscription-modal-overlay,
+[data-theme="light"] .subscription-modal-overlay {
+  background: rgba(250, 248, 240, 0.92) !important;
+  backdrop-filter: blur(15px);
+}
+
+/* ===============================================
+   CORRECTIONS SPÉCIFIQUES POUR MOBILE - PRINCIPAL FIX
+   =============================================== */
+@media (max-width: 768px) {
+  .subscription-modal-overlay {
+    /* Padding mobile ajusté pour éviter la troncature par le header */
+    padding: 80px 10px 20px 10px !important;
+    /* Alignement en haut strict */
+    align-items: flex-start !important;
+    /* Background overlay optimisé */
+    background: var(--subscription-dark-overlay) !important;
+  }
+  
+  .subscription-modal {
+    /* Dimensions strictement contrôlées */
+    width: calc(100% - 20px) !important;
+    max-width: calc(100% - 20px) !important;
+    padding: 20px !important;
+    margin: 0 auto !important;
+    margin-top: 0 !important;
+    /* Border radius mobile */
+    border-radius: 16px !important;
+    /* Hauteur avec scroll si nécessaire */
+    height: auto !important;
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto !important;
+    /* Box model strict */
+    box-sizing: border-box !important;
+    /* Corrections de positionnement */
+    position: relative !important;
+    transform: none !important;
+    /* Background mobile plus solide */
+    background: rgba(51, 65, 85, 0.8) !important;
+    color: var(--subscription-dark-text) !important;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Correction pour très petites hauteurs d'écran */
+  @media (max-height: 700px) {
+    .subscription-modal-overlay {
+      padding-top: 60px !important;
+    }
+    
+    .subscription-modal {
+      max-height: calc(100vh - 80px) !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .subscription-modal-overlay {
+    padding: 70px 8px 15px 8px !important;
+  }
+  
+  .subscription-modal {
+    width: calc(100% - 16px) !important;
+    max-width: calc(100% - 16px) !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    max-height: calc(100vh - 85px) !important;
+    /* Background très petit écran complètement opaque */
+    background: rgba(30, 41, 59, 1) !important;
+  }
+}
+
+/* ===============================================
+   BOUTON DE FERMETURE - REPOSITIONNÉ ET LUMINEUX
+   =============================================== */
+.modal-close-button {
+  position: absolute !important;
+  top: var(--spacing-lg) !important;
+  right: var(--spacing-lg) !important;
+  background: rgba(51, 65, 85, 0.9) !important;
+  border: 2px solid var(--subscription-dark-border) !important;
+  color: var(--subscription-dark-text) !important;
+  cursor: pointer !important;
+  padding: var(--spacing-md) !important;
+  border-radius: var(--radius-full) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all var(--transition-normal) !important;
+  z-index: 2147483645 !important; /* Assurer que le bouton reste au-dessus */
+  backdrop-filter: blur(10px) !important;
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.modal-close-button:hover {
+  background: var(--subscription-dark-primary) !important;
+  border-color: var(--subscription-dark-primary) !important;
+  color: white !important;
+  transform: rotate(90deg) scale(1.1) !important;
+  box-shadow: 0 10px 25px rgba(210, 105, 30, 0.3) !important;
+}
+
+@media (max-width: 768px) {
+  .modal-close-button {
+    width: 40px !important;
+    height: 40px !important;
+    top: 12px !important;
+    right: 12px !important;
+    padding: 8px !important;
+  }
+}
+
+.light .modal-close-button,
+[data-theme="light"] .modal-close-button {
+  background: var(--subscription-light-card) !important;
+  border-color: var(--subscription-light-border) !important;
+  color: var(--subscription-light-text) !important;
+}
+
+.light .modal-close-button:hover,
+[data-theme="light"] .modal-close-button:hover {
+  background: var(--subscription-light-primary) !important;
+  border-color: var(--subscription-light-primary) !important;
+  color: white !important;
+}
+
+/* ===============================================
+   HEADER DU MODAL - OPTIMISÉ MOBILE ET LUMINEUX
+   =============================================== */
+.modal-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .modal-header {
+    margin-bottom: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header {
+    margin-bottom: 20px !important;
+  }
+}
+
+.blocked-feature-icon {
+  width: 80px;
+  height: 80px;
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 3px solid var(--subscription-dark-border) !important;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-xl);
+  color: var(--subscription-dark-primary) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 25px rgba(210, 105, 30, 0.3) !important;
+  animation: pulse-feature 2s infinite;
+}
+
+@media (max-width: 768px) {
+  .blocked-feature-icon {
+    width: 60px !important;
+    height: 60px !important;
+    margin: 0 auto 16px auto !important;
+  }
+}
+
+.light .blocked-feature-icon,
+[data-theme="light"] .blocked-feature-icon {
+  background: var(--subscription-light-card) !important;
+  border-color: var(--subscription-light-border) !important;
+  color: var(--subscription-light-primary) !important;
+  box-shadow: 0 10px 25px rgba(139, 69, 19, 0.2) !important;
+}
+
+@keyframes pulse-feature {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.95;
+    box-shadow: 0 10px 25px rgba(210, 105, 30, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+    box-shadow: 0 15px 30px rgba(210, 105, 30, 0.4);
+  }
+}
+
+.modal-header h2 {
+  font-size: clamp(28px, 5vw, 36px);
+  font-weight: 800;
+  margin-bottom: var(--spacing-lg);
+  color: var(--subscription-dark-text) !important;
+  line-height: 1.2;
+  background: linear-gradient(45deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+@media (max-width: 768px) {
+  .modal-header h2 {
+    font-size: 24px !important;
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header h2 {
+    font-size: 20px !important;
+  }
+}
+
+.modal-header p {
+  font-size: 16px;
+  color: var(--subscription-dark-text-secondary) !important;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .modal-header p {
+    font-size: 14px !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-header p {
+    font-size: 13px !important;
+  }
+}
+
+.light .modal-header h2,
+[data-theme="light"] .modal-header h2 {
+  background: linear-gradient(45deg, var(--subscription-light-primary), var(--subscription-light-secondary)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.light .modal-header p,
+[data-theme="light"] .modal-header p {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 500;
+}
+
+/* ===============================================
+   CONTENEUR DES PLANS - OPTIMISÉ MOBILE
+   =============================================== */
+.plans-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-2xl);
+  margin-bottom: var(--spacing-3xl);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 768px) {
+  .plans-container {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .plans-container {
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+}
+
+/* ===============================================
+   CARTES DE PLAN - OPTIMISÉES MOBILE ET LUMINEUSES
+   =============================================== */
+.plan-card {
+  background: rgba(51, 65, 85, 0.9) !important;
+  border: 3px solid var(--subscription-dark-border) !important;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  transition: all var(--transition-smooth);
+  position: relative;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 400px;
+}
+
+@media (max-width: 768px) {
+  .plan-card {
+    padding: 20px !important;
+    min-height: 300px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .plan-card {
+    padding: 16px !important;
+    min-height: 280px !important;
+  }
+}
+
+.plan-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(210, 105, 30, 0.2) 0%, rgba(210, 105, 30, 0) 70%);
+  border-radius: var(--radius-full);
+  transform: translate(30%, -30%);
+  opacity: 0.6;
+  transition: all var(--transition-normal);
+}
+
+.plan-card:hover {
+  transform: translateY(-8px);
+  background: rgba(51, 65, 85, 1) !important;
+  border-color: var(--subscription-dark-primary) !important;
+  box-shadow: 0 20px 40px rgba(210, 105, 30, 0.2) !important;
+}
+
+.plan-card:hover::before {
+  background: radial-gradient(circle, rgba(210, 105, 30, 0.4) 0%, rgba(210, 105, 30, 0) 70%);
+  transform: translate(30%, -30%) scale(1.2);
+}
+
+.plan-card.selected {
+  background: rgba(51, 65, 85, 1) !important;
+  border-color: var(--subscription-dark-primary) !important;
+  box-shadow: 
+    0 0 0 3px rgba(210, 105, 30, 0.4),
+    0 15px 30px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-4px);
+}
+
+.plan-card.premium {
+  background: linear-gradient(135deg, 
+    rgba(51, 65, 85, 0.95) 0%, 
+    rgba(30, 41, 59, 0.9) 100%) !important;
+  border-color: var(--subscription-dark-primary) !important;
+}
+
+.plan-card.current {
+  border-color: var(--success-color);
+  background: var(--success-bg);
+}
+
+/* Mode clair */
+.light .plan-card,
+[data-theme="light"] .plan-card {
+  background: var(--subscription-light-card) !important;
+  border-color: var(--subscription-light-border) !important;
+  box-shadow: 0 8px 25px rgba(139, 69, 19, 0.15) !important;
+  backdrop-filter: blur(10px);
+}
+
+.light .plan-card::before,
+[data-theme="light"] .plan-card::before {
+  background: radial-gradient(circle, rgba(139, 69, 19, 0.12) 0%, rgba(139, 69, 19, 0) 70%) !important;
+}
+
+.light .plan-card:hover,
+[data-theme="light"] .plan-card:hover {
+  border-color: var(--subscription-light-primary) !important;
+  background: rgba(250, 248, 240, 1) !important;
+  box-shadow: 0 20px 40px rgba(139, 69, 19, 0.25) !important;
+}
+
+.light .plan-card:hover::before,
+[data-theme="light"] .plan-card:hover::before {
+  background: radial-gradient(circle, rgba(139, 69, 19, 0.2) 0%, rgba(139, 69, 19, 0) 70%) !important;
+}
+
+.light .plan-card.selected,
+[data-theme="light"] .plan-card.selected {
+  border-color: var(--subscription-light-primary) !important;
+  background: rgba(250, 248, 240, 1) !important;
+  box-shadow: 
+    0 0 0 3px rgba(139, 69, 19, 0.3),
+    0 15px 30px rgba(139, 69, 19, 0.3) !important;
+}
+
+/* ===============================================
+   BADGE PREMIUM LUMINEUX - AMÉLIORÉ POUR VISIBILITÉ
+   =============================================== */
+.premium-badge {
+  position: absolute;
+  top: -8px; /* Déplacé plus bas de -12px à -8px */
+  right: var(--spacing-xl);
+  background: linear-gradient(45deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  color: white !important;
+  padding: var(--spacing-md) var(--spacing-lg); /* Padding augmenté pour plus de visibilité */
+  border-radius: var(--radius-2xl);
+  font-size: 13px; /* Taille augmentée de 12px à 13px */
+  font-weight: 800; /* Plus gras pour plus de contraste */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.8), /* Bordure blanche pour contraste */
+    0 8px 20px rgba(210, 105, 30, 0.4) !important; /* Ombre plus marquée */
+  border: 3px solid rgba(255, 255, 255, 0.9) !important; /* Bordure blanche épaisse */
+  backdrop-filter: blur(10px);
+  animation: badge-glow-enhanced 2s infinite;
+  z-index: 100; /* S'assurer qu'il passe au-dessus */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Ombre sur le texte */
+}
+
+@media (max-width: 480px) {
+  .premium-badge {
+    font-size: 12px !important;
+    padding: 6px 14px !important; /* Padding mobile augmenté */
+    right: 12px !important;
+    top: -6px !important; /* Ajusté pour mobile */
+  }
+}
+
+.light .premium-badge,
+[data-theme="light"] .premium-badge {
+  background: linear-gradient(45deg, var(--subscription-light-primary), var(--subscription-light-secondary)) !important;
+  color: white !important;
+  border: 3px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.9),
+    0 8px 20px rgba(139, 69, 19, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes badge-glow-enhanced {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 3px rgba(255, 255, 255, 0.8),
+      0 8px 20px rgba(210, 105, 30, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 3px rgba(255, 255, 255, 1),
+      0 8px 25px rgba(210, 105, 30, 0.6),
+      0 0 25px rgba(210, 105, 30, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+/* Styles pour le badge "Actuel" */
+.current-plan-badge {
+  position: absolute;
+  top: -8px !important; /* Même position que le badge premium */
+  left: 16px !important;
+  background: linear-gradient(45deg, #10b981, #059669) !important;
+  color: white !important;
+  padding: 8px 16px !important; /* Padding augmenté */
+  border-radius: 12px !important;
+  font-size: 13px !important; /* Taille augmentée */
+  font-weight: 800 !important; /* Plus gras */
+  z-index: 100 !important;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.9), /* Bordure blanche */
+    0 8px 20px rgba(16, 185, 129, 0.4) !important; /* Ombre verte */
+  border: 3px solid rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  animation: current-badge-glow 2s infinite;
+}
+
+@media (max-width: 480px) {
+  .current-plan-badge {
+    font-size: 12px !important;
+    padding: 6px 14px !important;
+    top: -6px !important;
+    left: 12px !important;
+  }
+}
+
+@keyframes current-badge-glow {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 3px rgba(255, 255, 255, 0.9),
+      0 8px 20px rgba(16, 185, 129, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 3px rgba(255, 255, 255, 1),
+      0 8px 25px rgba(16, 185, 129, 0.6),
+      0 0 25px rgba(16, 185, 129, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+/* ===============================================
+   TITRES DES PLANS LUMINEUX
+   =============================================== */
+.plan-card h3 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-xl);
+  color: var(--subscription-dark-text) !important;
+  position: relative;
+  padding-bottom: var(--spacing-md);
+}
+
+@media (max-width: 480px) {
+  .plan-card h3 {
+    font-size: 20px !important;
+  }
+}
+
+.plan-card h3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  border-radius: var(--radius-xs);
+}
+
+.light .plan-card h3,
+[data-theme="light"] .plan-card h3 {
+  color: var(--subscription-light-text) !important;
+  font-weight: 700;
+}
+
+.light .plan-card h3::after,
+[data-theme="light"] .plan-card h3::after {
+  background: linear-gradient(90deg, var(--subscription-light-primary), var(--subscription-light-accent)) !important;
+}
+
+/* ===============================================
+   PRIX - OPTIMISÉS MOBILE ET CONTRASTÉS
+   =============================================== */
+.price {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: var(--spacing-2xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.price .amount {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--subscription-dark-text) !important;
+  line-height: 1;
+  background: linear-gradient(45deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+@media (max-width: 768px) {
+  .price .amount {
+    font-size: 40px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .price .amount {
+    font-size: 32px !important;
+  }
+}
+
+.price .currency {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--subscription-dark-text) !important;
+  margin-left: 2px;
+}
+
+@media (max-width: 768px) {
+  .price .currency {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .price .currency {
+    font-size: 20px !important;
+  }
+}
+
+.price .period {
+  font-size: 16px;
+  color: var(--subscription-dark-text-secondary) !important;
+  margin-left: var(--spacing-xs);
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .price .period {
+    font-size: 14px !important;
+  }
+}
+
+.price .free {
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(45deg, var(--success-color), #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@media (max-width: 480px) {
+  .price .free {
+    font-size: 28px !important;
+  }
+}
+
+/* Économies pour l'offre annuelle */
+.price .savings {
+  background: var(--success-bg);
+  color: var(--success-color);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: var(--spacing-sm);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+@media (max-width: 480px) {
+  .price .savings {
+    font-size: 11px !important;
+    margin-left: 4px !important;
+    margin-top: 4px !important;
+  }
+}
+
+.light .price .amount,
+[data-theme="light"] .price .amount {
+  background: linear-gradient(45deg, var(--subscription-light-primary), var(--subscription-light-secondary)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.light .price .currency,
+[data-theme="light"] .price .currency {
+  color: var(--subscription-light-text) !important;
+  font-weight: 600;
+}
+
+.light .price .period,
+[data-theme="light"] .price .period {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 500;
+}
+
+/* ===============================================
+   LISTE DES FONCTIONNALITÉS - OPTIMISÉE MOBILE ET LISIBLE
+   =============================================== */
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-2xl) 0;
+  flex-grow: 1;
+}
+
+.features li {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  color: var(--subscription-dark-text-secondary) !important;
+  font-size: 15px;
+  transition: all var(--transition-normal);
+  padding: var(--spacing-sm) 0;
+}
+
+@media (max-width: 768px) {
+  .features li {
+    font-size: 14px !important;
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .features li {
+    margin-bottom: 8px !important;
+    font-size: 13px !important;
+  }
+}
+
+.features li:hover {
+  transform: translateX(5px);
+  color: var(--subscription-dark-text) !important;
+}
+
+.features .check-icon {
+  color: var(--success-color);
+  flex-shrink: 0;
+  background: var(--success-bg);
+  border-radius: var(--radius-full);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Amélioration du contraste pour les listes de fonctionnalités en mode clair */
+.light .features li,
+[data-theme="light"] .features li {
+  color: var(--subscription-light-text) !important; /* Texte principal plus foncé */
+  font-weight: 500; /* Légèrement plus gras pour la lisibilité */
+}
+
+.light .features li:hover,
+[data-theme="light"] .features li:hover {
+  color: var(--subscription-light-secondary) !important; /* Terre cuite au hover */
+  transform: translateX(5px);
+}
+
+/* ===============================================
+   BOUTONS - OPTIMISÉS MOBILE ET CONTRASTÉS
+   =============================================== */
+.select-plan-button {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid var(--subscription-dark-border);
+  background: rgba(51, 65, 85, 0.8) !important;
+  color: var(--subscription-dark-text) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  margin-top: auto;
+  min-height: 48px; /* Hauteur minimale pour éviter le saut lors du changement */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  letter-spacing: 0.025em;
+}
+
+@media (max-width: 768px) {
+  .select-plan-button,
+  .current-plan-button,
+  .subscribe-button {
+    padding: 16px !important;
+    font-size: 15px !important;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .select-plan-button {
+    min-height: 40px;
+  }
+  .subscribe-button {
+    font-size: 16px !important;
+  }
+}
+
+.select-plan-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.select-plan-button:hover::before {
+  left: 100%;
+}
+
+.select-plan-button:hover {
+  background: var(--subscription-dark-primary) !important;
+  border-color: var(--subscription-dark-primary) !important;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(210, 105, 30, 0.3) !important;
+}
+
+.select-plan-button.premium {
+  background: linear-gradient(135deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  border-color: var(--subscription-dark-primary) !important;
+  color: white !important;
+  box-shadow: var(--shadow-md);
+}
+
+.select-plan-button.premium:hover {
+  background: linear-gradient(135deg, var(--subscription-dark-accent), var(--subscription-dark-primary)) !important;
+  box-shadow: 0 15px 30px rgba(210, 105, 30, 0.4) !important;
+}
+
+.current-plan-button {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: not-allowed;
+  border: 2px solid var(--success-color);
+  background: var(--success-bg);
+  color: var(--success-color);
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.025em;
+}
+
+.light .select-plan-button,
+[data-theme="light"] .select-plan-button {
+  background: var(--subscription-light-card) !important;
+  border-color: var(--subscription-light-border) !important;
+  color: var(--subscription-light-text) !important;
+  font-weight: 600;
+}
+
+.light .select-plan-button:hover,
+[data-theme="light"] .select-plan-button:hover {
+  background: var(--subscription-light-primary) !important;
+  border-color: var(--subscription-light-primary) !important;
+  color: white !important;
+}
+
+.light .select-plan-button.premium,
+[data-theme="light"] .select-plan-button.premium {
+  background: linear-gradient(135deg, var(--subscription-light-primary), var(--subscription-light-secondary)) !important;
+  border-color: var(--subscription-light-primary) !important;
+  color: white !important;
+}
+
+/* ===============================================
+   BOUTONS DYNAMIQUES - ÉTATS SÉLECTIONNÉS
+   =============================================== */
+
+/* Bouton sélectionné avec animation */
+.select-plan-button.selected {
+  background: var(--subscription-dark-primary) !important;
+  border-color: var(--subscription-dark-primary) !important;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(210, 105, 30, 0.3) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.select-plan-button.selected::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Animation de brillance pour le bouton sélectionné */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Bouton premium sélectionné */
+.select-plan-button.premium.selected {
+  background: linear-gradient(135deg, var(--subscription-dark-accent), var(--subscription-dark-primary)) !important;
+  border-color: var(--subscription-dark-accent) !important;
+  color: white !important;
+  box-shadow: 
+    0 0 0 3px rgba(210, 105, 30, 0.3),
+    0 15px 30px rgba(210, 105, 30, 0.4) !important;
+}
+
+/* Icône de check dans le bouton */
+.check-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: bounceIn 0.5s ease-out;
+}
+
+@media (max-width: 768px) {
+  .check-icon-button {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* États hover pour boutons sélectionnés */
+.select-plan-button.selected:hover {
+  background: var(--subscription-dark-accent) !important;
+  border-color: var(--subscription-dark-accent) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(210, 105, 30, 0.4) !important;
+}
+
+.select-plan-button.premium.selected:hover {
+  background: linear-gradient(135deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  box-shadow: 
+    0 0 0 3px rgba(210, 105, 30, 0.4),
+    0 20px 35px rgba(210, 105, 30, 0.5) !important;
+}
+
+/* Mode clair - boutons sélectionnés */
+.light .select-plan-button.selected,
+[data-theme="light"] .select-plan-button.selected {
+  background: var(--subscription-light-primary) !important;
+  border-color: var(--subscription-light-primary) !important;
+  color: white !important;
+  box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3) !important;
+}
+
+.light .select-plan-button.premium.selected,
+[data-theme="light"] .select-plan-button.premium.selected {
+  background: linear-gradient(135deg, var(--subscription-light-secondary), var(--subscription-light-primary)) !important;
+  border-color: var(--subscription-light-secondary) !important;
+  box-shadow: 
+    0 0 0 3px rgba(139, 69, 19, 0.3),
+    0 15px 30px rgba(139, 69, 19, 0.4) !important;
+}
+
+.light .select-plan-button.selected:hover,
+[data-theme="light"] .select-plan-button.selected:hover {
+  background: var(--subscription-light-secondary) !important;
+  border-color: var(--subscription-light-secondary) !important;
+  box-shadow: 0 15px 30px rgba(139, 69, 19, 0.4) !important;
+}
+
+.light .select-plan-button.selected::before,
+[data-theme="light"] .select-plan-button.selected::before {
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(139, 69, 19, 0.1),
+    transparent
+  );
+}
+
+/* Animation subtile pour le changement de texte */
+.select-plan-button span {
+  transition: all var(--transition-fast);
+  display: inline-block;
+}
+
+/* Effet de pulsation pour attirer l'attention sur le plan sélectionné */
+.plan-card.selected {
+  animation: selectedPulse 3s infinite;
+}
+
+@keyframes selectedPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 3px rgba(210, 105, 30, 0.4),
+      0 15px 30px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 5px rgba(210, 105, 30, 0.6),
+      0 20px 35px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.light .plan-card.selected,
+[data-theme="light"] .plan-card.selected {
+  animation: selectedPulseLight 3s infinite;
+}
+
+@keyframes selectedPulseLight {
+  0%, 100% {
+    box-shadow: 
+      0 0 0 3px rgba(139, 69, 19, 0.3),
+      0 15px 30px rgba(139, 69, 19, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 0 0 5px rgba(139, 69, 19, 0.5),
+      0 20px 35px rgba(139, 69, 19, 0.4);
+  }
+}
+
+/* Responsive - boutons sélectionnés sur mobile */
+@media (max-width: 768px) {
+  .select-plan-button.selected {
+    transform: none;
+  }
+  
+  .select-plan-button.selected:hover {
+    transform: none;
+  }
+  
+  /* Désactiver l'animation de pulsation sur mobile pour économiser la batterie */
+  .plan-card.selected {
+    animation: none;
+    box-shadow: 
+      0 0 0 3px rgba(210, 105, 30, 0.4),
+      0 15px 30px rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  .light .plan-card.selected,
+  [data-theme="light"] .plan-card.selected {
+    animation: none;
+    box-shadow: 
+      0 0 0 3px rgba(139, 69, 19, 0.3),
+      0 15px 30px rgba(139, 69, 19, 0.3) !important;
+  }
+}
+
+/* États désactivés pour boutons sélectionnés */
+.select-plan-button.selected:disabled {
+  background: rgba(210, 105, 30, 0.6) !important;
+  border-color: rgba(210, 105, 30, 0.6) !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.light .select-plan-button.selected:disabled,
+[data-theme="light"] .select-plan-button.selected:disabled {
+  background: rgba(139, 69, 19, 0.6) !important;
+  border-color: rgba(139, 69, 19, 0.6) !important;
+}
+
+/* ===============================================
+   SECTION CHECKOUT - OPTIMISÉE MOBILE ET LUMINEUSE
+   =============================================== */
+.checkout-section {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background: rgba(51, 65, 85, 0.9) !important;
+  border-radius: var(--radius-xl);
+  border: 2px solid var(--subscription-dark-border) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+@media (max-width: 768px) {
+  .checkout-section {
+    padding: 20px !important;
+    margin-top: 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-section {
+    padding: 16px !important;
+  }
+}
+
+.light .checkout-section,
+[data-theme="light"] .checkout-section {
+  background: var(--subscription-light-card) !important;
+  border-color: var(--subscription-light-border) !important;
+  box-shadow: 0 8px 25px rgba(139, 69, 19, 0.2) !important;
+}
+
+.secure-payment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  color: var(--subscription-dark-text-secondary) !important;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.light .secure-payment,
+[data-theme="light"] .secure-payment {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 500;
+}
+
+.dev-mode-notice {
+  background: var(--warning-bg);
+  color: var(--warning-color);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-xl);
+  border: 2px solid rgba(245, 158, 11, 0.3);
+  font-weight: 500;
+}
+
+.subscribe-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  width: 100%;
+  padding: var(--spacing-xl) var(--spacing-2xl);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: none;
+  background: linear-gradient(135deg, var(--subscription-dark-primary), var(--subscription-dark-accent)) !important;
+  color: white !important;
+  margin-bottom: var(--spacing-xl);
+  box-shadow: 0 10px 25px rgba(210, 105, 30, 0.3) !important;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  letter-spacing: 0.025em;
+}
+
+.subscribe-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.subscribe-button:hover::before {
+  left: 100%;
+}
+
+.subscribe-button:hover {
+  background: linear-gradient(135deg, var(--subscription-dark-accent), var(--subscription-dark-primary)) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(210, 105, 30, 0.4) !important;
+}
+
+/* Effet de brillance sur le bouton d'abonnement */
+.subscribe-button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  transition: all var(--transition-normal);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.subscribe-button:hover::after {
+  width: 200px;
+  height: 200px;
+}
+
+.subscribe-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.force-premium-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid #f59e0b !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  margin-bottom: var(--spacing-lg);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  letter-spacing: 0.025em;
+}
+
+.force-premium-button:hover {
+  background: #f59e0b !important;
+  color: white !important;
+  transform: translateY(-2px);
+}
+
+.light .subscribe-button,
+[data-theme="light"] .subscribe-button {
+  background: linear-gradient(135deg, var(--subscription-light-primary), var(--subscription-light-secondary)) !important;
+  color: white !important;
+}
+
+.light .subscribe-button:hover,
+[data-theme="light"] .subscribe-button:hover {
+  background: linear-gradient(135deg, var(--subscription-light-secondary), var(--subscription-light-accent)) !important;
+}
+
+.terms-text {
+  font-size: 13px;
+  color: var(--subscription-dark-text-secondary) !important;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+@media (max-width: 480px) {
+  .terms-text {
+    font-size: 12px !important;
+  }
+}
+
+.light .terms-text,
+[data-theme="light"] .terms-text {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 400;
+}
+
+/* ===============================================
+   MESSAGES D'ERREUR CONTRASTÉS
+   =============================================== */
+.error-message {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  border: 2px solid rgba(239, 68, 68, 0.3) !important;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+/* ===============================================
+   SPINNER DE CHARGEMENT PLUS VISIBLE
+   =============================================== */
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50%;
+  border-top-color: var(--subscription-dark-primary) !important;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===============================================
+   BOUTON DE RÉSILIATION
+   =============================================== */
+.cancel-subscription-button {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 2px solid #ef4444 !important;
+  background: #ef4444 !important;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  position: relative;
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.cancel-subscription-button:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3) !important;
+}
+
+.cancel-subscription-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+@media (max-width: 768px) {
+  .cancel-subscription-button {
+    padding: 16px !important;
+    font-size: 15px !important;
+  }
+}
+
+/* ===============================================
+   ÉCRANS TRÈS PETITS EN HAUTEUR - CORRECTIONS SPÉCIALES
+   =============================================== */
+@media screen and (max-height: 700px) {
+  .subscription-modal-overlay {
+    align-items: flex-start !important;
+    padding-top: 60px !important;
+    padding-bottom: 16px !important;
+  }
+  
+  .subscription-modal {
+    margin: 0 !important;
+    max-height: calc(100vh - 80px) !important;
+  }
+  
+  .plan-card {
+    min-height: 280px !important;
+  }
+  
+  .modal-header {
+    margin-bottom: 20px !important;
+  }
+  
+  .plans-container {
+    margin-bottom: 20px !important;
+  }
+}
+
+/* Correction pour les écrans très petits en hauteur */
+@media screen and (max-height: 600px) {
+  .subscription-modal-overlay {
+    padding-top: 40px !important;
+    padding-bottom: 12px !important;
+  }
+  
+  .subscription-modal {
+    padding: 16px !important;
+    max-height: calc(100vh - 60px) !important;
+  }
+  
+  .modal-header {
+    margin-bottom: 16px !important;
+  }
+  
+  .plans-container {
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .plan-card {
+    padding: 16px !important;
+    min-height: 260px !important;
+  }
+  
+  .checkout-section {
+    padding: 16px !important;
+  }
+}
+
+/* ===============================================
+   CORRECTIONS POUR LES NAVIGATEURS MOBILES SPÉCIFIQUES
+   =============================================== */
+
+/* Safari iOS */
+@supports (-webkit-touch-callout: none) {
+  .subscription-modal-overlay {
+    -webkit-overflow-scrolling: touch !important;
+    height: 100vh !important;
+    height: 100dvh !important; /* Viewport dynamique pour iOS */
+  }
+  
+  .subscription-modal {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+  }
+}
+
+/* Correction pour les écrans avec encoche (iPhone X+) */
+@supports (padding: max(0px)) {
+  .subscription-modal-overlay {
+    padding-top: max(80px, env(safe-area-inset-top, 0px) + 20px) !important;
+    padding-left: max(10px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(10px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* ===============================================
+   FORCE D'AFFICHAGE POUR CONTRER LES CONFLITS CSS
+   =============================================== */
+.subscription-modal-overlay.force-display {
+  display: flex !important;
+  position: fixed !important;
+  z-index: 9999 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+.subscription-modal.force-display {
+  display: block !important;
+  position: relative !important;
+  z-index: 10000 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: none !important;
+}
+
+/* Assurer que rien ne passe par-dessus le modal */
+.subscription-modal-overlay ~ * {
+  z-index: 1 !important;
+}
+
+/* ===============================================
+   ANIMATIONS D'ENTRÉE CORRIGÉES POUR MOBILE
+   =============================================== */
+@media (max-width: 768px) {
+  .subscription-modal {
+    animation: mobileSlideIn 0.3s ease-out !important;
+  }
+}
+
+@keyframes mobileSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Désactiver les animations problématiques sur mobile */
+@media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .plan-card,
+  .select-plan-button,
+  .subscribe-button,
+  .modal-close-button {
+    animation: none !important;
+    transition: transform 0.2s ease !important;
+  }
+}
+
+/* ===============================================
+   GESTION DES GESTES MOBILES
+   =============================================== */
+@media (max-width: 768px) {
+  .subscription-modal {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .subscription-modal-overlay {
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+}
+
+/* ===============================================
+   AMÉLIORATIONS D'ACCESSIBILITÉ
+   =============================================== */
+.plan-card:focus-visible,
+.select-plan-button:focus-visible,
+.subscribe-button:focus-visible,
+.modal-close-button:focus-visible,
+.force-premium-button:focus-visible {
+  outline: 3px solid var(--subscription-dark-primary) !important;
+  outline-offset: 3px !important;
+  z-index: 1000;
+}
+
+.select-plan-button:focus-visible.selected {
+  outline: 3px solid var(--subscription-dark-accent) !important;
+  outline-offset: 3px !important;
+}
+
+.light .plan-card:focus-visible,
+.light .select-plan-button:focus-visible,
+.light .subscribe-button:focus-visible,
+.light .modal-close-button:focus-visible,
+.light .force-premium-button:focus-visible,
+[data-theme="light"] .plan-card:focus-visible,
+[data-theme="light"] .select-plan-button:focus-visible,
+[data-theme="light"] .subscribe-button:focus-visible,
+[data-theme="light"] .modal-close-button:focus-visible,
+[data-theme="light"] .force-premium-button:focus-visible {
+  outline-color: var(--subscription-light-primary) !important;
+}
+
+.light .select-plan-button:focus-visible.selected,
+[data-theme="light"] .select-plan-button:focus-visible.selected {
+  outline-color: var(--subscription-light-secondary) !important;
+}
+
+/* Réduction des animations si demandée */
+@media (prefers-reduced-motion: reduce) {
+  .plan-card,
+  .select-plan-button,
+  .subscribe-button,
+  .modal-close-button,
+  .premium-badge,
+  .blocked-feature-icon,
+  .force-premium-button,
+  .select-plan-button.selected::before,
+  .plan-card.selected,
+  .check-icon-button,
+  .subscribe-button::after {
+    animation: none !important;
+  }
+  
+  .select-plan-button,
+  .check-icon-button,
+  .subscribe-button span {
+    transition: none !important;
+  }
+  
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+  .plan-card,
+  .modal-close-button,
+  .checkout-section {
+    border-width: 4px !important;
+  }
+  
+  .select-plan-button,
+  .subscribe-button,
+  .force-premium-button {
+    border-width: 3px !important;
+    font-weight: 800 !important;
+  }
+  
+  .select-plan-button.selected {
+    border-width: 4px !important;
+  }
+  
+  .premium-badge {
+    border-width: 3px !important;
+  }
+  
+  .price .amount,
+  .plan-card h3 {
+    font-weight: 900 !important;
+  }
+  
+  .check-icon-button {
+    background: rgba(255, 255, 255, 0.4) !important;
+    border: 2px solid white !important;
+  }
+  
+  /* Contraste élevé spécifique au mode clair */
+  .light .features li,
+  [data-theme="light"] .features li {
+    color: #1a0f08 !important; /* Quasi noir en contraste élevé */
+    font-weight: 700 !important;
+  }
+  
+  .light .subscription-modal,
+  [data-theme="light"] .subscription-modal {
+    border-width: 4px !important;
+    border-color: #8b4513 !important;
+  }
+  
+  .light .plan-card,
+  [data-theme="light"] .plan-card {
+    border-width: 4px !important;
+    border-color: #8b4513 !important;
+  }
+}
+
+/* ===============================================
+   OPTIMISATIONS PERFORMANCES
+   =============================================== */
+.plan-card,
+.select-plan-button,
+.subscribe-button,
+.modal-close-button {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Contenement des repaints */
+.subscription-modal-overlay {
+  contain: layout style paint;
+}
+
+.subscription-modal {
+  contain: layout;
+}
+
+/* ===============================================
+   ANIMATIONS D'ENTRÉE
+   =============================================== */
+.plan-card {
+  animation: slideInUp 0.6s ease-out both;
+}
+
+.plan-card:nth-child(1) { animation-delay: 0.1s; }
+.plan-card:nth-child(2) { animation-delay: 0.2s; }
+.plan-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.checkout-section {
+  animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation ripple pour les clics */
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
+
+.plan-card:active::after,
+.select-plan-button:active::after,
+.subscribe-button:active::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(210, 105, 30, 0.4) !important;
+  animation: ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+.light .plan-card:active::after,
+.light .select-plan-button:active::after,
+.light .subscribe-button:active::after,
+[data-theme="light"] .plan-card:active::after,
+[data-theme="light"] .select-plan-button:active::after,
+[data-theme="light"] .subscribe-button:active::after {
+  background: rgba(139, 69, 19, 0.4) !important;
+}
+
+/* ===============================================
+   COMPATIBILITÉ NAVIGATEURS ANCIENS
+   =============================================== */
+@supports not (backdrop-filter: blur(10px)) {
+  .subscription-modal,
+  .plan-card,
+  .checkout-section,
+  .modal-close-button {
+    background: var(--subscription-dark-card) !important;
+  }
+  
+  .light .subscription-modal,
+  .light .plan-card,
+  .light .checkout-section,
+  .light .modal-close-button,
+  [data-theme="light"] .subscription-modal,
+  [data-theme="light"] .plan-card,
+  [data-theme="light"] .checkout-section,
+  [data-theme="light"] .modal-close-button {
+    background: var(--subscription-light-card) !important;
+  }
+}
+
+/* ===============================================
+   CORRECTIONS FINALES POUR L'HARMONISATION ET LA LISIBILITÉ
+   =============================================== */
+
+/* S'assurer que tous les titres ont les bonnes couleurs */
+.subscription-modal h1,
+.subscription-modal h2,
+.subscription-modal h3,
+.subscription-modal h4 {
+  color: var(--subscription-dark-text) !important;
+}
+
+.light .subscription-modal h1,
+.light .subscription-modal h2,
+.light .subscription-modal h3,
+.light .subscription-modal h4,
+[data-theme="light"] .subscription-modal h1,
+[data-theme="light"] .subscription-modal h2,
+[data-theme="light"] .subscription-modal h3,
+[data-theme="light"] .subscription-modal h4 {
+  color: var(--subscription-light-text) !important;
+}
+
+/* Assurer que les paragraphes suivent le thème */
+.subscription-modal p {
+  color: var(--subscription-dark-text-secondary) !important;
+}
+
+.light .subscription-modal p,
+[data-theme="light"] .subscription-modal p {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 400;
+}
+
+/* Assurer que tous les spans héritent correctement */
+.subscription-modal span {
+  color: inherit !important;
+}
+
+/* ===============================================
+   AMÉLIORATIONS SPÉCIFIQUES POUR LE MODE CLAIR
+   =============================================== */
+
+/* Amélioration générale du texte en mode clair */
+@media (max-width: 768px) {
+  .light .features li,
+  [data-theme="light"] .features li {
+    color: var(--subscription-light-text) !important;
+    font-weight: 600; /* Plus gras sur mobile pour compenser la petite taille */
+  }
+  
+  .light .plan-card h3,
+  [data-theme="light"] .plan-card h3 {
+    color: var(--subscription-light-text) !important;
+    font-weight: 800;
+  }
+  
+  .light .modal-header p,
+  [data-theme="light"] .modal-header p {
+    color: var(--subscription-light-text-secondary) !important;
+    font-weight: 500;
+  }
+}
+
+@media (max-width: 480px) {
+  .light .features li,
+  [data-theme="light"] .features li {
+    font-weight: 700; /* Encore plus gras sur très petits écrans */
+  }
+}
+
+/* Classes d'aide pour l'espacement */
+.subscription-spacing-xs { margin: var(--spacing-xs); }
+.subscription-spacing-sm { margin: var(--spacing-sm); }
+.subscription-spacing-md { margin: var(--spacing-md); }
+.subscription-spacing-lg { margin: var(--spacing-lg); }
+.subscription-spacing-xl { margin: var(--spacing-xl); }
+
+/* Classes d'aide pour le texte */
+.subscription-text-primary { color: var(--subscription-dark-text) !important; }
+.subscription-text-secondary { color: var(--subscription-dark-text-secondary) !important; }
+
+.light .subscription-text-primary,
+[data-theme="light"] .subscription-text-primary {
+  color: var(--subscription-light-text) !important;
+  font-weight: 500;
+}
+
+.light .subscription-text-secondary,
+[data-theme="light"] .subscription-text-secondary {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 400;
+}
+
+.light .subscription-text-muted,
+[data-theme="light"] .subscription-text-muted {
+  color: var(--subscription-light-text-muted) !important;
+  font-weight: 400;
+}
+
+/* Support du mode sombre système */
+@media (prefers-color-scheme: dark) {
+  .subscription-modal:not(.light):not([data-theme="light"]) {
+    background: var(--subscription-dark-card);
+    color: var(--subscription-dark-text);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .subscription-modal:not(.dark):not([data-theme="dark"]) {
+    background: var(--subscription-light-card);
+    color: var(--subscription-light-text);
+  }
+}
+
+/* ===============================================
+   STYLES SUPPLÉMENTAIRES POUR LES BOUTONS DYNAMIQUES
+   =============================================== */
+
+/* États de transition fluides */
+.select-plan-button,
+.current-plan-button {
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Amélioration de l'état disabled pour tous les boutons */
+.select-plan-button:disabled,
+.current-plan-button:disabled,
+.subscribe-button:disabled,
+.force-premium-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  pointer-events: none;
+}
+
+/* Animation douce pour les changements d'état */
+.plan-card {
+  transition: all var(--transition-smooth);
+}
+
+.plan-card.selected {
+  position: relative;
+}
+
+/* Optimisation pour les appareils avec peu de mémoire */
+@media (max-width: 480px) and (prefers-reduced-motion: reduce) {
+  .plan-card,
+  .select-plan-button,
+  .subscribe-button,
+  .modal-close-button,
+  .premium-badge,
+  .blocked-feature-icon,
+  .force-premium-button {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Correction pour les écrans très larges */
+@media (min-width: 1200px) {
+  .subscription-modal {
+    max-width: 1200px;
+  }
+  
+  .plans-container {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1000px;
+  }
+}
+
+/* ===============================================
+   POLISSAGE FINAL ET CORRECTIONS DE BUGS
+   =============================================== */
+
+/* Correction pour éviter le débordement de texte */
+.plan-card h3,
+.modal-header h2,
+.modal-header p,
+.features li span,
+.select-plan-button,
+.current-plan-button,
+.subscribe-button,
+.terms-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Amélioration de la sélection de texte */
+.subscription-modal {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.select-plan-button,
+.current-plan-button,
+.subscribe-button,
+.force-premium-button,
+.modal-close-button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Correction pour les images et icônes */
+.premium-badge .emoji-icon,
+.blocked-feature-icon,
+.check-icon,
+.check-icon-button {
+  flex-shrink: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Support pour les écrans tactiles */
+@media (hover: none) and (pointer: coarse) {
+  .plan-card:hover,
+  .select-plan-button:hover,
+  .subscribe-button:hover,
+  .modal-close-button:hover,
+  .force-premium-button:hover {
+    transform: none;
+  }
+  
+  .plan-card:active,
+  .select-plan-button:active,
+  .subscribe-button:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Correction pour les barres de défilement personnalisées */
+.subscription-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.subscription-modal::-webkit-scrollbar-track {
+  background: rgba(139, 69, 19, 0.1);
+  border-radius: 4px;
+}
+
+.subscription-modal::-webkit-scrollbar-thumb {
+  background: var(--subscription-dark-primary);
+  border-radius: 4px;
+}
+
+.subscription-modal::-webkit-scrollbar-thumb:hover {
+  background: var(--subscription-dark-accent);
+}
+
+.light .subscription-modal::-webkit-scrollbar-thumb,
+[data-theme="light"] .subscription-modal::-webkit-scrollbar-thumb {
+  background: var(--subscription-light-primary);
+}
+
+.light .subscription-modal::-webkit-scrollbar-thumb:hover,
+[data-theme="light"] .subscription-modal::-webkit-scrollbar-thumb:hover {
+  background: var(--subscription-light-secondary);
+}
+/* ===============================================
+   STYLES POUR LES LIENS LÉGAUX - À ajouter à SubscriptionModal.css
+   =============================================== */
+
+/* Section des conditions */
 .terms-section {
   margin: 20px 0;
   text-align: center;
@@ -11,48 +2264,99 @@
 
 .terms-text {
   font-size: 13px;
-  color: #9ca3af;
-  line-height: 1.5;
-  margin: 0 auto;
+  color: var(--subscription-dark-text-secondary) !important;
   max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+@media (max-width: 480px) {
+  .terms-text {
+    font-size: 12px !important;
+  }
+}
+
+.light .terms-text,
+[data-theme="light"] .terms-text {
+  color: var(--subscription-light-text-secondary) !important;
+  font-weight: 400;
 }
 
 /* Liens cliquables */
 .legal-link {
-  color: #3b82f6;
+  color: var(--subscription-dark-primary) !important;
   background: none;
   border: none;
   cursor: pointer;
   text-decoration: underline;
   font-size: inherit;
-  padding: 2px;
+  font-family: inherit;
+  padding: 2px 4px;
+  margin: 0;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  transition: all var(--transition-normal);
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 .legal-link:hover {
-  color: #1d4ed8;
+  color: var(--subscription-dark-accent) !important;
   text-decoration: none;
+  background: rgba(210, 105, 30, 0.1);
+  transform: translateY(-1px);
 }
 
-/* Mode sombre */
-.dark-mode .terms-text {
-  color: #d1d5db;
+.legal-link:focus {
+  outline: 3px solid var(--subscription-dark-primary) !important;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-.dark-mode .legal-link {
-  color: #60a5fa;
+.legal-link:active {
+  transform: translateY(0);
 }
 
-.dark-mode .legal-link:hover {
-  color: #93c5fd;
+/* Mode clair */
+.light .legal-link,
+[data-theme="light"] .legal-link {
+  color: var(--subscription-light-primary) !important;
+  font-weight: 600;
 }
 
-/* Mobile */
+.light .legal-link:hover,
+[data-theme="light"] .legal-link:hover {
+  color: var(--subscription-light-secondary) !important;
+  background: rgba(139, 69, 19, 0.1);
+}
+
+.light .legal-link:focus,
+[data-theme="light"] .legal-link:focus {
+  outline-color: var(--subscription-light-primary) !important;
+}
+
+/* Animation pour les icônes */
+.legal-link svg {
+  transition: transform var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.legal-link:hover svg {
+  transform: translateX(2px) scale(1.1);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .terms-text {
-    font-size: 12px;
+  .terms-section {
+    margin: 16px 0;
+  }
+  
+  .legal-link {
+    padding: 4px 6px;
+    gap: 3px;
   }
   
   .legal-link svg {
@@ -60,3 +2364,59 @@
     height: 12px;
   }
 }
+
+@media (max-width: 480px) {
+  .legal-link {
+    padding: 3px 5px;
+    gap: 2px;
+  }
+  
+  .legal-link svg {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .legal-link,
+  .legal-link svg {
+    transition: none !important;
+  }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+  .legal-link {
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    border: 1px solid currentColor;
+  }
+  
+  .light .legal-link,
+  [data-theme="light"] .legal-link {
+    color: #8b4513 !important;
+  }
+}
+
+/* Support tactile */
+@media (hover: none) and (pointer: coarse) {
+  .legal-link:hover {
+    transform: none;
+    background: none;
+  }
+  
+  .legal-link:active {
+    transform: scale(0.98);
+    background: rgba(210, 105, 30, 0.2);
+  }
+  
+  .light .legal-link:active,
+  [data-theme="light"] .legal-link:active {
+    background: rgba(139, 69, 19, 0.2);
+  }
+}
+/* ===============================================
+   FIN DU FICHIER SUBSCRIPTIONMODAL.CSS COMPLET ET HARMONISÉ
+   AVEC BOUTONS DYNAMIQUES ET CORRECTIONS MOBILES + SUPERPOSITION
+   =============================================== */
