@@ -7,6 +7,9 @@ import { ThemeProvider } from './components/ThemeContext';
 import Privacy from './components/Privacy';
 import Terms from './components/Terms';
 
+import Footer from './components/Footer';
+import MobileFooter from './components/MobileFooter';
+
 // Languages import
 import { languages, getLanguageData } from './data/languages';
 import { type LanguageData } from './types/types';
@@ -3071,6 +3074,25 @@ const saveProgressOnSummary = useCallback(async (
     }
   }, [blockedFeature, selectedCategory, subscriptionService]);
 
+
+  const handleNavigateToPrivacy = useCallback(() => {
+  console.log('Navigation vers politique de confidentialité');
+  // Si vous utilisez React Router
+  // navigate('/privacy');
+  
+  // Navigation directe (fallback)
+  window.location.href = '/privacy';
+}, []);
+
+const handleNavigateToTerms = useCallback(() => {
+  console.log('Navigation vers conditions d\'utilisation');
+  // Si vous utilisez React Router
+  // navigate('/terms');
+  
+  // Navigation directe (fallback)  
+  window.location.href = '/terms';
+}, []);
+
   const handleResetProgress = useCallback(() => {
     setShowResetConfirmation(true);
   }, []);
@@ -3291,6 +3313,9 @@ const selectMode = useCallback((selectedMode: AppMode): void => {
     return;
   }
 }
+
+
+
   
   // ✅ Modes accessibles en gratuit
   console.log(`✅ [SUBSCRIPTION] Accès autorisé au mode: ${selectedMode}`);
@@ -3758,12 +3783,13 @@ if (isMobileView && showLandingPage) {
   return (
   <ThemeProvider>
     <Routes>
-       <Route path="/privacy" element={<Privacy />} />
-  <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      
       {/* ✅ Route spéciale pour la page de succès de paiement */}
       <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
-      {/* ✅ Route par défaut qui reprend tout ton rendu actuel */}
+      {/* ✅ Route par défaut qui reprend tout le contenu */}
       <Route
         path="/*"
         element={
@@ -3779,15 +3805,21 @@ if (isMobileView && showLandingPage) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                style={{
+                  minHeight: '100vh',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
               >
-                {/* Votre contenu App existant */}
+                {/* Contenu principal */}
                 {isMobileView ? (
                   <div className="mobile-app-container" style={{
                     display: 'block',
                     width: '100%',
                     minHeight: '100vh',
                     backgroundColor: '#0f172a',
-                    paddingTop: '60px'
+                    paddingTop: '60px',
+                    flex: 1
                   }}>
                     {/* Header mobile - TOUJOURS visible */}
                     <MobileHeader
@@ -3856,7 +3888,6 @@ if (isMobileView && showLandingPage) {
                             onLogout={handleLogout} 
                             onForceLoginPage={forceLoginPage}
                             subscriptionTier={subscriptionTier}
-                            // ✅ NOUVEAU: Passer l'onglet précédent
                             initialTab={lastActiveTab}
                           />
                         </div>
@@ -4067,6 +4098,12 @@ if (isMobileView && showLandingPage) {
                       )}
                     </div>
                     
+                    {/* ✅ NOUVEAU : Footer Mobile */}
+                    <MobileFooter 
+                      onNavigateToPrivacy={handleNavigateToPrivacy}
+                      onNavigateToTerms={handleNavigateToTerms}
+                    />
+                    
                     {/* ✅ NAVIGATION BOTTOM - Version améliorée */}
                     <div className="bottom-navigation" style={{
                       position: 'fixed',
@@ -4160,7 +4197,9 @@ if (isMobileView && showLandingPage) {
                     </div>
                   </div>
                 ) : (
-                  <div className="desktop-navigation-container">
+                  <div className="desktop-navigation-container" style={{
+                    flex: 1
+                  }}>
                     {mode === 'menu' && (
                       <div className="desktop-component-wrapper">
                         {console.log('🔍 RENDU MainMenu DESKTOP - mode:', mode, 'lastActiveTab:', lastActiveTab)}
@@ -4181,7 +4220,6 @@ if (isMobileView && showLandingPage) {
                           onLogout={handleLogout} 
                           onForceLoginPage={forceLoginPage}
                           subscriptionTier={subscriptionTier}
-                          // ✅ NOUVEAU: Passer l'onglet précédent
                           initialTab={lastActiveTab}
                         />
                       </div>
@@ -4213,10 +4251,7 @@ if (isMobileView && showLandingPage) {
                           category={selectedCategory}
                           onBackToCategories={() => {
                             console.log('🔙 LearnMode onBackToCategories appelé');
-                            
-                            // ✅ Marquer la fin du résumé si nécessaire
                             localStorage.removeItem(`${currentLanguage}-${selectedCategory}-summary-in-progress`);
-                            
                             handleBackFromLearn();
                           }}
                           onGameComplete={() => {
@@ -4288,11 +4323,9 @@ if (isMobileView && showLandingPage) {
                             handleSuccess();
                           }}
                           onSentencesLearned={(sentences) => {
-                            // ✅ NOUVEAU: Vérifier si les phrases sont déjà dans le système
                             console.log('🔍 onSentencesLearned - vérification avant ajout');
                             
                             const sentencesToAdd = sentences.filter(sentence => {
-                              // Vérifier si la phrase existe déjà dans revisionProgress
                               const alreadyExists = Array.from(revisionProgress.wordsToReview).some(key => 
                                 key.includes(sentence.original)
                               );
@@ -4383,6 +4416,12 @@ if (isMobileView && showLandingPage) {
                         />
                       </div>
                     )}
+                    
+                    {/* ✅ NOUVEAU : Footer Desktop */}
+                    <Footer 
+                      onNavigateToPrivacy={handleNavigateToPrivacy}
+                      onNavigateToTerms={handleNavigateToTerms}
+                    />
                   </div>
                 )}
 
@@ -4406,7 +4445,7 @@ if (isMobileView && showLandingPage) {
                 userEmail={user?.email}
               />
 
-              {/* Ajoutez ce code pour la boîte de dialogue de confirmation */}
+              {/* Boîte de dialogue de confirmation */}
               <ConfirmationModal
                 isOpen={showExitConfirmation}
                 onConfirm={() => {
