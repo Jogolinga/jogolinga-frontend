@@ -1,5 +1,6 @@
-// src/components/Footer.tsx - Version corrigée
+// src/components/Footer.tsx - Version avec thème
 import React from 'react';
+import { useTheme } from './ThemeContext';
 
 interface FooterProps {
   onNavigateToPrivacy?: () => void;
@@ -10,11 +11,12 @@ const Footer: React.FC<FooterProps> = ({
   onNavigateToPrivacy, 
   onNavigateToTerms 
 }) => {
+  const { theme } = useTheme();
+
   const handlePrivacyClick = () => {
     if (onNavigateToPrivacy) {
       onNavigateToPrivacy();
     } else {
-      // Fallback: naviguer directement
       window.location.href = '/privacy';
     }
   };
@@ -23,19 +25,29 @@ const Footer: React.FC<FooterProps> = ({
     if (onNavigateToTerms) {
       onNavigateToTerms();
     } else {
-      // Fallback: naviguer directement
       window.location.href = '/terms';
     }
   };
 
+  // Styles basés sur le thème
+  const footerStyles = {
+    backgroundColor: theme === 'dark' ? '#1e293b' : '#f8fafc',
+    color: theme === 'dark' ? '#e2e8f0' : '#334155',
+    borderTop: `1px solid ${theme === 'dark' ? '#374151' : '#e2e8f0'}`
+  };
+
+  const titleColor = theme === 'dark' ? '#f8fafc' : '#0f172a';
+  const subtitleColor = theme === 'dark' ? '#94a3b8' : '#64748b';
+  const linkColor = theme === 'dark' ? '#60a5fa' : '#3b82f6';
+  const linkHoverColor = theme === 'dark' ? '#93c5fd' : '#1d4ed8';
+  const contactColor = theme === 'dark' ? '#64748b' : '#94a3b8';
+
   return (
     <footer style={{
-      backgroundColor: '#1e293b',
-      color: '#e2e8f0',
+      ...footerStyles,
       padding: '20px 0',
       textAlign: 'center',
       marginTop: 'auto',
-      borderTop: '1px solid #374151',
       position: 'relative',
       zIndex: 10
     }}>
@@ -50,7 +62,7 @@ const Footer: React.FC<FooterProps> = ({
         }}>
           <h3 style={{
             margin: '0 0 8px 0',
-            color: '#f8fafc',
+            color: titleColor,
             fontSize: '18px',
             fontWeight: 'bold'
           }}>
@@ -58,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({
           </h3>
           <p style={{
             margin: '0',
-            color: '#94a3b8',
+            color: subtitleColor,
             fontSize: '14px'
           }}>
             Plateforme d'apprentissage de langues africaines
@@ -78,7 +90,7 @@ const Footer: React.FC<FooterProps> = ({
             style={{
               background: 'none',
               border: 'none',
-              color: '#60a5fa',
+              color: linkColor,
               textDecoration: 'none',
               fontSize: '14px',
               padding: '4px 8px',
@@ -87,11 +99,11 @@ const Footer: React.FC<FooterProps> = ({
               transition: 'color 0.3s ease'
             }}
             onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.currentTarget.style.color = '#93c5fd';
+              e.currentTarget.style.color = linkHoverColor;
               e.currentTarget.style.textDecoration = 'underline';
             }}
             onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.currentTarget.style.color = '#60a5fa';
+              e.currentTarget.style.color = linkColor;
               e.currentTarget.style.textDecoration = 'none';
             }}
           >
@@ -103,7 +115,7 @@ const Footer: React.FC<FooterProps> = ({
             style={{
               background: 'none',
               border: 'none',
-              color: '#60a5fa',
+              color: linkColor,
               textDecoration: 'none',
               fontSize: '14px',
               padding: '4px 8px',
@@ -112,11 +124,11 @@ const Footer: React.FC<FooterProps> = ({
               transition: 'color 0.3s ease'
             }}
             onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.currentTarget.style.color = '#93c5fd';
+              e.currentTarget.style.color = linkHoverColor;
               e.currentTarget.style.textDecoration = 'underline';
             }}
             onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.currentTarget.style.color = '#60a5fa';
+              e.currentTarget.style.color = linkColor;
               e.currentTarget.style.textDecoration = 'none';
             }}
           >
@@ -127,15 +139,21 @@ const Footer: React.FC<FooterProps> = ({
         {/* Contact et copyright */}
         <div style={{
           fontSize: '12px',
-          color: '#64748b',
+          color: contactColor,
           lineHeight: '1.5'
         }}>
           <p style={{ margin: '0 0 4px 0' }}>
             Contact : <a 
               href="mailto:ceddoshop@gmail.com" 
               style={{
-                color: '#60a5fa',
+                color: linkColor,
                 textDecoration: 'none'
+              }}
+              onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.currentTarget.style.color = linkHoverColor;
+              }}
+              onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                e.currentTarget.style.color = linkColor;
               }}
             >
               ceddoshop@gmail.com
