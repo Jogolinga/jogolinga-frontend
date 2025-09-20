@@ -1,4 +1,6 @@
+// src/components/MobileFooter.tsx - Version avec thème
 import React from 'react';
+import { useTheme } from './ThemeContext';
 
 interface MobileFooterProps {
   onNavigateToPrivacy?: () => void;
@@ -9,6 +11,8 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
   onNavigateToPrivacy, 
   onNavigateToTerms 
 }) => {
+  const { theme } = useTheme();
+
   const handlePrivacyClick = () => {
     if (onNavigateToPrivacy) {
       onNavigateToPrivacy();
@@ -25,14 +29,24 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
     }
   };
 
+  // Styles basés sur le thème
+  const footerStyles = {
+    backgroundColor: theme === 'dark' ? '#1e293b' : '#f8fafc',
+    color: theme === 'dark' ? '#e2e8f0' : '#334155',
+    borderTop: `1px solid ${theme === 'dark' ? '#374151' : '#e2e8f0'}`
+  };
+
+  const titleColor = theme === 'dark' ? '#f8fafc' : '#0f172a';
+  const linkColor = theme === 'dark' ? '#60a5fa' : '#3b82f6';
+  const separatorColor = theme === 'dark' ? '#64748b' : '#94a3b8';
+  const contactColor = theme === 'dark' ? '#64748b' : '#94a3b8';
+
   return (
     <footer style={{
-      backgroundColor: '#1e293b',
-      color: '#e2e8f0',
+      ...footerStyles,
       padding: '15px 20px 90px 20px', // Padding bottom pour éviter la navigation bottom
       textAlign: 'center',
       marginTop: 'auto',
-      borderTop: '1px solid #374151',
       position: 'relative',
       zIndex: 10
     }}>
@@ -42,7 +56,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
       }}>
         <h4 style={{
           margin: '0 0 4px 0',
-          color: '#f8fafc',
+          color: titleColor,
           fontSize: '16px',
           fontWeight: 'bold'
         }}>
@@ -63,7 +77,7 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
           style={{
             background: 'none',
             border: 'none',
-            color: '#60a5fa',
+            color: linkColor,
             fontSize: '13px',
             padding: '6px 8px',
             borderRadius: '4px',
@@ -74,14 +88,19 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
           Confidentialité
         </button>
         
-        <span style={{ color: '#64748b', fontSize: '13px' }}>•</span>
+        <span style={{ 
+          color: separatorColor, 
+          fontSize: '13px' 
+        }}>
+          •
+        </span>
         
         <button
           onClick={handleTermsClick}
           style={{
             background: 'none',
             border: 'none',
-            color: '#60a5fa',
+            color: linkColor,
             fontSize: '13px',
             padding: '6px 8px',
             borderRadius: '4px',
@@ -96,14 +115,14 @@ const MobileFooter: React.FC<MobileFooterProps> = ({
       {/* Contact compact */}
       <div style={{
         fontSize: '11px',
-        color: '#64748b',
+        color: contactColor,
         lineHeight: '1.4'
       }}>
         <p style={{ margin: '0 0 4px 0' }}>
           <a 
             href="mailto:ceddoshop@gmail.com" 
             style={{
-              color: '#60a5fa',
+              color: linkColor,
               textDecoration: 'none'
             }}
           >
