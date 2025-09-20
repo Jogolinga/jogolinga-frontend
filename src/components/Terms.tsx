@@ -4,7 +4,7 @@ const Terms: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-gray-900">
-        Conditions d'utilisation
+        Conditions générales d’utilisation
       </h1>
       
       <div className="prose prose-lg max-w-none">
@@ -17,9 +17,8 @@ const Terms: React.FC = () => {
             1. Acceptation des conditions
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            En accédant et en utilisant Jogolinga, vous acceptez d'être lié par ces 
-            conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas 
-            utiliser notre plateforme d'apprentissage.
+            En accédant et en utilisant Jogolinga, vous acceptez d’être lié par les présentes conditions générales d’utilisation. 
+            Si vous n’acceptez pas ces conditions, vous ne devez pas utiliser notre service.
           </p>
         </section>
 
@@ -28,9 +27,9 @@ const Terms: React.FC = () => {
             2. Description du service
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Jogolinga est une plateforme d'apprentissage interactive dédiée aux langues africaines. 
-            Notre service offre des cours, exercices et outils pour apprendre et pratiquer diverses 
-            langues du continent africain. Le service est accessible via une authentification Google sécurisée.
+            Jogolinga est une plateforme interactive dédiée à l’apprentissage des langues africaines. 
+            Le service inclut des cours, des exercices et divers outils pédagogiques. 
+            L’accès est possible uniquement via une authentification Google sécurisée.
           </p>
         </section>
 
@@ -38,34 +37,29 @@ const Terms: React.FC = () => {
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
             3. Compte utilisateur
           </h2>
-          <p className="mb-4 text-gray-700 leading-relaxed">
-            Pour utiliser Jogolinga, vous devez :
-          </p>
           <ul className="list-disc pl-6 mb-4 text-gray-700">
-            <li>Disposer d'un compte Google valide</li>
-            <li>Être âgé d'au moins 13 ans</li>
+            <li>Être âgé d’au moins 13 ans (ou l’âge minimum légal dans votre pays)</li>
+            <li>Disposer d’un compte Google valide</li>
             <li>Fournir des informations exactes et à jour</li>
-            <li>Maintenir la confidentialité de vos informations de connexion</li>
-            <li>Utiliser le service à des fins éducatives légitimes</li>
+            <li>Assurer la confidentialité de vos identifiants</li>
+            <li>Utiliser le service uniquement à des fins éducatives légitimes</li>
           </ul>
         </section>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            4. Utilisation acceptable
+            4. Utilisation interdite
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            En utilisant Jogolinga, vous vous engagez à ne pas :
+            Vous vous engagez à ne pas :
           </p>
           <ul className="list-disc pl-6 mb-4 text-gray-700">
-            <li>Utiliser le service à des fins illégales ou non autorisées</li>
-            <li>Partager du contenu inapproprié, offensant ou discriminatoire</li>
-            <li>Violer les droits de propriété intellectuelle</li>
-            <li>Télécharger des virus ou des codes malveillants</li>
-            <li>Harceler ou menacer d'autres utilisateurs</li>
-            <li>Tenter de contourner les mesures de sécurité</li>
-            <li>Utiliser le service pour du spam ou des communications non sollicitées</li>
-            <li>Copier ou redistribuer le contenu éducatif sans autorisation</li>
+            <li>Utiliser le service à des fins illégales ou frauduleuses</li>
+            <li>Diffuser du contenu inapproprié, offensant ou discriminatoire</li>
+            <li>Violer des droits d’auteur ou marques déposées</li>
+            <li>Télécharger des virus ou interférer avec la sécurité</li>
+            <li>Harceler ou menacer d’autres utilisateurs</li>
+            <li>Redistribuer ou commercialiser les contenus sans autorisation</li>
           </ul>
         </section>
 
@@ -74,10 +68,9 @@ const Terms: React.FC = () => {
             5. Propriété intellectuelle
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Le contenu éducatif, les cours, exercices, fonctionnalités et caractéristiques de 
-            Jogolinga sont et resteront la propriété exclusive de notre société et de nos 
-            concédants. Le service est protégé par les droits d'auteur, marques de commerce 
-            et autres lois sur la propriété intellectuelle.
+            Tous les contenus, outils et fonctionnalités de Jogolinga sont protégés par les lois applicables 
+            en matière de droits d’auteur et de propriété intellectuelle, et restent la propriété exclusive 
+            de Jogolinga et de ses concédants.
           </p>
         </section>
 
@@ -86,10 +79,9 @@ const Terms: React.FC = () => {
             6. Contenu utilisateur
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Vous conservez tous les droits sur le contenu que vous créez et partagez via Jogolinga 
-            (exercices personnalisés, notes, etc.). En utilisant notre service, vous nous accordez 
-            une licence limitée pour héberger, afficher et distribuer votre contenu dans le cadre 
-            de la fourniture du service éducatif.
+            Vous conservez vos droits sur tout contenu que vous créez sur Jogolinga (notes, exercices, etc.). 
+            Toutefois, vous accordez à Jogolinga une licence limitée, non exclusive et gratuite 
+            pour héberger, afficher et distribuer vos contenus uniquement dans le cadre du service.
           </p>
         </section>
 
@@ -98,9 +90,9 @@ const Terms: React.FC = () => {
             7. Disponibilité du service
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Nous nous efforçons de maintenir Jogolinga disponible 24h/24 et 7j/7, mais nous ne 
-            garantissons pas une disponibilité ininterrompue. Le service peut être temporairement 
-            indisponible pour maintenance, mises à jour ou en cas de problèmes techniques.
+            Nous faisons de notre mieux pour assurer la disponibilité continue du service, 
+            mais nous ne pouvons pas garantir une accessibilité sans interruption. 
+            Des maintenances ou incidents techniques peuvent limiter temporairement l’accès.
           </p>
         </section>
 
@@ -109,10 +101,9 @@ const Terms: React.FC = () => {
             8. Limitation de responsabilité
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Dans la mesure permise par la loi, nous ne serons pas responsables des dommages 
-            indirects, spéciaux, consécutifs ou punitifs résultant de votre utilisation de Jogolinga. 
-            Notre responsabilité totale ne dépassera pas le montant payé pour le service au cours 
-            des 12 derniers mois.
+            Dans les limites autorisées par la loi, Jogolinga ne peut être tenu responsable des dommages 
+            indirects ou consécutifs liés à l’utilisation du service. Notre responsabilité ne pourra excéder 
+            le montant payé pour le service durant les 12 mois précédents.
           </p>
         </section>
 
@@ -121,57 +112,40 @@ const Terms: React.FC = () => {
             9. Résiliation
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Vous pouvez cesser d'utiliser Jogolinga à tout moment. Nous nous réservons le 
-            droit de suspendre ou résilier votre accès au service en cas de violation de ces 
-            conditions, avec ou sans préavis. En cas de résiliation, vos progrès d'apprentissage 
-            seront conservés conformément à notre politique de confidentialité.
+            Vous pouvez supprimer votre compte à tout moment. 
+            Nous nous réservons le droit de suspendre ou de résilier un compte en cas de non-respect des présentes conditions. 
+            Vos données seront traitées conformément à notre politique de confidentialité.
           </p>
         </section>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            10. Contenu éducatif et exactitude
+            10. Modifications
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Bien que nous nous efforcions de fournir un contenu éducatif précis et de qualité 
-            sur les langues africaines, nous ne garantissons pas l'exactitude absolue de tous 
-            les matériaux. L'apprentissage des langues nécessite une pratique continue et 
-            nous encourageons l'utilisation de sources supplémentaires.
+            Nous pouvons modifier ces conditions à tout moment. 
+            Les nouvelles conditions seront applicables dès leur publication sur cette page.
           </p>
         </section>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            11. Modifications des conditions
+            11. Droit applicable
           </h2>
           <p className="mb-4 text-gray-700 leading-relaxed">
-            Nous nous réservons le droit de modifier ces conditions à tout moment. Les 
-            modifications prendront effet immédiatement après leur publication sur cette page. 
-            Votre utilisation continue de Jogolinga constitue votre acceptation des conditions modifiées.
+            Les présentes conditions sont régies par le droit français. 
+            Tout litige sera soumis à la compétence exclusive des tribunaux français.
           </p>
         </section>
 
         <section className="mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            12. Droit applicable
+            12. Contact
           </h2>
-          <p className="mb-4 text-gray-700 leading-relaxed">
-            Ces conditions sont régies par le droit français. Tout litige sera soumis à la 
-            juridiction exclusive des tribunaux français.
-          </p>
-        </section>
-
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            13. Contact
-          </h2>
-          <p className="mb-4 text-gray-700 leading-relaxed">
-            Pour toute question concernant ces conditions d'utilisation, contactez-nous :
-          </p>
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-gray-700">
               <strong>Email :</strong> ceddoshop@gmail.com<br />
-              <strong>Application :</strong> Jogolinga - Plateforme d'apprentissage de langues africaines
+              <strong>Application :</strong> Jogolinga
             </p>
           </div>
         </section>
